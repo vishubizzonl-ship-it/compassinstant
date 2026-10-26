@@ -1,0 +1,130 @@
+---
+---
+<div class="w-full" id="compass-island" aria-label="Interactive compass">
+  <div class="border border-hairline rounded-md bg-canvas p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.04)]">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">Compass</h2>
+        <p class="text-xs text-mute font-mono mt-1">DEVICE ORIENTATION ACTIVE</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="calibrateCompass()" class="rounded-sm bg-canvas-elevated border border-hairline text-ink text-xs font-medium px-3 py-1.5 hover:border-ink/20 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label="Calibrate compass">Calibrate</button>
+        <span id="compass-status" class="inline-flex items-center gap-1.5 rounded-full bg-canvas-elevated border border-hairline px-2.5 py-1 text-[11px] font-medium text-ink">
+          <span class="h-1.5 w-1.5 rounded-full bg-ink animate-pulse"></span> Active
+        </span>
+      </div>
+    </div>
+
+    <div class="relative flex items-center justify-center py-8" aria-label="Compass dial">
+      <div class="relative w-56 h-56 lg:w-72 lg:h-72">
+        <svg viewBox="0 0 200 200" class="w-full h-full" aria-label="Compass dial visualization">
+          <defs>
+            <radialGradient id="dial-grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="100%" stop-color="#f2f2f2" />
+            </radialGradient>
+          </defs>
+          <circle cx="100" cy="100" r="95" fill="url(#dial-grad)" stroke="#ebebeb" stroke-width="1" />
+          <circle cx="100" cy="100" r="3" fill="#171717" />
+
+          <!-- Direction markers -->
+          <text x="100" y="18" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="600" fill="#171717" letter-spacing="2">N</text>
+          <text x="182" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="1">E</text>
+          <text x="18" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="1">W</text>
+          <text x="100" y="190" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="1">S</text>
+
+          <!-- Needle group -->
+          <g id="island-needle" style="transform-origin: 100px 100px; transition: transform 0.15s ease-out;">
+            <polygon points="100,28 94,88 106,88" fill="#171717" />
+            <polygon points="100,172 94,112 106,112" fill="#8f8f8f" opacity="0.45" />
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="text-center p-4 rounded-sm bg-canvas-elevated border border-hairline">
+        <p class="text-[10px] text-mute font-mono uppercase tracking-wide mb-1">Heading</p>
+        <p id="island-heading" class="text-xl font-semibold tracking-tight text-ink tabular-nums">—</p>
+      </div>
+      <div class="text-center p-4 rounded-sm bg-canvas-elevated border border-hairline">
+        <p class="text-[10px] text-mute font-mono uppercase tracking-wide mb-1">Direction</p>
+        <p id="island-direction" class="text-xl font-semibold tracking-tight text-ink tabular-nums">—</p>
+      </div>
+      <div class="text-center p-4 rounded-sm bg-canvas-elevated border border-hairline">
+        <p class="text-[10px] text-mute font-mono uppercase tracking-wide mb-1">Status</p>
+        <p id="island-status-text" class="text-xl font-semibold tracking-tight text-ink">Ready</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const needle = document.getElementById('island-needle');
+    const headingEl = document.getElementById('island-heading');
+    const directionEl = document.getElementById('island-direction');
+    const statusText = document.getElementById('island-status-text');
+    const statusDot = document.getElementById('compass-status');
+    if (!needle) return;
+
+    function getDirection(deg: number) {
+      const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+      const idx = Math.round(deg / 22.5) % 16;
+      return dirs[idx];
+    }
+
+    function handleOrientation(event: DeviceOrientationEvent) {
+      let heading = 0;
+      if (event.webkitCompassHeading !== undefined && event.webkitCompassHeading !== null) {
+        heading = 360 - event.webkitCompassHeading;
+      } else if (event.alpha !== null && event.alpha !== undefined) {
+        heading = 360 - event.alpha;
+      }
+      needle.style.transform = `rotate(${-heading}deg)`;
+      if (headingEl) headingEl.textContent = Math.round(heading) + '°';
+      if (directionEl) directionEl.textContent = getDirection(heading);
+    }
+
+    function requestAccess() {
+      if (window.DeviceOrientationEvent && typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        (DeviceOrientationEvent as any).requestPermission()
+          .then((res: string) => {
+            if (res === 'granted') {
+              window.addEventListener('deviceorientationabsolute', handleOrientation);
+              if (statusText) statusText.textContent = 'Active';
+              if (statusDot) statusDot.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-ink animate-pulse"></span> Active';
+            } else {
+              if (statusText) statusText.textContent = 'Denied';
+              if (statusDot) statusDot.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-warning"></span> Blocked';
+            }
+          })
+          .catch(() => {
+            if (statusText) statusText.textContent = 'Error';
+          });
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+        if (statusText) statusText.textContent = 'Active';
+      }
+    }
+
+    // Auto-request when component is visible, or provide manual trigger
+    if (window.DeviceOrientationEvent) {
+      requestAccess();
+    } else {
+      if (statusText) statusText.textContent = 'Not supported';
+      if (statusDot) statusDot.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-error"></span> N/A';
+    }
+
+    // Global calibrate function
+    (window as any).calibrateCompass = function() {
+      if (headingEl) headingEl.textContent = 'Calibrating…';
+      setTimeout(() => {
+        if (headingEl) headingEl.textContent = 'Done';
+        setTimeout(() => {
+          if (headingEl) headingEl.textContent = '—';
+        }, 1500);
+      }, 500);
+    };
+  })();
+</script>

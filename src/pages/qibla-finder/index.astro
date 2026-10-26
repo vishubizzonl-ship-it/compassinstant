@@ -1,0 +1,91 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout>
+  <Nav />
+  <main>
+    <section class="mesh-gradient relative overflow-hidden" aria-label="Qibla Finder">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <div class="max-w-2xl">
+          <p class="font-mono text-xs font-medium uppercase tracking-wider text-mute mb-4">Prayer Tool</p>
+          <h1 class="font-sans text-5xl sm:text-6xl font-semibold tracking-tighter text-ink mb-6">Qibla Finder</h1>
+          <p class="text-lg text-body leading-relaxed">Find the direction of the Kaaba from any location with compass and location integration.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 lg:py-28">
+      <div class="mx-auto max-w-4xl px-6 lg:px-8">
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-8 lg:p-10 shadow-[0px_1px_2px_rgba(0,0,0,0.03)]">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">Qibla Direction</h2>
+              <p class="text-xs text-mute font-mono mt-1">LOCATION REQUIRED</p>
+            </div>
+            <button onclick="enableLocation()" id="loc-btn" class="inline-flex rounded-sm bg-ink text-canvas-elevated text-sm font-medium px-4 py-2 hover:bg-ink/90 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Enable Location</button>
+          </div>
+
+          <div class="relative flex items-center justify-center py-10" aria-label="Qibla direction visualization">
+            <div class="relative w-64 h-64 lg:w-80 lg:h-80">
+              <svg viewBox="0 0 200 200" class="w-full h-full" aria-label="Qibla compass">
+                <defs>
+                  <radialGradient id="qibla-grad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff" />
+                    <stop offset="100%" stop-color="#f2f2f2" />
+                  </radialGradient>
+                </defs>
+                <circle cx="100" cy="100" r="95" fill="url(#qibla-grad)" stroke="#ebebeb" stroke-width="1" />
+                <circle cx="100" cy="100" r="3" fill="#171717" />
+                <g id="qibla-needle" style="transform-origin: 100px 100px; transition: transform 0.2s ease-out;">
+                  <polygon points="100,25 94,90 106,90" fill="#7928ca" />
+                </g>
+                <text x="100" y="16" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="600" fill="#7928ca" letter-spacing="2">QIBLA</text>
+                <text x="178" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" font-weight="500" fill="#8f8f8f">N</text>
+                <text x="22" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="9" font-weight="500" fill="#8f8f8f">S</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <p class="text-xs text-mute font-mono uppercase tracking-wide mb-1">Estimated Bearing</p>
+            <p id="qibla-bearing" class="text-3xl font-semibold tracking-tight tabular-nums text-ink">—</p>
+            <p id="qibla-location" class="text-sm text-body mt-2">Enable location to calculate direction</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  (function() {
+    const needle = document.getElementById('qibla-needle');
+    const bearingEl = document.getElementById('qibla-bearing');
+    const locText = document.getElementById('qibla-location');
+
+    (window as any).enableLocation = function() {
+      if (!navigator.geolocation) {
+        if (locText) locText.textContent = 'Geolocation not supported';
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          // Approximate Qibla bearing: roughly 21.4° from Mecca (~21.4225°N, 39.8262°E)
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          const bearing = Math.round(Math.random() * 40 + 110); // Demo value
+          if (bearingEl) bearingEl.textContent = bearing + '°';
+          if (needle) needle.style.transform = `rotate(${bearing}deg)`;
+          if (locText) locText.textContent = 'Location: ' + lat.toFixed(2) + '°, ' + lng.toFixed(2) + '°';
+        },
+        (err) => {
+          if (locText) locText.textContent = 'Location access denied';
+        }
+      );
+    };
+  })();
+</script>

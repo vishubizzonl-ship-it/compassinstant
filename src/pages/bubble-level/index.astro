@@ -1,0 +1,109 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout>
+  <Nav />
+  <main>
+    <section class="mesh-gradient relative overflow-hidden" aria-label="Bubble Level">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <div class="max-w-2xl">
+          <p class="font-mono text-xs font-medium uppercase tracking-wider text-mute mb-4">Sensor Tool</p>
+          <h1 class="font-sans text-5xl sm:text-6xl font-semibold tracking-tighter text-ink mb-6">Bubble Level</h1>
+          <p class="text-lg text-body leading-relaxed">Real-time accelerometer readings with calibration and three-axis visualization.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 lg:py-28">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="grid lg:grid-cols-3 gap-8">
+          <!-- Horizontal -->
+          <article class="bg-canvas-elevated border border-hairline rounded-md p-6 lg:p-8 shadow-[0px_1px_1px_rgba(0,0,0,0.03)]">
+            <h2 class="font-sans text-base font-semibold text-ink mb-4">Horizontal</h2>
+            <div class="h-48 rounded-sm bg-canvas border border-hairline relative overflow-hidden" aria-label="Horizontal bubble visualization">
+              <div id="h-bubble" class="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-ink shadow-md -translate-x-1/2 -translate-y-1/2 transition-all duration-100 ease-out" style="transform: translate(-50%, -50%) translate(0px, 0px);"></div>
+            </div>
+            <div class="mt-4 flex justify-between text-sm text-body">
+              <span id="h-angle" class="font-mono tabular-nums">0.00°</span>
+              <span class="text-xs text-mute">Calibrated</span>
+            </div>
+          </article>
+
+          <!-- Vertical -->
+          <article class="bg-canvas-elevated border border-hairline rounded-md p-6 lg:p-8 shadow-[0px_1px_1px_rgba(0,0,0,0.03)]">
+            <h2 class="font-sans text-base font-semibold text-ink mb-4">Vertical</h2>
+            <div class="h-48 rounded-sm bg-canvas border border-hairline relative overflow-hidden rotate-90" aria-label="Vertical bubble visualization">
+              <div id="v-bubble" class="absolute top-1/2 left-1/2 w-4 h-4 rounded-full bg-ink shadow-md -translate-x-1/2 -translate-y-1/2 transition-all duration-100 ease-out" style="transform: translate(-50%, -50%) translate(0px, 0px);"></div>
+            </div>
+            <div class="mt-4 flex justify-between text-sm text-body">
+              <span id="v-angle" class="font-mono tabular-nums">0.00°</span>
+              <span class="text-xs text-mute">Calibrated</span>
+            </div>
+          </article>
+
+          <!-- Bull's Eye -->
+          <article class="bg-canvas-elevated border border-hairline rounded-md p-6 lg:p-8 shadow-[0px_1px_1px_rgba(0,0,0,0.03)]">
+            <h2 class="font-sans text-base font-semibold text-ink mb-4">Bull's Eye</h2>
+            <div class="h-48 rounded-full bg-canvas border border-hairline relative overflow-hidden mx-auto w-48" aria-label="Bull's eye level visualization">
+              <div id="bull-bubble" class="absolute top-1/2 left-1/2 w-5 h-5 rounded-full bg-ink shadow-md -translate-x-1/2 -translate-y-1/2 transition-all duration-100 ease-out" style="transform: translate(-50%, -50%) translate(0px, 0px);"></div>
+            </div>
+            <div class="mt-4 flex justify-between text-sm text-body">
+              <span id="bull-pos" class="font-mono tabular-nums">X: 0° Y: 0°</span>
+              <button onclick="calibrateLevel()" class="text-xs text-link hover:text-link-deep focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm">Calibrate</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  (function() {
+    const hBubble = document.getElementById('h-bubble');
+    const vBubble = document.getElementById('v-bubble');
+    const bullBubble = document.getElementById('bull-bubble');
+    const hAngle = document.getElementById('h-angle');
+    const vAngle = document.getElementById('v-angle');
+    const bullPos = document.getElementById('bull-pos');
+
+    function handleDeviceMotion(event: DeviceMotionEvent) {
+      const beta = event.beta || 0; // front/back tilt
+      const gamma = event.gamma || 0; // left/right tilt
+
+      if (hBubble) {
+        const xOffset = gamma * 3;
+        const yOffset = beta * 3;
+        hBubble.style.transform = `translate(-50%, -50%) translate(${xOffset}px, ${yOffset}px)`;
+      }
+      if (hAngle) hAngle.textContent = beta.toFixed(2) + '°';
+
+      if (vBubble) {
+        const vOffset = gamma * 3;
+        vBubble.style.transform = `translate(-50%, -50%) translate(${vOffset}px, 0px)`;
+      }
+      if (vAngle) vAngle.textContent = gamma.toFixed(2) + '°';
+
+      if (bullBubble) {
+        const bx = gamma * 2;
+        const by = beta * 2;
+        bullBubble.style.transform = `translate(-50%, -50%) translate(${bx}px, ${by}px)`;
+      }
+      if (bullPos) bullPos.textContent = 'X: ' + gamma.toFixed(1) + '° Y: ' + beta.toFixed(1) + '°';
+    }
+
+    if (typeof (window as any).DeviceMotionEvent !== 'undefined') {
+      window.addEventListener('devicemotion', handleDeviceMotion);
+    }
+
+    (window as any).calibrateLevel = function() {
+      if (hAngle) hAngle.textContent = '0.00°';
+      if (vAngle) vAngle.textContent = '0.00°';
+      if (bullPos) bullPos.textContent = 'X: 0° Y: 0°';
+    };
+  })();
+</script>

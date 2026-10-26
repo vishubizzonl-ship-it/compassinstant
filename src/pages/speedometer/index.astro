@@ -1,0 +1,123 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout>
+  <Nav />
+  <main>
+    <section class="mesh-gradient relative overflow-hidden" aria-label="Speedometer">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 pt-28 pb-16 lg:pt-36 lg:pb-24">
+        <div class="max-w-2xl">
+          <p class="font-mono text-xs font-medium uppercase tracking-wider text-mute mb-4">GPS Tool</p>
+          <h1 class="font-sans text-5xl sm:text-6xl font-semibold tracking-tighter text-ink mb-6">Online Speedometer</h1>
+          <p class="text-lg text-body leading-relaxed">GPS-based speed tracking with max, average, altitude, and trip statistics.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-20 lg:py-28">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-8 lg:p-10 shadow-[0px_1px_2px_rgba(0,0,0,0.03)]">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">Current Speed</h2>
+              <p class="text-xs text-mute font-mono mt-1">GPS LOCATION ACTIVE</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="startTrip()" class="inline-flex rounded-sm bg-ink text-canvas-elevated text-sm font-medium px-4 py-2 hover:bg-ink/90 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Start</button>
+              <button onclick="resetTrip()" class="inline-flex rounded-sm bg-canvas-elevated text-ink border border-hairline text-sm font-medium px-4 py-2 hover:bg-canvas transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Reset</button>
+            </div>
+          </div>
+
+          <div class="text-center py-8 mb-8">
+            <p class="text-7xl lg:text-8xl font-semibold tracking-tighter text-ink tabular-nums" id="speed-display">0</p>
+            <p class="text-sm text-mute font-mono mt-2">KM/H</p>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-4 rounded-sm bg-canvas border border-hairline">
+              <p class="text-[10px] text-mute font-mono uppercase tracking-wide">Max</p>
+              <p id="max-speed" class="text-xl font-semibold tabular-nums text-ink">0.0</p>
+              <p class="text-[10px] text-faint">KM/H</p>
+            </div>
+            <div class="p-4 rounded-sm bg-canvas border border-hairline">
+              <p class="text-[10px] text-mute font-mono uppercase tracking-wide">Average</p>
+              <p id="avg-speed" class="text-xl font-semibold tabular-nums text-ink">0.0</p>
+              <p class="text-[10px] text-faint">KM/H</p>
+            </div>
+            <div class="p-4 rounded-sm bg-canvas border border-hairline">
+              <p class="text-[10px] text-mute font-mono uppercase tracking-wide">Altitude</p>
+              <p id="altitude" class="text-xl font-semibold tabular-nums text-ink">—</p>
+              <p class="text-[10px] text-faint">m</p>
+            </div>
+            <div class="p-4 rounded-sm bg-canvas border border-hairline">
+              <p class="text-[10px] text-mute font-mono uppercase tracking-wide">Duration</p>
+              <p id="duration" class="text-xl font-semibold tabular-nums text-ink">00:00</p>
+              <p class="text-[10px] text-faint">m:s</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  (function() {
+    let maxSp = 0;
+    let totalSp = 0;
+    let count = 0;
+    let startTime = 0;
+    let interval: number | null = null;
+
+    const speedEl = document.getElementById('speed-display');
+    const maxEl = document.getElementById('max-speed');
+    const avgEl = document.getElementById('avg-speed');
+    const altEl = document.getElementById('altitude');
+    const durEl = document.getElementById('duration');
+
+    (window as any).startTrip = function() {
+      startTime = Date.now();
+      if (interval) clearInterval(interval);
+      interval = window.setInterval(() => {
+        if (durEl && startTime) {
+          const sec = Math.floor((Date.now() - startTime) / 1000);
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          durEl.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+      }, 1000);
+    };
+
+    (window as any).resetTrip = function() {
+      maxSp = 0; totalSp = 0; count = 0; startTime = 0;
+      if (interval) clearInterval(interval);
+      interval = null;
+      if (speedEl) speedEl.textContent = '0';
+      if (maxEl) maxEl.textContent = '0.0';
+      if (avgEl) avgEl.textContent = '0.0';
+      if (durEl) durEl.textContent = '00:00';
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(
+        (pos) => {
+          const speedMs = pos.coords.speed || 0;
+          const speedKmh = (speedMs * 3.6);
+          if (speedEl) speedEl.textContent = speedKmh.toFixed(1);
+          if (maxEl) maxEl.textContent = Math.max(maxSp, speedKmh).toFixed(1);
+          if (avgEl && count > 0) avgEl.textContent = (totalSp / count).toFixed(1);
+          if (altEl) altEl.textContent = pos.coords.altitude ? Math.round(pos.coords.altitude).toString() : '—';
+          maxSp = Math.max(maxSp, speedKmh);
+          totalSp += speedKmh;
+          count++;
+        },
+        () => {},
+        { enableHighAccuracy: true, maximumAge: 1000 }
+      );
+    }
+  })();
+</script>

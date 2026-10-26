@@ -1,0 +1,48 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import CompassIsland from '../../components/CompassIsland.astro';
+---
+
+<Layout>
+  <Nav />
+  <main>
+    <section class="mesh-gradient relative overflow-hidden" aria-label="Compass">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 pt-28 pb-16 lg:pt-36 lg:pb-20">
+        <div class="max-w-2xl">
+          <p class="font-mono text-xs font-medium uppercase tracking-wider text-mute mb-4">Navigation Tool</p>
+          <h1 class="font-sans text-5xl sm:text-6xl font-semibold tracking-tighter text-ink mb-6">Online Compass</h1>
+          <p class="text-lg text-body leading-relaxed">Real-time magnetometer direction with calibration, offline support, and location awareness.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24" aria-label="Compass interface">
+      <div class="mx-auto max-w-4xl px-6 lg:px-8">
+        <CompassIsland />
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24" aria-label="Usage guide">
+      <div class="mx-auto max-w-3xl px-6 lg:px-8">
+        <h2 class="font-sans text-2xl font-semibold tracking-tight text-ink mb-8">How to use</h2>
+        <div class="space-y-8">
+          <article class="border-l-2 border-hairline pl-6">
+            <h3 class="font-sans text-base font-semibold text-ink mb-2">Enable sensors</h3>
+            <p class="text-sm text-body leading-relaxed">On iOS Safari, go to Settings → Safari → Motion & Orientation Access and enable it. On Chrome, visit the flags page to allow generic sensors.</p>
+          </article>
+          <article class="border-l-2 border-hairline pl-6">
+            <h3 class="font-sans text-base font-semibold text-ink mb-2">Calibrate</h3>
+            <p class="text-sm text-body leading-relaxed">Move your device in a figure-8 pattern a few times. This helps the magnetometer reset and improves accuracy significantly.</p>
+          </article>
+          <article class="border-l-2 border-hairline pl-6">
+            <h3 class="font-sans text-base font-semibold text-ink mb-2">Offline use</h3>
+            <p class="text-sm text-body leading-relaxed">Once loaded, the compass works without a network connection. Just keep the browser tab open.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>

@@ -1,13 +1,133 @@
 ---
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import Footer from '../components/Footer.astro';
 ---
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>compassinstant</title>
-  </head>
-  <body class="min-h-screen bg-white text-neutral-900 flex items-center justify-center">
-    <h1 class="text-3xl font-semibold">compassinstant</h1>
-  </body>
-</html>
+
+<Layout>
+  <Nav />
+  <main>
+    <Hero />
+    <FeatureGrid />
+
+    <!-- Interactive demo band -->
+    <section id="start" class="py-24 lg:py-32 bg-canvas-elevated border-y border-hairline" aria-label="Interactive demo">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          <div>
+            <p class="font-mono text-xs font-medium uppercase tracking-wider text-mute mb-3">Live Preview</p>
+            <h2 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-6">See the compass work before you navigate.</h2>
+            <p class="text-body text-base leading-relaxed mb-8">
+              Our interactive demo uses your device's magnetometer in real time. No app install required — just open the page and start exploring. If sensors aren't available, the tool shows a graceful fallback with calibration instructions.
+            </p>
+            <ul class="space-y-3 text-sm text-body">
+              <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-soft text-cyan text-xs font-bold mt-0.5">✓</span> Real-time magnetometer direction</li>
+              <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-soft text-violet text-xs font-bold mt-0.5">✓</span> Calibration with figure-8 animation</li>
+              <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-pink text-canvas-elevated text-xs font-bold mt-0.5">✓</span> Works offline once loaded</li>
+              <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-canvas-elevated text-xs font-bold mt-0.5">✓</span> Privacy-first: no data sent to servers</li>
+            </ul>
+          </div>
+
+          <div class="relative">
+            <div class="border border-hairline rounded-md bg-canvas p-6 lg:p-8 shadow-[0px_2px_4px_rgba(0,0,0,0.03)]">
+              <div class="flex items-center justify-between mb-6">
+                <div>
+                  <h3 class="font-sans text-base font-semibold text-ink">Compass Demo</h3>
+                  <p class="text-xs text-mute font-mono">LIVE SENSOR</p>
+                </div>
+                <span id="demo-status" class="inline-flex items-center gap-1.5 rounded-full bg-canvas-elevated border border-hairline px-2.5 py-1 text-[11px] font-medium text-ink">
+                  <span class="h-1.5 w-1.5 rounded-full bg-ink animate-pulse"></span> Active
+                </span>
+              </div>
+
+              <div class="relative flex items-center justify-center py-6" id="compass-container" aria-label="Compass visualization">
+                <div class="relative w-48 h-48 lg:w-56 lg:h-56">
+                  <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-sm" aria-label="Compass dial">
+                    <defs>
+                      <linearGradient id="compass-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#fafafa" />
+                        <stop offset="100%" stop-color="#f2f2f2" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="100" cy="100" r="96" fill="url(#compass-grad)" stroke="#ebebeb" stroke-width="1" />
+                    <circle cx="100" cy="100" r="4" fill="#171717" />
+                    <g id="compass-needle" style="transform-origin: 100px 100px; transition: transform 0.2s ease-out;">
+                      <polygon points="100,30 96,86 104,86" fill="#171717" />
+                      <polygon points="100,170 96,114 104,114" fill="#8f8f8f" opacity="0.5" />
+                    </g>
+                    <text x="100" y="22" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="500" fill="#171717" letter-spacing="1">N</text>
+                    <text x="178" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">E</text>
+                    <text x="22" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">W</text>
+                    <text x="100" y="184" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="#8f8f8f" letter-spacing="0.5">S</text>
+                  </svg>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <div class="text-center">
+                  <p class="text-xs text-mute font-mono uppercase tracking-wide">Heading</p>
+                  <p id="demo-heading" class="text-2xl font-semibold tracking-tight text-ink tabular-nums">0°</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-xs text-mute font-mono uppercase tracking-wide">Accuracy</p>
+                  <p id="demo-accuracy" class="text-2xl font-semibold tracking-tight text-ink tabular-nums">—</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  (function() {
+    const needle = document.getElementById('compass-needle');
+    const headingEl = document.getElementById('demo-heading');
+    const accuracyEl = document.getElementById('demo-accuracy');
+    const statusEl = document.getElementById('demo-status');
+
+    if (!needle || !headingEl) return;
+
+    function handleOrientation(event: DeviceOrientationEvent) {
+      let heading = 0;
+      if (event.webkitCompassHeading !== undefined && event.webkitCompassHeading !== null) {
+        heading = 360 - event.webkitCompassHeading;
+      } else if (event.alpha !== null && event.alpha !== undefined) {
+        heading = 360 - event.alpha;
+      }
+      needle.style.transform = `rotate(${-heading}deg)`;
+      headingEl.textContent = Math.round(heading) + '°';
+    }
+
+    function handleError() {
+      if (statusEl) {
+        statusEl.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-warning"></span> Sensors unavailable';
+      }
+      headingEl.textContent = '—';
+      accuracyEl.textContent = '—';
+    }
+
+    if (window.DeviceOrientationEvent) {
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        (DeviceOrientationEvent as any).requestPermission()
+          .then((response: string) => {
+            if (response === 'granted') {
+              window.addEventListener('deviceorientationabsolute', handleOrientation);
+            } else {
+              handleError();
+            }
+          })
+          .catch(() => handleError());
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    } else {
+      handleError();
+    }
+  })();
+</script>
