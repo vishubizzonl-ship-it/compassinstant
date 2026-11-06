@@ -1,10 +1,10 @@
 {
-  "name": "CompassInstant",
-  "short_name": "CompassInstant",
+  "name": "onlinecompass",
+  "short_name": "onlinecompass",
   "description": "Navigation tools for the modern web — compass, bubble level, speedometer, and qibla finder.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fafafa",
+  "background_color": "#ffffff",
   "theme_color": "#171717",
   "icons": [
     {

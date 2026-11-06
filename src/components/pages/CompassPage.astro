@@ -1,0 +1,43 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../Nav.astro';
+import Footer from '../Footer.astro';
+import CompassIsland from '../CompassIsland.astro';
+import ToolBlog from '../ToolBlog.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+<Layout keywords="Compass direction, Live compass, Online compass, Compass Tool, Mobile compass, Compass Digital, Compass online, Directions compass, Compass free, online compass, online compass tool, free online compass, online compass free, online compass direction, online compass to find north, compass online, online tool, online tool compass, direction online Compass, compass to find north, where is north, north direction, north, south, east, west, direction">
+  <Nav />
+  <main>
+    <section class="py-6 lg:py-10 pt-2 lg:pt-6" aria-label={t('compass.ui.title')}>
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <CompassIsland />
+      </div>
+    </section>
+
+    <section class="py-16 lg:py-24" aria-label={t('compass.how.title')}>
+      <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
+        <h2 class="font-sans text-2xl font-semibold tracking-tight text-ink mb-8">{t('compass.how.title')}</h2>
+        <div class="space-y-8">
+          <article class="border-l-2 border-hairline pl-6">
+            <h3 class="font-sans text-base font-semibold text-ink mb-2">{t('page.compass.how.enable')}</h3>
+            <p class="text-sm text-body leading-relaxed">{t('page.compass.how.enable.desc')}</p>
+          </article>
+          <article class="border-l-2 border-hairline pl-6">
+            <h3 class="font-sans text-base font-semibold text-ink mb-2">{t('page.compass.how.calibrate')}</h3>
+            <p class="text-sm text-body leading-relaxed">{t('page.compass.how.calibrate.desc')}</p>
+          </article>
+          <article class="border-l-2 border-hairline pl-6">
+            <h3 class="font-sans text-base font-semibold text-ink mb-2">{t('page.compass.how.offline')}</h3>
+            <p class="text-sm text-body leading-relaxed">{t('page.compass.how.offline.desc')}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  <ToolBlog tool="compass" />
+  </main>
+  <Footer />
+</Layout>

@@ -1,27 +1,219 @@
 ---
+import Logo from './Logo.astro';
+import { languages } from '../i18n/ui';
+import {
+  getLangFromUrl,
+  getLocalizedPath,
+  routePaths,
+  stripLocale,
+  useTranslations,
+  useTranslatedPath,
+} from '../i18n/utils';
+
+const url = new URL(Astro.url);
+const lang = getLangFromUrl(url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+const currentPath = stripLocale(url.pathname);
+const safePath = (routePaths as readonly string[]).includes(currentPath)
+  ? currentPath
+  : '/';
+
+const navItems = [
+  { href: '/compass/', label: t('nav.compass') },
+  { href: '/bubble-level/', label: t('nav.bubble') },
+  { href: '/speedometer/', label: t('nav.speed') },
+  { href: '/qibla-finder/', label: t('nav.qibla') },
+];
+
+const companyItems = [
+  { href: '/blog/', label: 'Blog' },
+  { href: '/about/', label: t('footer.about') },
+  { href: '/privacy/', label: t('footer.privacy') },
+  { href: '/terms/', label: t('footer.terms') },
+  { href: '/contact/', label: t('footer.contact') },
+];
 ---
-<nav class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-md border-b border-hairline" aria-label="Primary navigation">
+
+<nav class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-md border-b border-hairline" aria-label={t('nav.primary')}>
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <!-- Logo -->
-      <a href="/" class="flex items-center gap-2.5 rounded-full px-2 py-1.5 -ml-2 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none transition-shadow" aria-label="CompassInstant home">
-        <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-ink text-canvas-elevated font-mono text-xs font-medium">CI</span>
-        <span class="font-sans text-sm font-semibold tracking-tight text-ink hidden sm:inline">CompassInstant</span>
+    <div class="flex h-16 items-center justify-between gap-4">
+      <!-- Logo: Icon + Heading -->
+      <a href={translatePath('/')} class="flex items-center gap-2.5 rounded-full px-2 py-1.5 -ml-2 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none transition-shadow shrink-0" aria-label="onlinecompass — {t('nav.home')}">
+        <Logo size="md" />
+        <span class="font-sans text-base font-bold tracking-tight text-ink whitespace-nowrap">onlinecompass</span>
       </a>
 
-      <!-- Nav links -->
+      <!-- Center Nav Links -->
       <div class="hidden md:flex items-center gap-1">
-        <a href="/" class="rounded-full px-3 py-1.5 text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Compass</a>
-        <a href="/bubble-level/" class="rounded-full px-3 py-1.5 text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Bubble Level</a>
-        <a href="/speedometer/" class="rounded-full px-3 py-1.5 text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Speedometer</a>
-        <a href="/qibla-finder/" class="rounded-full px-3 py-1.5 text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Qibla</a>
+        {navItems.map((item) => (
+          <a
+            href={translatePath(item.href)}
+            aria-current={currentPath === item.href ? 'page' : undefined}
+            class:list={[
+              'rounded-full px-3 py-1.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none',
+              currentPath === item.href
+                ? 'text-ink font-medium bg-canvas-elevated border border-hairline'
+                : 'text-body hover:text-ink',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+        <details class="relative">
+          <summary class="list-none cursor-pointer rounded-full px-3 py-1.5 text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
+            Company
+          </summary>
+          <div class="absolute left-0 top-full mt-2 w-40 bg-canvas-elevated border border-hairline rounded-md shadow-lg overflow-hidden z-50">
+            {companyItems.map((item) => (
+              <a
+                href={translatePath(item.href)}
+                class="block px-4 py-2.5 text-sm text-body hover:text-ink hover:bg-canvas transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </details>
       </div>
 
-      <!-- CTA buttons -->
-      <div class="flex items-center gap-2">
-        <a href="#start" class="hidden sm:inline-flex rounded-sm bg-canvas-elevated text-ink border border-hairline text-sm font-medium px-3 py-2 hover:bg-canvas hover:border-ink/10 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none shadow-[0px_1px_1px_rgba(0,0,0,0.04)]">Log In</a>
-        <a href="#start" class="inline-flex rounded-full bg-ink text-canvas-elevated text-sm font-medium px-4 py-2.5 hover:bg-ink/90 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Start Navigating</a>
+      <!-- Right side: Language + Theme Toggle -->
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Language Select -->
+        <div class="relative" id="lang-dropdown-wrapper">
+          <button onclick="toggleLang()" class="inline-flex items-center gap-1.5 rounded-full bg-canvas-elevated border border-hairline text-ink text-xs font-medium px-3 py-2 hover:bg-canvas hover:border-ink/10 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none shadow-[0px_1px_1px_rgba(0,0,0,0.04)]" aria-label={t('nav.language')} aria-expanded="false" aria-haspopup="true" id="lang-btn">
+            <span id="lang-label">{languages[lang]}</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="2 4 6 8 10 4"/></svg>
+          </button>
+          <div id="lang-menu" class="hidden absolute right-0 top-full mt-2 w-44 bg-canvas-elevated border border-hairline rounded-md shadow-lg overflow-hidden z-50">
+            {Object.entries(languages).map(([code, name]) => (
+              <a
+                href={getLocalizedPath(code as keyof typeof languages, safePath)}
+                hreflang={code}
+                lang={code}
+                aria-current={code === lang ? 'true' : undefined}
+                class:list={[
+                  'flex items-center justify-between gap-2 px-4 py-2.5 text-sm transition-colors',
+                  code === lang ? 'text-ink font-medium bg-canvas' : 'text-body hover:text-ink hover:bg-canvas',
+                ]}
+              >
+                <span>{name}</span>
+                {code === lang && <span aria-hidden="true" class="text-xs">✓</span>}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button onclick="toggleTheme()" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-canvas-elevated border border-hairline text-ink hover:bg-canvas hover:border-ink/10 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none shadow-[0px_1px_1px_rgba(0,0,0,0.04)]" aria-label={t('nav.theme')} id="theme-btn" title={t('nav.theme')}>
+          <span id="theme-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </span>
+        </button>
       </div>
+    </div>
+
+  </div>
+  <!-- Mobile tool links: keeps every section reachable + crawlable -->
+  <div class="md:hidden border-t border-hairline">
+    <div class="mx-auto max-w-7xl px-6 py-2 flex items-center justify-center gap-2 overflow-hidden -mx-1">
+      {navItems.map((item) => (
+        <a
+          href={translatePath(item.href)}
+          aria-current={currentPath === item.href ? 'page' : undefined}
+          class:list={[
+            'whitespace-nowrap rounded-full px-2 py-1 text-[11px] transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none',
+            currentPath === item.href
+              ? 'text-ink font-medium bg-canvas-elevated border border-hairline'
+              : 'text-body hover:text-ink',
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+    <div class="mx-auto max-w-7xl px-6 py-2 flex items-center justify-center gap-2 overflow-hidden -mx-1 border-t border-hairline">
+      {companyItems.map((item) => (
+        <a
+          href={translatePath(item.href)}
+          aria-current={currentPath === item.href ? 'page' : undefined}
+          class="whitespace-nowrap rounded-full px-2 py-1 text-[11px] text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
+        >
+          {item.label}
+        </a>
+      ))}
     </div>
   </div>
 </nav>
+
+<script>
+  // Language dropdown
+  function toggleLang() {
+    const menu = document.getElementById('lang-menu');
+    const btn = document.getElementById('lang-btn');
+    if (!menu || !btn) return;
+    menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(!menu.classList.contains('hidden')));
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener('click', function (e) {
+    const wrapper = document.getElementById('lang-dropdown-wrapper');
+    if (wrapper && !wrapper.contains(e.target as Node)) {
+      const menu = document.getElementById('lang-menu');
+      const btn = document.getElementById('lang-btn');
+      if (menu) menu.classList.add('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close with Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      const menu = document.getElementById('lang-menu');
+      const btn = document.getElementById('lang-btn');
+      if (menu) menu.classList.add('hidden');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  (window as any).toggleLang = toggleLang;
+
+  // Theme toggle
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    if (isDark) {
+      html.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      html.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+    updateThemeIcon();
+    var themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.setAttribute('content', html.classList.contains('dark') ? '#0a0a0a' : '#ffffff');
+  }
+  function updateThemeIcon() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    const iconContainer = document.getElementById('theme-icon');
+    if (!iconContainer) return;
+    if (isDark) {
+      iconContainer.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+    } else {
+      iconContainer.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    }
+  }
+  // Initialize theme from localStorage or prefers-color-scheme
+  (function initTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const html = document.documentElement;
+    if (saved === 'dark' || (!saved && prefersDark)) {
+      html.classList.add('dark');
+    }
+    updateThemeIcon();
+  })();
+  (window as any).toggleTheme = toggleTheme;
+</script>

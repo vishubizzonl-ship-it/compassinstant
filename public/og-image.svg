@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <circle cx="600" cy="250" r="90" fill="none" stroke="#ffffff" stroke-width="4"/>
+  <line x1="600" y1="160" x2="600" y2="340" stroke="#ef4444" stroke-width="4"/>
+  <line x1="510" y1="250" x2="690" y2="250" stroke="#ffffff" stroke-width="3"/>
+  <text x="600" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="72" font-weight="700" fill="#ffffff">Online Compass</text>
+  <text x="600" y="480" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#a3a3a3">Free online compass tool to find north</text>
+  <text x="600" y="560" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#737373">onlinecompass • instanten.com</text>
+</svg>

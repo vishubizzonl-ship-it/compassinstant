@@ -1,19 +1,178 @@
+---
+import '../styles/global.css';
+import {
+  SITE_URL,
+  getAlternateLinks,
+  getCanonicalUrl,
+  getLangFromPath,
+  getPageSeo,
+  ogLocales,
+  stripLocale,
+} from '../i18n/utils';
+
+interface Props {
+  /** Optional override. By default the localized page title is derived from the route. */
+  title?: string;
+  /** Optional override. By default the localized meta description is derived from the route. */
+  description?: string;
+  /** Optional comma-separated keywords for the page. */
+  keywords?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const pathname = Astro.url.pathname;
+const lang = getLangFromPath(pathname);
+const seo = getPageSeo(lang, pathname);
+const title = Astro.props.title ?? seo.title;
+const description = Astro.props.description ?? seo.description;
+const keywords = Astro.props.keywords;
+const canonical = getCanonicalUrl(pathname, SITE_URL);
+const { alternates, xDefault } = getAlternateLinks(pathname, SITE_URL);
+const ogLocale = ogLocales[lang];
+const basePath = stripLocale(pathname);
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const ogImage = `${SITE_URL}${baseUrl}/og-image.svg`;
+
+const jsonLd =
+  basePath === '/'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'onlinecompass',
+        url: canonical,
+        inLanguage: lang,
+        description,
+        image: ogImage,
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'WebApplication',
+        name: title,
+        url: canonical,
+        description,
+        inLanguage: lang,
+        applicationCategory: 'UtilitiesApplication',
+        operatingSystem: 'Any',
+        image: ogImage,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      };
+---
+
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="CompassInstant — a premium online compass, bubble level, speedometer, and qibla finder. Faster, more accurate, and designed like Vercel." />
-  <meta name="theme-color" content="#fafafa" />
-  <title>CompassInstant — Navigation Tools Built for the Web</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" as="style" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="manifest" href="/manifest.json" />
-</head>
-<body class="min-h-screen bg-canvas text-ink antialiased">
-  <slot />
-</body>
+<html lang={lang} dir="ltr" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="robots" content={Astro.props.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <title>{title}</title>
+
+    <link rel="canonical" href={canonical} />
+
+    <!-- hreflang: every locale points at the equivalent page, not the homepage -->
+    {alternates.map((alternate) => (
+      <link
+        rel="alternate"
+        hreflang={alternate.hreflang}
+        href={alternate.href}
+      />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={Astro.props.type ?? 'website'} />
+    <meta property="og:site_name" content="onlinecompass" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+    {alternates
+      .filter((alternate) => alternate.lang !== lang)
+      .map((alternate) => (
+        <meta property="og:locale:alternate" content={ogLocales[alternate.lang]} />
+      ))}
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" as="style" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <script is:inline>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (theme === 'dark' || (!theme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+            var themeMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeMeta) themeMeta.setAttribute('content', '#0a0a0a');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas text-ink antialiased">
+    <slot />
+    <script is:inline>
+      (function () {
+        var tools = ['compass', 'bubble-level', 'speedometer', 'qibla-finder'];
+        var path = window.location.pathname;
+        // detect locale prefix
+        var segments = path.split('/').filter(Boolean);
+        var locale = '';
+        var tool = segments[segments.length - 1];
+        if (segments.length > 1 && tools.indexOf(segments[0]) === -1) {
+          // first segment is locale
+          locale = '/' + segments[0];
+          tool = segments[1];
+        }
+        var idx = tools.indexOf(tool);
+        if (idx === -1) return;
+        var container = document.querySelector('main section');
+        if (!container) return;
+        var startX = 0;
+        var startY = 0;
+        var tracking = false;
+        container.addEventListener('touchstart', function (e) {
+          if (!e.touches || e.touches.length !== 1) return;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          tracking = true;
+        }, { passive: true });
+        container.addEventListener('touchend', function (e) {
+          if (!tracking) return;
+          tracking = false;
+          var t = e.changedTouches && e.changedTouches[0];
+          if (!t) return;
+          var dx = t.clientX - startX;
+          var dy = t.clientY - startY;
+          if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy)) return;
+          var nextIdx = dx < 0 ? idx + 1 : idx - 1;
+          if (nextIdx < 0 || nextIdx >= tools.length) return;
+          var target = locale + '/' + tools[nextIdx] + '/';
+          window.location.href = target;
+        }, { passive: true });
+      })();
+    </script>
+  </body>
 </html>

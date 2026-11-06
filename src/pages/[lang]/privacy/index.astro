@@ -1,0 +1,7 @@
+---
+export function getStaticPaths() {
+  return ['es', 'ja', 'fr', 'de', 'pt', 'ko', 'it'].map((lang) => ({ params: { lang } }));
+}
+import PrivacyPage from '../../../components/pages/PrivacyPage.astro';
+---
+<PrivacyPage />

@@ -1,24 +1,34 @@
 @import "tailwindcss";
 
 @theme {
+  --container-xl: 36rem;
+  --container-3xl: 48rem;
+  --container-7xl: 80rem;
   --font-sans: "Geist", "Inter", system-ui, sans-serif;
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --color-canvas: #fafafa;
+  --color-canvas: #ffffff;
   --color-canvas-elevated: #ffffff;
   --color-ink: #171717;
   --color-body: #4d4d4d;
   --color-mute: #8f8f8f;
   --color-faint: #a1a1a1;
   --color-hairline: #ebebeb;
-  --color-hairline-soft: #f2f2f2;
+  --color-hairline-soft: #ffffff;
   --color-link: #0070f3;
   --color-link-deep: #0761d1;
   --color-link-soft: #d3e5ff;
   --color-violet: #7928ca;
+  --color-violet-soft: #d8ccf1;
   --color-cyan: #50e3c2;
+  --color-cyan-soft: #aaffec;
   --color-pink: #ff0080;
   --color-magenta: #eb367f;
+  --color-warning: #f5a623;
+  --color-warning-soft: #ffefcf;
+  --color-warning-deep: #ab570a;
+  --color-error: #ee0000;
+  --color-error-deep: #c50000;
   --color-gradient-develop-start: #007cf0;
   --color-gradient-develop-end: #00dfd8;
   --color-gradient-preview-start: #7928ca;
@@ -46,12 +56,27 @@
   --radius-full: 9999px;
 }
 
+/* Dark theme: override the design tokens. Every utility that references these
+   variables (bg-canvas, text-ink, mesh-gradient, SVG fills, …) adapts. */
+html.dark {
+  --color-canvas: #0a0a0a;
+  --color-canvas-elevated: #171717;
+  --color-ink: #ffffff;
+  --color-body: #a1a1a1;
+  --color-mute: #8f8f8f;
+  --color-faint: #525252;
+  --color-hairline: #262626;
+  --color-hairline-soft: #171717;
+  --color-link: #3291ff;
+  --color-link-deep: #0070f3;
+  --color-link-soft: rgba(0, 112, 243, 0.2);
+  --color-violet-soft: rgba(121, 40, 202, 0.25);
+  --color-cyan-soft: rgba(80, 227, 194, 0.18);
+  --color-warning-soft: rgba(245, 166, 35, 0.18);
+  color-scheme: dark;
+}
+
 @utility mesh-gradient {
-  background: radial-gradient(at 20% 10%, rgba(0, 124, 240, 0.12), transparent 40%),
-              radial-gradient(at 80% 20%, rgba(121, 40, 202, 0.12), transparent 40%),
-              radial-gradient(at 50% 80%, rgba(255, 0, 128, 0.08), transparent 40%),
-              radial-gradient(at 30% 60%, rgba(80, 227, 194, 0.15), transparent 40%),
-              radial-gradient(at 90% 90%, rgba(255, 77, 77, 0.1), transparent 40%);
   background-color: var(--color-canvas);
 }
 
@@ -73,4 +98,31 @@
     background-color: var(--color-link-soft);
     color: var(--color-ink);
   }
+}
+
+/* Center tool content when in fullscreen */
+#compass-card:fullscreen,
+#bubble-card:fullscreen,
+#qibla-card:fullscreen,
+#speed-card:fullscreen,
+#compass-card:-webkit-full-screen,
+#bubble-card:-webkit-full-screen,
+#qibla-card:-webkit-full-screen,
+#speed-card:-webkit-full-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+#compass-card:fullscreen > *:not(#compass-fullscreen-btn),
+#bubble-card:fullscreen > *:not(#bubble-fullscreen-btn),
+#qibla-card:fullscreen > *:not(#qibla-fullscreen-btn),
+#speed-card:fullscreen > *:not(#speed-fullscreen-btn),
+#compass-card:-webkit-full-screen > *:not(#compass-fullscreen-btn),
+#bubble-card:-webkit-full-screen > *:not(#bubble-fullscreen-btn),
+#qibla-card:-webkit-full-screen > *:not(#qibla-fullscreen-btn),
+#speed-card:-webkit-full-screen > *:not(#speed-fullscreen-btn) {
+  width: 100%;
+  text-align: center;
 }

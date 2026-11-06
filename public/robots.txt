@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://instanten.com/onlinecompass/sitemap-index.xml

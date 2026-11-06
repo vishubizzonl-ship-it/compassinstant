@@ -1,0 +1,186 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+<section id="start" class="py-24 lg:py-32 bg-canvas-elevated border-y border-hairline" aria-label={t('demo.preview')}>
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+      <div>
+        <p class="font-mono text-xs font-medium uppercase tracking-wider text-mute mb-3">{t('demo.preview')}</p>
+        <h2 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-6">{t('demo.title')}</h2>
+        <p class="text-body text-base leading-relaxed mb-8">
+          {t('demo.desc')}
+        </p>
+        <ul class="space-y-3 text-sm text-body">
+          <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cyan-soft text-cyan text-xs font-bold mt-0.5">✓</span> {t('demo.feature.live')}</li>
+          <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-soft text-violet text-xs font-bold mt-0.5">✓</span> {t('demo.feature.calibrate')}</li>
+          <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-pink text-canvas-elevated text-xs font-bold mt-0.5">✓</span> {t('demo.feature.offline')}</li>
+          <li class="flex items-start gap-3"><span class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-canvas-elevated text-xs font-bold mt-0.5">✓</span> {t('demo.feature.privacy')}</li>
+        </ul>
+      </div>
+
+      <div class="relative">
+        <div class="border border-hairline rounded-md bg-canvas p-6 lg:p-8 shadow-[0px_2px_4px_rgba(0,0,0,0.03)]">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="font-sans text-base font-semibold text-ink">{t('demo.card.title')}</h3>
+              <p class="text-xs text-mute font-mono">{t('demo.card.sensor')}</p>
+            </div>
+            <span id="demo-status" data-unavailable={t('demo.unavailable')} class="inline-flex items-center gap-1.5 rounded-full bg-canvas-elevated border border-hairline px-2.5 py-1 text-[11px] font-medium text-ink">
+              <span class="h-1.5 w-1.5 rounded-full bg-ink animate-pulse"></span> {t('demo.active')}
+            </span>
+          </div>
+
+          <div class="relative flex items-center justify-center py-6" id="compass-container" aria-label={t('demo.card.title')}>
+            <div class="relative w-48 h-48 lg:w-56 lg:h-56">
+              <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-sm" aria-label={t('compass.ui.title')}>
+                <defs>
+                  <linearGradient id="compass-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--color-canvas)" />
+                    <stop offset="100%" stop-color="var(--color-canvas)" />
+                  </linearGradient>
+                </defs>
+                <circle cx="100" cy="100" r="96" fill="url(#compass-grad)" stroke="var(--color-hairline)" stroke-width="1" />
+                <circle cx="100" cy="100" r="4" fill="var(--color-ink)" />
+                <g id="compass-needle" style="transform-origin: 100px 100px; transition: transform 0.2s ease-out;">
+                  <polygon points="100,30 96,86 104,86" fill="var(--color-ink)" />
+                  <polygon points="100,170 96,114 104,114" fill="var(--color-mute)" opacity="0.5" />
+                </g>
+                <text x="100" y="22" text-anchor="middle" font-family="Geist Mono, monospace" font-size="11" font-weight="500" fill="var(--color-ink)" letter-spacing="1">N</text>
+                <text x="178" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="var(--color-mute)" letter-spacing="0.5">E</text>
+                <text x="22" y="104" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="var(--color-mute)" letter-spacing="0.5">W</text>
+                <text x="100" y="184" text-anchor="middle" font-family="Geist Mono, monospace" font-size="10" font-weight="500" fill="var(--color-mute)" letter-spacing="0.5">S</text>
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="text-center">
+              <p class="text-xs text-mute font-mono uppercase tracking-wide">{t('demo.heading')}</p>
+              <p id="demo-heading" class="text-2xl font-semibold tracking-tight text-ink tabular-nums">—</p>
+            </div>
+            <div class="text-center">
+              <p class="text-xs text-mute font-mono uppercase tracking-wide">{t('demo.accuracy')}</p>
+              <p id="demo-accuracy" class="text-2xl font-semibold tracking-tight text-ink tabular-nums">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const needle = document.getElementById('compass-needle');
+    const headingEl = document.getElementById('demo-heading');
+    const accuracyEl = document.getElementById('demo-accuracy');
+    const statusEl = document.getElementById('demo-status');
+    const unavailableLabel = statusEl?.dataset.unavailable ?? 'Unavailable';
+
+    type CompassOrientationEvent = DeviceOrientationEvent & {
+      webkitCompassHeading?: number | null;
+      alpha?: number | null;
+      absolute?: boolean;
+    };
+
+    if (!needle || !headingEl) return;
+    needle.style.transition = 'none';
+
+    function normalize(deg: number) {
+      return ((deg % 360) + 360) % 360;
+    }
+
+    function getAbsoluteHeading(event: CompassOrientationEvent): number | null {
+      const wch = event.webkitCompassHeading;
+      if (typeof wch === 'number' && Number.isFinite(wch)) {
+        return normalize(wch);
+      }
+      if ((event.type === 'deviceorientationabsolute' || event.absolute === true) &&
+          typeof event.alpha === 'number' && Number.isFinite(event.alpha)) {
+        return normalize(360 - event.alpha);
+      }
+      return null;
+    }
+
+    function handleError(msg?: string) {
+      if (statusEl) {
+        statusEl.innerHTML =
+          '<span class="h-1.5 w-1.5 rounded-full bg-warning"></span> ' + (msg || unavailableLabel);
+      }
+      if (headingEl) headingEl.textContent = '—';
+      if (accuracyEl) accuracyEl.textContent = '—';
+    }
+
+    let currentRotation = 0;
+    let targetRotation = 0;
+    let rafId: number | null = null;
+    let absoluteSeen = false;
+
+    function isAbsoluteCandidate(event: CompassOrientationEvent): boolean {
+      const wch = event.webkitCompassHeading;
+      if (typeof wch === 'number' && Number.isFinite(wch)) return true;
+      return event.type === 'deviceorientationabsolute' || event.absolute === true;
+    }
+
+    function smoothLoop() {
+      let delta = ((targetRotation - currentRotation + 540) % 360) - 180;
+      currentRotation += delta * 0.1;
+      currentRotation = normalize(currentRotation);
+      if (needle) needle.style.transform = `rotate(${currentRotation.toFixed(2)}deg)`;
+      // keep heading text in sync via targetRotation handled in handler
+      if (Math.abs(delta) > 0.05) rafId = requestAnimationFrame(smoothLoop);
+      else rafId = null;
+    }
+
+    function handleOrientation(event: CompassOrientationEvent) {
+      const absolute = isAbsoluteCandidate(event);
+      if (absoluteSeen && !absolute) return;
+      if (absolute) absoluteSeen = true;
+
+      const heading = getAbsoluteHeading(event);
+      if (heading === null) {
+        handleError('Uncalibrated');
+        return;
+      }
+      targetRotation = normalize(-heading); // dial/needle rotation
+      if (headingEl) headingEl.textContent = Math.round(heading) + '°';
+      if (rafId === null) rafId = requestAnimationFrame(smoothLoop);
+      if (statusEl) {
+        statusEl.innerHTML = '<span class="h-1.5 w-1.5 rounded-full bg-ink animate-pulse"></span> Active';
+      }
+    }
+
+    if (!window.isSecureContext) {
+      handleError('HTTPS required');
+      return;
+    }
+    if (!window.DeviceOrientationEvent) {
+      handleError();
+      return;
+    }
+
+    const doe: any = window.DeviceOrientationEvent;
+    if (typeof doe.requestPermission === 'function') {
+      // iOS: require user gesture; auto-prompt may fail, so wait for click on demo card? 
+      // We'll attempt; if denied, show message.
+      doe.requestPermission().then((response: string) => {
+        if (response === 'granted') {
+          window.addEventListener('deviceorientation', handleOrientation);
+          if ('ondeviceorientationabsolute' in window) {
+            window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+          }
+        } else {
+          handleError();
+        }
+      }).catch(() => handleError());
+    } else {
+      window.addEventListener('deviceorientation', handleOrientation);
+      if ('ondeviceorientationabsolute' in window) {
+        window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+      }
+    }
+  })();
+</script>

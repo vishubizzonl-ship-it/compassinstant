@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="503 — Service Unavailable" description="The service is temporarily unavailable." noindex>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-24 text-center">
+    <p class="font-mono text-sm text-mute mb-4">503</p>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-4">Service unavailable</h1>
+    <p class="text-body text-base leading-relaxed mb-8">The service is temporarily unavailable. Please try again later.</p>
+    <a href="/" class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">Go home</a>
+  </main>
+  <Footer />
+</Layout>
