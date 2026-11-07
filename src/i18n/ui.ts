@@ -542,7 +542,7 @@ const extraUI = {
     "demo.heading": "Heading",
     "demo.accuracy": "Accuracy",
     "demo.unavailable": "Sensors unavailable",
-    "compass.ui.title": "I",
+    "compass.ui.title": "Compose",
     "compass.ui.live": "DEVICE ORIENTATION ACTIVE",
     "compass.ui.calibrate": "Calibrate",
     "compass.ui.active": "Active",
