@@ -7,6 +7,12 @@
   --font-sans: "Geist", "Inter", system-ui, sans-serif;
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  /* Wise-family brand tokens */
+  --color-brand: #9fe870;
+  --color-brand-active: #cdffad;
+  --color-brand-pale: #e2f6d5;
+  --color-brand-deep: #163300;
+
   --color-canvas: #ffffff;
   --color-canvas-elevated: #ffffff;
   --color-ink: #171717;
