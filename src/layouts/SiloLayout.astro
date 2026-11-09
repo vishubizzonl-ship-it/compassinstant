@@ -1,0 +1,242 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import { SITE, tools } from '../data/tools';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  /** Absolute path of this page, e.g. /compass/about/ */
+  path: string;
+  crumbs?: Crumb[];
+  /** Tool slug when the page belongs to a tool silo. */
+  tool?: string;
+  /** JSON-LD blocks. */
+  schemas?: Record<string, any>[];
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  keywords,
+  path,
+  crumbs = [],
+  tool,
+  schemas = [],
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(path, SITE.url).href;
+const ogImage = new URL('/og-image.svg', SITE.url).href;
+const current = tools.find((t) => t.slug === tool);
+const accent = current?.accent ?? '#0E0F0C';
+
+const siloNav = current
+  ? [
+      { label: current.name, href: `/${current.slug}/` },
+      { label: 'Blog', href: `/${current.slug}/blog/` },
+      { label: 'About', href: `/${current.slug}/about/` },
+      { label: 'Contact', href: `/${current.slug}/contact/` },
+      { label: 'Privacy', href: `/${current.slug}/privacy/` },
+      { label: 'Terms', href: `/${current.slug}/terms/` },
+    ]
+  : [];
+
+const here = Astro.url.pathname.replace(/\/$/, '/');
+---
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {keywords && <meta name="keywords" content={keywords} />}
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap"
+    />
+    {
+      schemas.map((schema) => (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      ))
+    }
+    <script is:inline>
+      (function () {
+        try {
+          var theme = localStorage.getItem('theme');
+          var prefersDark =
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (theme === 'dark' || (!theme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-canvas text-ink antialiased">
+    <header class="border-b border-hairline bg-canvas/90 backdrop-blur sticky top-0 z-40">
+      <div class="mx-auto flex max-w-[80rem] items-center gap-4 px-5 py-3 lg:px-8">
+        <a href="/" class="rounded-full px-1 -ml-1 focus-visible:outline-none" aria-label={`${SITE.name} home`}>
+          <Logo size="md" wordmark={SITE.name} />
+        </a>
+
+        <nav class="ml-auto hidden items-center gap-1 md:flex" aria-label="Tools">
+          {tools.map((t) => (
+            <a
+              href={`/${t.slug}/`}
+              class:list={[
+                'rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
+                t.slug === tool ? 'text-ink' : 'text-body hover:text-ink',
+              ]}
+              style={t.slug === tool ? `background:${t.accentSoft}` : ''}
+            >
+              {t.name}
+            </a>
+          ))}
+        </nav>
+
+        <a
+          href="/"
+          class="ml-auto rounded-full border border-hairline px-3 py-1.5 text-sm font-semibold text-ink transition-colors hover:bg-[#F4F4F2] md:ml-2"
+        >
+          All tools
+        </a>
+      </div>
+
+      {
+        siloNav.length > 0 && (
+          <div class="border-t border-hairline bg-[#FAFAF8]">
+            <div class="mx-auto flex max-w-[80rem] items-center gap-1 overflow-x-auto px-5 py-2 text-sm lg:px-8">
+              {siloNav.map((item) => (
+                <a
+                  href={item.href}
+                  class:list={[
+                    'shrink-0 rounded-full px-3 py-1 transition-colors',
+                    item.href === here
+                      ? 'font-semibold text-ink'
+                      : 'text-body hover:text-ink',
+                  ]}
+                  style={item.href === here ? `background:${accent}1f` : ''}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </header>
+
+    {
+      crumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="mx-auto max-w-[64rem] px-5 pt-6 lg:px-8">
+          <ol class="flex flex-wrap items-center gap-1.5 text-xs text-mute">
+            <li>
+              <a href="/" class="hover:text-ink">
+                {SITE.name}
+              </a>
+            </li>
+            {crumbs.map((c) => (
+              <li class="flex items-center gap-1.5">
+                <span aria-hidden="true">›</span>
+                {c.href ? (
+                  <a href={c.href} class="hover:text-ink">
+                    {c.label}
+                  </a>
+                ) : (
+                  <span class="text-body">{c.label}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="mt-20 border-t border-hairline bg-[#FAFAF8]">
+      <div class="mx-auto max-w-[80rem] px-5 py-12 lg:px-8">
+        <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {
+            tools.map((t) => (
+              <div>
+                <h2 class="mb-3 text-sm font-bold tracking-tight text-ink">{t.name}</h2>
+                <ul class="space-y-1.5 text-sm text-body">
+                  <li>
+                    <a href={`/${t.slug}/`} class="hover:text-ink">
+                      Open tool
+                    </a>
+                  </li>
+                  <li>
+                    <a href={`/${t.slug}/blog/`} class="hover:text-ink">
+                      Guides
+                    </a>
+                  </li>
+                  <li>
+                    <a href={`/${t.slug}/about/`} class="hover:text-ink">
+                      About
+                    </a>
+                  </li>
+                  <li>
+                    <a href={`/${t.slug}/privacy/`} class="hover:text-ink">
+                      Privacy
+                    </a>
+                  </li>
+                  <li>
+                    <a href={`/${t.slug}/terms/`} class="hover:text-ink">
+                      Terms
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+        <div
+          class="mt-10 flex flex-col gap-3 border-t border-hairline pt-6 text-xs text-mute sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p>© {new Date().getFullYear()} {SITE.name} — free browser tools, no apps, no accounts.</p>
+          <p class="flex gap-4">
+            <a href="/about/" class="hover:text-ink">Site about</a>
+            <a href="/contact/" class="hover:text-ink">Contact</a>
+            <a href="/privacy/" class="hover:text-ink">Privacy</a>
+            <a href="/terms/" class="hover:text-ink">Terms</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
