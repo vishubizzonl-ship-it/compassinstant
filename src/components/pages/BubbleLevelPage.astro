@@ -1,6 +1,4 @@
 ---
-import ToolSiloBar from '../tool/ToolSiloBar.astro';
-import ToolFaqSection from '../tool/ToolFaqSection.astro';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
@@ -12,7 +10,6 @@ const t = useTranslations(lang);
 ---
 <Layout>
   <Nav />
-  <ToolSiloBar tool="bubble-level" />
   <main>
     <section class="py-4 lg:py-8 pt-2 lg:pt-4" aria-label={t('page.bubble.title')}>
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
@@ -96,7 +93,6 @@ const t = useTranslations(lang);
       </div>
     </section>
   <ToolBlog tool="bubble-level" />
-    <ToolFaqSection tool="bubble-level" />
   </main>
   <Footer />
 </Layout>

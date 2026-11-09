@@ -1,6 +1,4 @@
 ---
-import ToolSiloBar from '../tool/ToolSiloBar.astro';
-import ToolFaqSection from '../tool/ToolFaqSection.astro';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
@@ -13,7 +11,6 @@ const t = useTranslations(lang);
 ---
 <Layout keywords="Compass direction, Live compass, Online compass, Compass Tool, Mobile compass, Compass Digital, Compass online, Directions compass, Compass free, online compass, online compass tool, free online compass, online compass free, online compass direction, online compass to find north, compass online, online tool, online tool compass, direction online Compass, compass to find north, where is north, north direction, north, south, east, west, direction">
   <Nav />
-  <ToolSiloBar tool="compass" />
   <main>
     <section class="py-6 lg:py-10 pt-2 lg:pt-6" aria-label={t('compass.ui.title')}>
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
@@ -41,7 +38,6 @@ const t = useTranslations(lang);
       </div>
     </section>
   <ToolBlog tool="compass" />
-    <ToolFaqSection tool="compass" />
   </main>
   <Footer />
 </Layout>

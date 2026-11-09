@@ -1,6 +1,4 @@
 ---
-import ToolSiloBar from '../tool/ToolSiloBar.astro';
-import ToolFaqSection from '../tool/ToolFaqSection.astro';
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
@@ -12,7 +10,6 @@ const t = useTranslations(lang);
 ---
 <Layout>
   <Nav />
-  <ToolSiloBar tool="qibla-finder" />
   <main>
     <section class="py-2 lg:py-4 pt-2 lg:pt-4" aria-label={t('page.qibla.title')}>
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
@@ -104,7 +101,6 @@ const t = useTranslations(lang);
       </div>
     </section>
   <ToolBlog tool="qibla-finder" />
-    <ToolFaqSection tool="qibla-finder" />
   </main>
   <Footer />
 </Layout>
