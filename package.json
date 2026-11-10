@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.4.2"
+    "astro": "^7.4.7"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
@@ -22,10 +22,5 @@
     "puppeteer-core": "^25.16.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
-  },
-  "optionalDependencies": {
-    "@bruits/satteri-wasm32-wasi": "0.10.5",
-    "@rolldown/binding-android-arm64": "1.2.15",
-    "lightningcss-android-arm64": "1.32.0"
   }
 }
