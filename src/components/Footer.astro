@@ -15,6 +15,10 @@ const lang = getLangFromUrl(url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const currentPath = stripLocale(url.pathname);
+// The landing page *is* the compass tool, so "/" must read as the Compass
+// route: the Compass nav item is highlighted and aria-current marks it as the
+// current page from the very first visit.
+const activePath = currentPath === '/' ? '/compass/' : currentPath;
 const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
   : '/';
