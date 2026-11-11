@@ -19,38 +19,18 @@ const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
   : '/';
 
-const toolLinks = [
-  { href: '/compass/', label: t('nav.compass') },
-  { href: '/bubble-level/', label: t('nav.bubble') },
-  { href: '/speedometer/', label: t('nav.speed') },
-  { href: '/qibla-finder/', label: t('nav.qibla') },
-];
 ---
 
 <footer class="border-t border-hairline bg-canvas" aria-label={t('nav.footer')}>
   <div class="mx-auto max-w-7xl px-6 lg:px-8 py-12 lg:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
       <div class="md:col-span-2">
-        <a href={translatePath('/')} class="inline-flex items-center gap-2.5 rounded-full px-2 py-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label="onlinecompass — {t('nav.home')}">
-          <Logo size="sm" />
-          <span class="font-sans text-sm font-semibold tracking-tight text-ink">onlinecompass</span>
+        <a href={translatePath('/')} class="inline-flex items-center gap-2.5 rounded-full px-2 py-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label={`onlinecompass — ${t('nav.home')}`}>
+          <Logo size="sm" wordmark="onlinecompass" />
         </a>
         <p class="mt-4 text-sm text-body max-w-[24rem] leading-relaxed">
           {t('footer.tagline')}
         </p>
-      </div>
-
-      <div>
-        <h3 class="text-xs font-mono uppercase tracking-wide text-mute mb-4">{t('footer.tools')}</h3>
-        <ul class="space-y-2.5">
-          {toolLinks.map((item) => (
-            <li>
-              <a href={translatePath(item.href)} class="text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
       </div>
 
       <div>
