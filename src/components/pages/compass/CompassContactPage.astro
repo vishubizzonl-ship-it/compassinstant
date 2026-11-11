@@ -1,0 +1,56 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../Nav.astro';
+import Footer from '../../Footer.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+---
+<Layout>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
+    <a href={translatePath('/compass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Compass</a>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.contact.title')}</h1>
+    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-body text-base leading-relaxed mb-6">
+      We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Email</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Reach us at <a href="mailto:hello@instanten.com" class="text-link hover:underline">hello@instanten.com</a>. We usually reply within a few business days.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Send a message</h2>
+    <form class="space-y-4" action="mailto:hello@instanten.com" method="post" enctype="text/plain">
+      <div>
+        <label for="name" class="block text-sm font-medium text-ink mb-1">Name</label>
+        <input id="name" name="name" type="text" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" />
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
+        <input id="email" name="email" type="email" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" />
+      </div>
+      <div>
+        <label for="subject" class="block text-sm font-medium text-ink mb-1">Subject</label>
+        <select id="subject" name="subject" class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
+          <option>Bug report</option>
+          <option>Feature request</option>
+          <option>Calibration / accuracy issue</option>
+          <option>Privacy question</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label for="message" class="block text-sm font-medium text-ink mb-1">Message</label>
+        <textarea id="message" name="message" rows="5" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"></textarea>
+      </div>
+      <button type="submit" class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
+        Send message
+      </button>
+    </form>
+  </main>
+  <Footer />
+</Layout>
