@@ -181,9 +181,48 @@ const routeMetaKeys: Record<
 };
 
 /** Localized <title> and meta description for the current route. */
+const toolNameKeys: Record<string, TranslationKey> = {
+  compass: "page.compass.title",
+  "bubble-level": "page.bubble.title",
+  speedometer: "page.speed.title",
+  "qibla-finder": "page.qibla.title",
+};
+
+const siloTitleKeys: Record<string, TranslationKey> = {
+  blog: "page.blog.title",
+  about: "page.about.title",
+  privacy: "page.privacy.title",
+  terms: "page.terms.title",
+  contact: "page.contact.title",
+};
+
+const siloDescKeys: Record<string, TranslationKey> = {
+  blog: "page.blog.desc",
+  about: "page.about.desc",
+  privacy: "page.privacy.desc",
+  terms: "page.terms.desc",
+  contact: "page.contact.desc",
+};
+
 export function getPageSeo(lang: LangCode, pathname: string) {
   const t = useTranslations(lang);
   const basePath = stripLocale(pathname);
+
+  // Tool sub-pages (/<tool>/<page>/) title themselves, e.g.
+  // "Privacy Policy — Bubble Level". They must never inherit another tool's
+  // title from the site-wide defaults.
+  const segs = basePath.split("/").filter(Boolean);
+  if (segs.length === 2 && toolNameKeys[segs[0]] && siloTitleKeys[segs[1]]) {
+    const rawName = t(toolNameKeys[segs[0]]);
+    // Normalise to the site's "Online <Tool>" phrasing.
+    const toolName = /^online/i.test(rawName) ? rawName : `Online ${rawName}`;
+    const pageName = t(siloTitleKeys[segs[1]]);
+    return {
+      title: `${pageName} — ${toolName}`,
+      description: `${pageName} for ${toolName}. ${t(siloDescKeys[segs[1]])}`,
+    };
+  }
+
   const keys = routeMetaKeys[basePath] ?? routeMetaKeys["/"];
 
   const title = keys.brandSuffix

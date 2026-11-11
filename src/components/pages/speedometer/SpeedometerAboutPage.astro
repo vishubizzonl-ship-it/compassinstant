@@ -1,0 +1,52 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../Nav.astro';
+import Footer from '../../Footer.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+---
+<Layout>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
+    <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.about.title')}</h1>
+    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">What is onlinecompass?</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      onlinecompass is a free, browser-based speedometer that turns any phone, tablet, or laptop into a GPS speed tracker. Measure current, maximum and average speed, distance, altitude and trip time with no app to install and no account required.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Unlike most online speed tools that estimate from map data, onlinecompass reads your device's GPS directly through standard browser APIs. Once loaded, your route stays on your device and is never uploaded.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Our Mission</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Navigation should be instant and free. We built onlinecompass because we kept reaching for a speedometer that wasn't nearby — and the online alternatives were inaccurate, cluttered with ads, or required unnecessary downloads. onlinecompass is fast, private, and accurate by default.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Key Features</h2>
+    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
+      <li>Live GPS speed with max, average and trip distance</li>
+      <li>Altitude and elapsed trip time</li>
+      <li>Four precision calibration methods for any device</li>
+      <li>Rulers and tools on any screen edge, fullscreen mode</li>
+      <li>Dark mode that respects your system preference</li>
+      <li>Works on every modern browser — no download, no sign-up</li>
+    </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/speedometer/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Contact</h2>
+    <p class="text-body text-base leading-relaxed">
+      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/speedometer/contact/')} class="text-link hover:underline">Contact us here</a>.
+    </p>
+  </main>
+  <Footer />
+</Layout>

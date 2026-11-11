@@ -1,0 +1,85 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../Nav.astro';
+import Footer from '../../Footer.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+---
+<Layout>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
+    <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.privacy.title')}</h1>
+    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">Overview</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      onlinecompass ("we", "our", "the service") is committed to protecting your privacy. This policy explains what information we collect, how we use it, and your rights. The short version: we collect almost nothing and we do not sell or share your data.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1. Information We Collect</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      <strong>We do not require you to create an account or provide any personal information to use onlinecompass.</strong>
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The speedometer runs entirely in your browser, and your route never leaves the page. Any calibration data (your sensor readings, chosen calibration method, theme preference) is stored only in your browser's localStorage and never transmitted to our servers.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We may collect the following non-personal, aggregated data through standard server logs and analytics:
+    </p>
+    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
+      <li>Pages visited and approximate session duration</li>
+      <li>Browser type and operating system (aggregated)</li>
+      <li>Referring website or search engine</li>
+      <li>Country-level geographic region (not precise location)</li>
+    </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Cookies</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      onlinecompass does not use advertising cookies or third-party tracking cookies. We use localStorage (not cookies) to remember your calibration and theme preference between visits. This data never leaves your device.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      You can clear this data at any time by clearing your browser's site data for onlinecompass.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">3. Third-Party Services</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We use Google Fonts to load the Geist typeface. When your browser downloads these fonts, Google may log your IP address as part of standard font delivery. Please refer to Google's Privacy Policy for details.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We do not embed social media widgets, advertising networks, or any other third-party trackers.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">4. Data Retention</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We do not store personal data on our servers. Server access logs, if retained, are kept for no longer than 90 days and are used solely to diagnose technical issues.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">5. Children's Privacy</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      onlinecompass is a general-purpose tool suitable for all ages. We do not knowingly collect any personal information from children under 13. Since we collect no personal information from any user, this service complies with COPPA by design.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">6. Your Rights</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Because we do not collect identifiable personal data, there is typically nothing for us to retrieve, correct, or delete on your behalf. If you have concerns, please <a href={translatePath('/contact/')} class="text-link hover:underline">contact us</a> and we will respond promptly.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      If you are located in the European Economic Area, you have the right to access, rectify, or erase any personal data we hold, and to lodge a complaint with your local supervisory authority.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">7. Changes to This Policy</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We may update this Privacy Policy from time to time. The "Last updated" date at the top of this page reflects the most recent revision. Continued use of the service after changes are posted constitutes acceptance of the revised policy.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">8. Contact</h2>
+    <p class="text-body text-base leading-relaxed">
+      Questions about this Privacy Policy? <a href={translatePath('/contact/')} class="text-link hover:underline">Contact us here</a>.
+    </p>
+  </main>
+  <Footer />
+</Layout>

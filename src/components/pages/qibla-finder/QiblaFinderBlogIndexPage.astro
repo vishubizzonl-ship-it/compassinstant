@@ -1,0 +1,36 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../Nav.astro';
+import Footer from '../../Footer.astro';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const translatePath = useTranslatedPath(lang);
+
+const posts = [
+  { href: '/qibla-finder/', title: 'How to Find Qibla Direction Anywhere', date: 'October 4, 2026', desc: 'Find the direction of the Kaaba from any location with compass and location integration.' },
+];
+---
+<Layout title="Online Qibla Finder Blog" description="Guides and tips for finding the Qibla direction with the online qibla finder.">
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
+    <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">Blog</h1>
+    <p class="text-xs text-mute font-mono mb-4">Last updated: October 2026</p>
+    <p class="text-body text-base leading-relaxed mb-10">Guides and tips for navigating with onlinecompass.</p>
+
+    <ul class="space-y-8">
+      {posts.map((post) => (
+        <li class="border-b border-hairline pb-6">
+          <p class="text-xs text-mute font-mono mb-2">{post.date}</p>
+          <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mb-2">
+            <a href={translatePath(post.href)} class="hover:text-link transition-colors">{post.title}</a>
+          </h2>
+          <p class="text-body text-base leading-relaxed">{post.desc}</p>
+        </li>
+      ))}
+    </ul>
+  </main>
+  <Footer />
+</Layout>

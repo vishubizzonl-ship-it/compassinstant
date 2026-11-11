@@ -99,7 +99,7 @@ export const en: Record<string, ToolBlogContent> = {
         heading: "Compass vs GPS: what is the difference?",
         paragraphs: [
           "A compass and GPS solve different problems. A compass tells you which way you are facing using the Earth's magnetic field. GPS tells you where you are using satellites. For true navigation you usually need both: the compass for direction and GPS for position.",
-          "onlinecompass focuses on the compass side. It does not track your location unless you use the qibla finder or speedometer, which need location permission.",
+          "onlinecompass focuses on the compass side. It does not track your location at all — a magnetic heading needs no GPS.",
         ],
       },
       {

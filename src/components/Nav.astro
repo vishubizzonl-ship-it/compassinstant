@@ -25,27 +25,75 @@ const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
   : '/';
 
-const navItems = [
-  { href: '/compass/', label: t('nav.compass') },
-  { href: '/bubble-level/', label: t('nav.bubble') },
-  { href: '/speedometer/', label: t('nav.speed') },
-  { href: '/qibla-finder/', label: t('nav.qibla') },
-];
+/**
+ * Every tool is a self-contained site.
+ *
+ * On any tool page (/, /compass/…, /bubble-level/…, /speedometer/…,
+ * /qibla-finder/…) the header shows that tool's own links only — Home, Blog,
+ * About, Contact — so the page never advertises another tool. Pages that are
+ * not part of a tool (the old site-wide /about/, /blog/, …) keep the full
+ * navigation. The markup and classes are identical either way.
+ */
+const toolSlugs = ['compass', 'bubble-level', 'speedometer', 'qibla-finder'] as const;
+type ToolId = (typeof toolSlugs)[number];
 
-const companyItems = [
-  { href: '/blog/', label: 'Blog' },
-  { href: '/about/', label: t('footer.about') },
-  { href: '/privacy/', label: t('footer.privacy') },
-  { href: '/terms/', label: t('footer.terms') },
-  { href: '/contact/', label: t('footer.contact') },
-];
+const firstSegment = currentPath.split('/').filter(Boolean)[0] ?? '';
+const activeTool: ToolId | null =
+  currentPath === '/'
+    ? 'compass'
+    : (toolSlugs as readonly string[]).includes(firstSegment)
+      ? (firstSegment as ToolId)
+      : null;
+
+const toolHome: Record<ToolId, string> = {
+  compass: '/compass/',
+  'bubble-level': '/bubble-level/',
+  speedometer: '/speedometer/',
+  'qibla-finder': '/qibla-finder/',
+};
+const toolLabelKey: Record<ToolId, Parameters<typeof t>[0]> = {
+  compass: 'nav.compass',
+  'bubble-level': 'nav.bubble',
+  speedometer: 'nav.speed',
+  'qibla-finder': 'nav.qibla',
+};
+
+const navItems = activeTool
+  ? [
+      { href: toolHome[activeTool], label: t(toolLabelKey[activeTool]) },
+      { href: `${toolHome[activeTool]}blog/`, label: 'Blog' },
+      { href: `${toolHome[activeTool]}about/`, label: t('footer.about') },
+      { href: `${toolHome[activeTool]}contact/`, label: t('footer.contact') },
+    ]
+  : [
+      { href: '/compass/', label: t('nav.compass') },
+      { href: '/bubble-level/', label: t('nav.bubble') },
+      { href: '/speedometer/', label: t('nav.speed') },
+      { href: '/qibla-finder/', label: t('nav.qibla') },
+    ];
+
+const companyItems = activeTool
+  ? [
+      { href: `${toolHome[activeTool]}blog/`, label: 'Blog' },
+      { href: `${toolHome[activeTool]}about/`, label: t('footer.about') },
+      { href: `${toolHome[activeTool]}privacy/`, label: t('footer.privacy') },
+      { href: `${toolHome[activeTool]}terms/`, label: t('footer.terms') },
+      { href: `${toolHome[activeTool]}contact/`, label: t('footer.contact') },
+    ]
+  : [
+      { href: '/blog/', label: 'Blog' },
+      { href: '/about/', label: t('footer.about') },
+      { href: '/privacy/', label: t('footer.privacy') },
+      { href: '/terms/', label: t('footer.terms') },
+      { href: '/contact/', label: t('footer.contact') },
+    ];
 ---
 
 <nav class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-md border-b border-hairline" aria-label={t('nav.primary')}>
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between gap-4">
       <!-- Logo: Icon + Heading -->
-      <a href={translatePath('/')} class="flex items-center gap-2.5 rounded-full px-2 py-1.5 -ml-2 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none transition-shadow shrink-0" aria-label="onlinecompass — {t('nav.home')}">
+      <a href={translatePath(activeTool ? toolHome[activeTool] : '/')} class="flex items-center gap-2.5 rounded-full px-2 py-1.5 -ml-2 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none transition-shadow shrink-0" aria-label="onlinecompass — {t('nav.home')}">
         <Logo size="md" />
         <span class="font-sans text-base font-bold tracking-tight text-ink whitespace-nowrap">onlinecompass</span>
       </a>
