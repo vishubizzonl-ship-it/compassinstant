@@ -15,6 +15,12 @@ const lang = getLangFromUrl(url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 const currentPath = stripLocale(url.pathname);
+/**
+ * The landing page *is* the compass page, so "/" has to count as the Compass
+ * route. Without this the site opens on the compass but no nav item is marked
+ * as current, which reads as "nothing selected".
+ */
+const activePath = currentPath === '/' ? '/compass/' : currentPath;
 const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
   : '/';
@@ -49,10 +55,10 @@ const companyItems = [
         {navItems.map((item) => (
           <a
             href={translatePath(item.href)}
-            aria-current={currentPath === item.href ? 'page' : undefined}
+            aria-current={activePath === item.href ? 'page' : undefined}
             class:list={[
               'rounded-full px-3 py-1.5 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none',
-              currentPath === item.href
+              activePath === item.href
                 ? 'text-ink font-medium bg-canvas-elevated border border-hairline'
                 : 'text-body hover:text-ink',
             ]}
@@ -120,10 +126,10 @@ const companyItems = [
       {navItems.map((item) => (
         <a
           href={translatePath(item.href)}
-          aria-current={currentPath === item.href ? 'page' : undefined}
+          aria-current={activePath === item.href ? 'page' : undefined}
           class:list={[
             'whitespace-nowrap rounded-full px-2 py-1 text-[11px] transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none',
-            currentPath === item.href
+            activePath === item.href
               ? 'text-ink font-medium bg-canvas-elevated border border-hairline'
               : 'text-body hover:text-ink',
           ]}
@@ -136,7 +142,7 @@ const companyItems = [
       {companyItems.map((item) => (
         <a
           href={translatePath(item.href)}
-          aria-current={currentPath === item.href ? 'page' : undefined}
+          aria-current={activePath === item.href ? 'page' : undefined}
           class="whitespace-nowrap rounded-full px-2 py-1 text-[11px] text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
         >
           {item.label}
