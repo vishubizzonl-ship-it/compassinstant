@@ -22,3 +22,8 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# auto-pull / dev server runtime files
+.autopull.log
+.autopull.pid
+.dev-server.log
