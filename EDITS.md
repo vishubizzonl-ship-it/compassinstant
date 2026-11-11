@@ -5,7 +5,8 @@ Har edit ka ek **number** hai. Us number se undo ya redo kar sakte hain.
 | Number | Kya | Start | End | Status |
 |---|---|---|---|---|
 | **01** | Per-tool silos (blog/about/privacy/terms/contact har tool ke liye) | `31b3e44` | `ddd99e2` | ⛔ **UNDONE** (aapke kehne par) |
-| **02** | Home page (`/`) par Compass nav item default selected + aria-current | `6e079b2` | (is commit) | **done** ✅ |
+| **02** | Home page (`/`) par Compass nav item default selected + aria-current | `6e079b2` | `e44e760` | **done** ✅ |
+| **03** | Har 1 second auto-pull + zero-touch autostart (setup-once.sh) | `e44e760` | (is commit) | **done** ✅ |
 
 ---
 
