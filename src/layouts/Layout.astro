@@ -19,6 +19,13 @@ interface Props {
   keywords?: string;
   type?: 'website' | 'article';
   noindex?: boolean;
+  /** Absolute or site-relative OG image. Defaults to /og-image.png */
+  ogImage?: string;
+  /** Alt text for the OG image. Defaults to the page title. */
+  ogImageAlt?: string;
+  /** Extra JSON-LD objects (BreadcrumbList, SoftwareApplication, FAQPage…). */
+  breadcrumbLd?: Record<string, unknown>;
+  appLd?: Record<string, unknown>;
 }
 
 const pathname = Astro.url.pathname;
@@ -32,7 +39,13 @@ const { alternates, xDefault } = getAlternateLinks(pathname, SITE_URL);
 const ogLocale = ogLocales[lang];
 const basePath = stripLocale(pathname);
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-const ogImage = `${SITE_URL}${baseUrl}/og-image.svg`;
+const ogImageIsPng = true;
+const rawOg = Astro.props.ogImage ?? '/og-image.png';
+const ogImage = /^https?:\/\//.test(rawOg)
+  ? rawOg
+  : `${SITE_URL}${baseUrl}${rawOg.startsWith('/') ? '' : '/'}${rawOg}`;
+const ogImageType = /\.png$/i.test(ogImage) ? 'image/png' : 'image/svg+xml';
+const ogImageAlt = Astro.props.ogImageAlt ?? title;
 
 const jsonLd =
   basePath === '/'
@@ -91,10 +104,10 @@ const jsonLd =
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:type" content={ogImageType} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={title} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     {alternates
       .filter((alternate) => alternate.lang !== lang)
       .map((alternate) => (
@@ -109,6 +122,12 @@ const jsonLd =
     <meta name="twitter:image:alt" content={title} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {Astro.props.breadcrumbLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(Astro.props.breadcrumbLd)} />
+    )}
+    {Astro.props.appLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(Astro.props.appLd)} />
+    )}
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

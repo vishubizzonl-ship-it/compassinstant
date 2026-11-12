@@ -8,8 +8,43 @@ import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const siteUrl = 'https://onlinecompass.example';
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}${baseUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Online Compass', item: `${siteUrl}${baseUrl}/compass/` },
+  ],
+};
+const appLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Online Compass',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  url: `${siteUrl}${baseUrl}/compass/`,
+  description:
+    'Free online compass: a live compass direction tool to find north, south, east and west in your browser. No install, no sign-up.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Live compass direction in degrees',
+    'Find north, south, east and west',
+    'Works on mobile and desktop browsers',
+    'No install and no account',
+  ],
+};
 ---
-<Layout keywords="Compass direction, Live compass, Online compass, Compass Tool, Mobile compass, Compass Digital, Compass online, Directions compass, Compass free, online compass, online compass tool, free online compass, online compass free, online compass direction, online compass to find north, compass online, online tool, online tool compass, direction online Compass, compass to find north, where is north, north direction, north, south, east, west, direction">
+
+<Layout
+  breadcrumbLd={breadcrumbLd}
+  appLd={appLd}
+  keywords="online compass, online compass tool, free online compass, online compass free, compass online, compass direction, live compass, mobile compass, compass tool, digital compass, directions compass, online compass direction, online compass to find north, compass to find north, where is north, north direction, north, south, east, west, direction, online tool, online tool compass"
+  ogImage="/og-image.png"
+  ogImageAlt="Online compass — free live compass tool to find north, south, east and west in your browser"
+>
   <Nav />
   <main>
     <section class="py-6 lg:py-10 pt-2 lg:pt-6" aria-label={t('compass.ui.title')}>
@@ -37,6 +72,128 @@ const t = useTranslations(lang);
         </div>
       </div>
     </section>
+    <!-- On-page SEO body: primary keyword "online compass" + supporting keywords -->
+    <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="about-online-compass">
+      <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
+        <h2 id="about-online-compass" class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-0 mb-4">
+          The free online compass that works in your browser
+        </h2>
+        <p class="text-body text-base leading-relaxed mb-4">
+          This <strong>online compass</strong> turns any phone, tablet or laptop into a working
+          <strong>compass tool</strong> in a single tap. There is nothing to download, no account to
+          create and no app store waiting time — you open the page and the dial starts tracking the
+          direction you are facing. It is a <strong>free online compass</strong> built for one job:
+          telling you where north is, right now, wherever you happen to be standing.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          If you have ever searched for “<em>where is north</em>”, “<em>north direction</em>” or
+          “<em>compass to find north</em>”, you already know the problem. You are in a new street, a
+          parked car, a hotel room or a campsite, and your sense of direction has stopped helping.
+          A <strong>mobile compass</strong> on a screen solves that in seconds. The
+          <strong>compass online</strong> reading updates as you turn, so the needle never lies about
+          which way you are pointing.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          What an online compass actually shows you
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          The dial shows a <strong>compass direction</strong> in degrees and in words. Degrees run
+          from 0° at north, clockwise through 90° at east, 180° at south and 270° at west. The words
+          split the circle into eight named directions, so you see north, north-east, east,
+          south-east, south, south-west, west and north-west without doing any arithmetic. When
+          people ask for a <strong>directions compass</strong>, this is what they mean: a reading you
+          can act on immediately, in the same language you would use to give someone instructions.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Because the dial is live, this is a <strong>live compass</strong> rather than a picture of
+          one. Rotate your device and the needle holds its bearing while the bezel turns. That single
+          behaviour is what separates a real <strong>compass digital</strong> readout from a static
+          illustration, and it is why the page works as an
+          <strong>online compass direction</strong> guide while you walk.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          How to find north with an online compass
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          To use this <strong>online compass to find north</strong>, hold the device flat and away
+          from metal, magnets and laptop speakers. Tap the enable button so the browser can read the
+          magnetometer, then turn slowly on the spot. The needle settles within a second or two. The
+          red tip marks north; everything else — south, east and west — follows from it. If the value
+          jumps around, lift the phone away from the desk, take a step outside and try again.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Browsers only share sensor data after you allow it, which is why the tool asks once and
+          then remembers. That permission prompt is also the reason a
+          <strong>free online compass</strong> like this one can run entirely on your device: the
+          reading is calculated locally, so no location history is uploaded and nothing is stored on
+          a server. The same page keeps working with a weak signal, and once it has loaded it will
+          keep showing a heading even if you lose data in the middle of a field.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Online compass tool vs a physical compass
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          A traditional baseplate compass is dependable, silent and never runs out of battery. It
+          also asks you to hold it level, line up the bezel and read a scale. An
+          <strong>online compass tool</strong> replaces that ritual with a number. For a quick
+          “which way am I facing” check it is faster; for a multi-hour hike in poor weather, a
+          physical compass plus a paper map is still the safer pairing. Many people carry both and
+          treat the <strong>compass online</strong> page as the fast second opinion.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          It is also worth knowing what the tool cannot do. A phone compass reads magnetic north,
+          which drifts from true north by an amount that depends on where you are — a difference
+          called magnetic declination. Near large metal structures, in a car, or next to a magnet,
+          the reading can be off by several degrees until you recalibrate by moving the device in a
+          figure-eight. Treat the <strong>online compass direction</strong> as a strong hint rather
+          than a survey instrument, and it will serve you well.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Who uses a free online compass every day
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          City walkers use it to get their bearings after leaving a metro station. Drivers use it to
+          confirm which end of a car park they entered. Photographers use it to note the direction of
+          the light. Hikers, surveyors, delivery riders, birdwatchers and students on a field trip all
+          reach for the same thing: a <strong>compass free</strong> of installers, ads in the way of
+          the dial, and sign-up screens. That is the whole design brief here — one dial, one heading,
+          no clutter.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          On a desktop or laptop, the page still loads and still explains the reading, but the needle
+          needs a magnetometer that most computers do not have. On those devices the tool is best
+          used as a reference: read about the <strong>north direction</strong>, then open the same
+          page on your phone when you step outside. Nothing is lost — the layout is responsive and
+          the dial scales to whatever screen you are holding.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Reading compass directions without guessing
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          The four cardinal points are easy: <strong>north</strong> ahead of the needle,
+          <strong>south</strong> behind it, <strong>east</strong> to your right and
+          <strong>west</strong> to your left — as long as the device is flat and the dial is not
+          upside down. The four in-between points cover the gaps, and a degree reading covers
+          everything else. Once you know that a bearing of 135° is south-east, you can translate any
+          number the <strong>online compass</strong> shows into a direction you can say out loud,
+          which is exactly what you need when you are the one giving directions.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Practise once at home. Stand still, note the heading, turn ninety degrees and note it
+          again. If the second reading is roughly the first plus or minus ninety, your
+          <strong>mobile compass</strong> is behaving. If it is not, calibrate and repeat. Two
+          minutes of that makes every later reading trustworthy, whether you are finding
+          <strong>north</strong> in an unfamiliar city or checking that a tent door faces the
+          sunrise.
+        </p>
+      </div>
+    </section>
+
   <ToolBlog tool="compass" />
   </main>
   <Footer />
