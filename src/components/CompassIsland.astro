@@ -42,7 +42,7 @@ const t = useTranslations(lang);
       <div class="absolute top-1 left-1/2 -translate-x-1/2 z-20">
         <div class="w-0 h-0 border-l-[7px] border-r-[7px] border-b-[14px] border-l-transparent border-r-transparent border-b-error"></div>
       </div>
-      <div id="compass-dial" class="relative w-[320px] h-[320px] lg:w-80 lg:h-80 will-change-transform" style="transform: rotate(0deg); transition: none;">
+      <div id="compass-dial" class="relative w-full max-w-[320px] aspect-square lg:w-80 lg:h-80 will-change-transform" style="transform: rotate(0deg); transition: none;">
         <svg viewBox="0 0 200 200" class="w-full h-full" aria-label={t('compass.ui.title')}>
           <defs>
             <radialGradient id="dial-grad" cx="50%" cy="50%" r="50%">

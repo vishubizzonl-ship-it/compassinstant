@@ -91,12 +91,12 @@ const companyItems = activeTool
 ---
 
 <nav class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-md border-b border-hairline" aria-label={t('nav.primary')}>
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between gap-4">
+  <div class="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between gap-1.5 sm:gap-4 min-w-0">
       <!-- Logo: Icon + Heading -->
-      <a href={translatePath(activeTool ? toolHome[activeTool] : '/')} class="flex items-center gap-2.5 rounded-full px-2 py-1.5 -ml-2 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none transition-shadow shrink-0" aria-label={`${wordmark} — ${t('nav.home')}`}>
+      <a href={translatePath(activeTool ? toolHome[activeTool] : '/')} class="flex items-center gap-1.5 sm:gap-2.5 rounded-full px-1.5 sm:px-2 py-1.5 -ml-1.5 sm:-ml-2 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none transition-shadow min-w-0" aria-label={`${wordmark} — ${t('nav.home')}`}>
         <Logo size="md" />
-        <span class="font-sans text-base font-bold tracking-tight text-ink whitespace-nowrap">{wordmark}</span>
+        <span class="font-sans text-sm sm:text-base font-bold tracking-tight text-ink whitespace-nowrap truncate max-w-[9.5rem] sm:max-w-none">{wordmark}</span>
       </a>
 
       <!-- Center Nav Links -->
@@ -136,7 +136,7 @@ const companyItems = activeTool
       <div class="flex items-center gap-2 shrink-0">
         <!-- Language Select -->
         <div class="relative" id="lang-dropdown-wrapper">
-          <button onclick="toggleLang()" class="inline-flex items-center gap-1.5 rounded-full bg-canvas-elevated border border-hairline text-ink text-xs font-medium px-3 py-2 hover:bg-canvas hover:border-ink/10 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none shadow-[0px_1px_1px_rgba(0,0,0,0.04)]" aria-label={t('nav.language')} aria-expanded="false" aria-haspopup="true" id="lang-btn">
+          <button onclick="toggleLang()" class="inline-flex items-center gap-1.5 rounded-full bg-canvas-elevated border border-hairline text-ink text-xs font-medium px-2 sm:px-3 py-2 hover:bg-canvas hover:border-ink/10 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none shadow-[0px_1px_1px_rgba(0,0,0,0.04)]" aria-label={t('nav.language')} aria-expanded="false" aria-haspopup="true" id="lang-btn">
             <span id="lang-label">{languages[lang]}</span>
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="2 4 6 8 10 4"/></svg>
           </button>
@@ -171,7 +171,7 @@ const companyItems = activeTool
   </div>
   <!-- Mobile tool links: keeps every section reachable + crawlable -->
   <div class="md:hidden border-t border-hairline">
-    <div class="mx-auto max-w-7xl px-6 py-2 flex items-center justify-center gap-2 overflow-hidden -mx-1">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 -mx-1">
       {navItems.map((item) => (
         <a
           href={translatePath(item.href)}
@@ -187,7 +187,7 @@ const companyItems = activeTool
         </a>
       ))}
     </div>
-    <div class="mx-auto max-w-7xl px-6 py-2 flex items-center justify-center gap-2 overflow-hidden -mx-1 border-t border-hairline">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 -mx-1 border-t border-hairline">
       {companyItems.map((item) => (
         <a
           href={translatePath(item.href)}
