@@ -16,6 +16,8 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
+      // Error pages are noindex, so they must never be listed in the sitemap.
+      filter: (page) => !/\/(403|404|500|503)\/?$/.test(page),
       i18n: {
         defaultLocale: 'en',
         locales: {
