@@ -7,8 +7,44 @@ import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const siteUrl = 'https://onlinecompass.example';
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}${baseUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Bubble Level', item: `${siteUrl}${baseUrl}/bubble-level/` },
+  ],
+};
+const appLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Online Bubble Level',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  url: `${siteUrl}${baseUrl}/bubble-level/`,
+  description:
+    'Free online bubble level: a level checker tool and spirit level online that turns your phone into a leveler tool to check any surface in your browser. No install, no sign-up.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Bubble level check online in degrees',
+    'Horizontal, vertical and bullseye vials',
+    'Spirit level online on mobile and desktop browsers',
+    'No install and no account',
+  ],
+};
 ---
-<Layout>
+
+<Layout
+  title={lang === 'en' ? 'Online Bubble Level — Free Spirit Level & Level Checker' : undefined}
+  keywords={lang === 'en' ? 'online bubble level, bubble level, free bubble level, bubble level google, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online level check google, online bubble level free, bubble level check' : undefined}
+  breadcrumbLd={breadcrumbLd}
+  appLd={appLd}
+  ogImage="/og-bubble-level.png"
+  ogImageAlt={lang === 'en' ? 'Online bubble level — free spirit level and level checker tool to check any surface in your browser' : undefined}
+>
+
   <Nav />
   <main>
     <section class="py-4 lg:py-8 pt-2 lg:pt-4" aria-label={t('page.bubble.title')}>
@@ -92,6 +128,125 @@ const t = useTranslations(lang);
         </div>
       </div>
     </section>
+    <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="about-online-bubble-level">
+      <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
+        <h2 id="about-online-bubble-level" class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-0 mb-4">
+          The free online bubble level that checks any surface
+        </h2>
+        <p class="text-body text-base leading-relaxed mb-4">
+          This <strong>online bubble level</strong> turns the phone in your hand into a working
+          <strong>level checker tool</strong> in one tap. There is nothing to install, no account to
+          create and no download waiting time — you open the page, place the device on the surface and
+          the bubble tells you instantly whether that surface is flat, tilted or plumb. It is a
+          <strong>free bubble level</strong> built for one job: telling you the truth about a surface
+          before you hang a shelf, fix a frame or level a table.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          If you have ever searched for “<em>bubble level online</em>”, “<em>spirit level online</em>”
+          or “<em>level checker tool online</em>”, you already know the problem. You are holding a
+          picture frame that looks straight, a washing machine that wobbles, or a desk that seems to
+          slope — and your eyes are not a measuring instrument. A <strong>bubble level check online</strong>
+          removes the guesswork in two seconds, with a number in degrees instead of a hunch.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          What this bubble level tool actually shows you
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          The <strong>online bubble level</strong> reads the accelerometer inside your device and draws
+          the same information a physical spirit level shows, only with more detail. You get a
+          horizontal vial for flat surfaces, a <strong>vertical level tool online</strong> for plumb
+          walls and door frames, and a bullseye view that shows tilt in every direction at once — left
+          to right and front to back. Instead of judging where a bubble sits between two lines, you
+          read a degrees figure, so “almost level” becomes an exact number you can act on.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Because the reading is digital, this <strong>leveler tool</strong> can do things a wooden
+          level cannot. It updates as you tilt the surface, so you can watch the number fall toward
+          zero while you slide a shim under a leg. It keeps working in dark corners where you cannot
+          see a bubble clearly. And it never loses its calibration fluid, because there is no fluid —
+          the sensor is solid state and the zero point is set in software.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          How to check a surface with the online bubble level
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Open the page, allow the sensor prompt once, then place the device flat on the surface you
+          want to test. Hold it still for a second so the reading settles. The degrees value is your
+          answer: a number near 0.0° means the surface is level, and the direction of the offset tells
+          you which side needs lifting. For a plumb check, stand the device against the wall on its
+          long edge and use the vertical vial in the same way.
+        </p>
+        <ul class="list-disc pl-6 mb-4 space-y-2 text-body text-base leading-relaxed">
+          <li>Take the phone out of its magnetic case and away from metal tools, screws and pipes.</li>
+          <li>Check the same surface in two directions, at 90° to each other, before you drill.</li>
+          <li>If the reading drifts, put the device on a known flat surface and recalibrate there.</li>
+          <li>Keep the device on the surface itself — holding it in your hand adds your own tilt.</li>
+        </ul>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Bubble level vs a physical spirit level
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          A traditional <strong>bubble level ruler</strong> is a sealed tube with a bubble in it, and it
+          is excellent at what it does — but you only get it when you remember to carry it. A
+          <strong>bubble level online</strong> is already in your pocket, which matters when a shelf
+          looks off and you are standing on a chair. The trade-off is precision: a good 60 cm spirit
+          level can detect a slope a phone sensor will round away. For hanging, furniture, appliances
+          and quick checks the digital reading is more than enough; for tiling a floor or fitting a
+          worktop, a long physical level still wins.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Many people search for a <strong>water level tool online</strong> expecting a hose-and-water
+          levelling trick. This page does the same job electronically: no water, no hose, no mess, and
+          it works at any distance from the surface. Likewise, if a <strong>bubble level Google</strong>
+          search brought you here, the tool below is the interactive answer — not a diagram of one.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Who uses a free online level
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Anyone who hangs, builds, mounts or installs. Homeowners use the <strong>free online level</strong>
+          to hang picture frames, shelves and mirrors straight the first time. Renters use the
+          <strong>online level bubble level</strong> to check whether a wardrobe or a fridge is sitting
+          level before blaming the door. DIY and carpentry work uses the vertical vial for door frames,
+          studs and posts. Photographers and videographers check that a tripod head is flat.
+          <strong>Online level check google</strong> searches also spike around furniture assembly —
+          flat-pack instructions assume a level floor, and a phone is the only tool within reach.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Beyond the workshop, the same <strong>online bubble level free</strong> reading helps in
+          small everyday ways. Check whether a table rocks because the floor slopes or because one leg
+          is short. Confirm a washing machine is level so it stops walking across the floor. Level a
+          camper van, a caravan or a rooftop tent before you sleep in it. Set up a pool table, a
+          ping-pong table or a dartboard. Test a new phone case or a desk stand for wobble. None of
+          these jobs need a toolbox — they need one honest number.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Accuracy, privacy and what to expect
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Accuracy depends on the sensor in your device, not on the page. Phone accelerometers are
+          typically good to about one degree, which is plenty for hanging and furniture work, and the
+          reading gets more stable the longer the device sits still. Nothing is uploaded: the sensor
+          data is read in your browser and never leaves the device, no account is needed and there is
+          no tracking of your readings. Once the page has loaded, this
+          <strong>bubble level check</strong> keeps working even without a network connection, which is
+          useful in a basement, a garage or a building site.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Use it as a fast <strong>level checker tool</strong> before you commit to a hole in the wall,
+          and keep a physical level for the jobs where millimetres matter. That combination — a phone
+          for the quick answer, a spirit level for the final fix — is how most people actually work.
+          If the bubble looks wrong, check the surface, the calibration and nearby metal before you
+          blame the tool, and recalibrate on a surface you trust.
+        </p>
+      </div>
+    </section>
+
   <ToolBlog tool="bubble-level" />
   </main>
   <Footer />
