@@ -26,7 +26,9 @@ up(){ curl -fsS -o /dev/null --max-time 3 "http://127.0.0.1:$PORT/" 2>/dev/null;
 # code hi chalta rehta hai — isi wajah se fix aane ke baad bhi purana page dikhta tha.)
 kill_servers(){
   for d in /proc/[0-9]*; do
-    c=$(tr '\0' ' ' < "$d/cmdline" 2>/dev/null) || continue
+    # process beech me mar sakta hai — /proc ka file gayab hone par chup-chaap aage
+    c=$( { tr '\0' ' ' < "$d/cmdline"; } 2>/dev/null ) || continue
+    [ -n "$c" ] || continue
     case "$c" in
       *serve-static.mjs*)
         case "$c" in *bash*|*start.sh*) continue;; esac
