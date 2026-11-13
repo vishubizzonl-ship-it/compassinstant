@@ -3,6 +3,10 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import ToolBlog from '../ToolBlog.astro';
+import QiblaFinderFaq from './qibla-finder/QiblaFinderFaq.astro';
+import { getToolBlog } from '../../i18n/blogs';
+
+const toolBlogFaq = getToolBlog('qibla-finder', 'en')?.faq ?? [];
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -264,7 +268,8 @@ const appLd = {
       </div>
     </section>
 
-  <ToolBlog tool="qibla-finder" />
+  <ToolBlog tool="qibla-finder" faqLd={false} />
+  <QiblaFinderFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online Qibla" />
   </main>
   <Footer />
 </Layout>

@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
+import QiblaFinderFaq from './QiblaFinderFaq.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -133,6 +134,7 @@ const breadcrumbLd = {
       guides</a> cover how the <strong>online Qibla direction</strong> is measured and how to get a
       steady reading in a room full of metal.
     </p>
+  <QiblaFinderFaq heading="Frequently asked questions about the online Qibla" />
   </main>
   <Footer />
 </Layout>
