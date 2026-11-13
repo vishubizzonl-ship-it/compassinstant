@@ -264,6 +264,37 @@ const appLd = {
     </section>
 
   <ToolBlog tool="onlinespeedometer" faqLd={false} />
+
+  <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="speed-guides-title">
+    <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
+      <h2 id="speed-guides-title" class="font-sans text-2xl sm:text-3xl font-semibold tracking-tight text-ink mb-6">
+        Latest guides from the Speedometer blog
+      </h2>
+      <ul class="flex flex-col gap-0 border border-hairline rounded-md overflow-hidden">
+        <li class="border-b border-hairline last:border-b-0">
+          <a href="/onlinespeedometer/blog/how-to-use-an-online-speedometer" class="block px-4 py-4 hover:bg-canvas transition-colors">
+            <span class="block font-sans text-base font-medium text-ink">How to Use an Online Speedometer (Step-by-Step)</span>
+            <span class="block text-sm text-body mt-1">Allow location, press Start, choose km/h or mph, and read your live speed.</span>
+          </a>
+        </li>
+        <li class="border-b border-hairline last:border-b-0">
+          <a href="/onlinespeedometer/blog/how-accurate-is-a-phone-speedometer" class="block px-4 py-4 hover:bg-canvas transition-colors">
+            <span class="block font-sans text-base font-medium text-ink">How Accurate Is a Phone Speedometer?</span>
+            <span class="block text-sm text-body mt-1">Typical GPS error, how it compares with a dashboard, and three tests to run.</span>
+          </a>
+        </li>
+        <li class="border-b border-hairline last:border-b-0">
+          <a href="/onlinespeedometer/blog/speedometer-units-kmh-mph-knots" class="block px-4 py-4 hover:bg-canvas transition-colors">
+            <span class="block font-sans text-base font-medium text-ink">Speedometer Units: km/h, mph, m/s and Knots</span>
+            <span class="block text-sm text-body mt-1">When to use each unit, and how to convert in your head.</span>
+          </a>
+        </li>
+      </ul>
+      <p class="text-body text-base leading-relaxed mt-6">
+        <a href="/onlinespeedometer/blog/" class="text-link hover:underline">See all Online Speedometer guides →</a>
+      </p>
+    </div>
+  </section>
   <SpeedometerFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online speedometer" />
   </main>
   <Footer />
