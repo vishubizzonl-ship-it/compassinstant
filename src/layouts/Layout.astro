@@ -65,10 +65,10 @@ const gtmId = Astro.props.gtmId ?? (isCompassSilo ? GTM_ID : undefined);
  * Google Analytics 4 — one property for the whole site, one content group per
  * tool, so each tool reports separately inside the same account.
  *
- *   /onlinecompass/…        → content_group = compass
- *   /onlinebubblelevel/…    → content_group = bubble-level
+ *   /onlinecompass/…        → content_group = onlinecompass
+ *   /onlinebubblelevel/…    → content_group = onlinebubblelevel
  *   /onlinespeedometer/…    → content_group = onlinespeedometer
- *   /onlineqibla/…         → content_group = qibla-finder
+ *   /onlineqibla/…         → content_group = onlineqibla
  *   /                       → content_group = home
  *   everything else         → content_group = site
  *
@@ -79,18 +79,14 @@ const GA4_ID = 'G-N3YD3ZXYKZ';
 const gaId = Astro.props.gaId ?? GA4_ID;
 
 const toolSegment = basePath.split('/').filter(Boolean)[0] ?? '';
-const gaContentGroup =
-  toolSegment === 'onlinecompass'
-    ? 'compass'
-    : toolSegment === 'onlinebubblelevel'
-      ? 'bubble-level'
-      : toolSegment === 'onlinespeedometer'
-        ? 'onlinespeedometer'
-        : toolSegment === 'onlineqibla'
-          ? 'onlineqibla'
-          : toolSegment === ''
-            ? 'home'
-            : 'site';
+// One group per tool, spelled exactly like the tool's route, so the GA4 value
+// and the URL always match.
+const toolContentGroups = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'onlineqibla'];
+const gaContentGroup = toolContentGroups.includes(toolSegment)
+  ? toolSegment
+  : toolSegment === ''
+    ? 'home'
+    : 'site';
 
 const jsonLd =
   basePath === '/'
