@@ -70,6 +70,16 @@ const appLd = {
               <span>X: <span id="bubble-x" class="font-semibold">0.0°</span></span>
               <span>Y: <span id="bubble-y" class="font-semibold">0.0°</span></span>
             </div>
+            <!-- Calibration used to be promised in the copy with no control behind it.
+                 These two buttons make the "recalibrate on a known surface" step real. -->
+            <div class="flex items-center gap-2">
+              <button type="button" id="bubble-calibrate-btn" data-calibrated={t('bubble.ui.calibrated')} class="inline-flex items-center rounded-full bg-canvas border border-hairline text-ink text-xs font-medium px-3 py-1.5 hover:bg-canvas-elevated transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
+                {t('bubble.ui.calibrate')}
+              </button>
+              <button type="button" id="bubble-reset-btn" class="inline-flex items-center rounded-full bg-transparent border border-hairline text-body text-xs font-medium px-3 py-1.5 hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
+                Reset
+              </button>
+            </div>
             <div
               id="bubble-area"
               class="relative w-full max-w-[300px] aspect-square bg-canvas-elevated border border-hairline shadow-[inset_0_3px_10px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden bubble-area"
@@ -374,13 +384,39 @@ const appLd = {
       rafId = requestAnimationFrame(updateDot);
     }
 
+    // --- calibration offsets -------------------------------------------------
+    // A phone resting on a table is rarely at a true 0.0°, and a case or a camera
+    // bump shifts it further. Calibrate records the current angles as zero.
+    let offsetX = 0;
+    let offsetY = 0;
+    try {
+      const saved = localStorage.getItem('bubble-offset');
+      if (saved) {
+        const o = JSON.parse(saved);
+        if (typeof o.x === 'number' && typeof o.y === 'number') {
+          offsetX = o.x;
+          offsetY = o.y;
+        }
+      }
+    } catch (e) {}
+    let lastBeta = 0;
+    let lastGamma = 0;
+
+    function saveOffset() {
+      try {
+        localStorage.setItem('bubble-offset', JSON.stringify({ x: offsetX, y: offsetY }));
+      } catch (e) {}
+    }
+
     function handleOrientation(event: DeviceOrientationEvent) {
       if (!running) return;
       const beta = typeof event.beta === 'number' ? event.beta : 0;
       const gamma = typeof event.gamma === 'number' ? event.gamma : 0;
+      lastBeta = beta;
+      lastGamma = gamma;
 
-      const tiltX = Math.max(-60, Math.min(60, gamma));
-      const tiltY = Math.max(-60, Math.min(60, beta));
+      const tiltX = Math.max(-60, Math.min(60, gamma - offsetX));
+      const tiltY = Math.max(-60, Math.min(60, beta - offsetY));
 
       const rawX = tiltX * SCALE;
       const rawY = tiltY * SCALE;
@@ -433,6 +469,27 @@ const appLd = {
       targetX = 0;
       targetY = 0;
       setStatus('Stopped');
+    }
+
+    const calibrateBtn = document.getElementById('bubble-calibrate-btn') as HTMLButtonElement | null;
+    const calibratedLabel = calibrateBtn?.dataset.calibrated || 'Calibrated';
+    const resetBtn = document.getElementById('bubble-reset-btn');
+    if (calibrateBtn) {
+      calibrateBtn.addEventListener('click', () => {
+        offsetX = lastGamma;
+        offsetY = lastBeta;
+        saveOffset();
+        setStatus(calibratedLabel);
+        setMessage('');
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        offsetX = 0;
+        offsetY = 0;
+        saveOffset();
+        setStatus(calibratedLabel);
+      });
     }
 
     // auto-start; allow tap to retry if permission failed

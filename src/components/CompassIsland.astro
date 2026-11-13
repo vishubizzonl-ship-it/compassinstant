@@ -307,6 +307,13 @@ const t = useTranslations(lang);
       }
       setStatus(msg.calibrating);
       addListeners();
+
+      // A device with no magnetometer (most laptops, some tablets) never fires an
+      // absolute orientation event, so the "Calibrating…" line would stay forever
+      // and look like a broken tool. Say what is actually happening instead.
+      window.setTimeout(() => {
+        if (!hasHeading && !absoluteSeen) setStatus(msg.na);
+      }, 6000);
     }
 
     // init

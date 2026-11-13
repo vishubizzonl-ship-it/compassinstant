@@ -444,19 +444,65 @@ const appLd = {
       animateSpeed();
     };
 
-    // Follow the device's GPS position as soon as the page is open, matching
-    // the live speed readout. The Start button only controls trip timing.
+    // --- live speed ----------------------------------------------------------
+    // coords.speed is null on plenty of phones and on most desktops, which used
+    // to show a permanent 0.0 while the device was moving. When the browser does
+    // not report a speed, fall back to the distance between two fixes over time.
+    function haversineKm(a: GeolocationCoordinates, b: GeolocationCoordinates) {
+      const R = 6371;
+      const toRad = (d: number) => (d * Math.PI) / 180;
+      const dLat = toRad(b.latitude - a.latitude);
+      const dLon = toRad(b.longitude - a.longitude);
+      const s =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(a.latitude)) * Math.cos(toRad(b.latitude)) * Math.sin(dLon / 2) ** 2;
+      return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
+    }
+
+    let prev: { coords: GeolocationCoordinates; t: number } | null = null;
+
+    function speedFromDelta(pos: GeolocationPosition): number | null {
+      const now = pos.timestamp || Date.now();
+      const current = { coords: pos.coords, t: now };
+      const previous = prev;
+      prev = current;
+      if (!previous) return null;
+      const dt = (now - previous.t) / 1000;
+      if (dt < 0.5 || dt > 10) return null;
+      // A poor fix jumps around by tens of metres: deriving speed from it would
+      // invent 70 km/h spikes while standing still.
+      if (typeof pos.coords.accuracy === 'number' && pos.coords.accuracy > 40) return null;
+      const km = haversineKm(previous.coords, pos.coords);
+      // Below ~1.5 m of movement the GPS jitter dominates: treat as standing still.
+      if (km < 0.0015) return 0;
+      const kmh = (km / dt) * 3600;
+      return kmh > 300 ? null : kmh;
+    }
+
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
         (pos) => {
-          const speedMs = pos.coords.speed || 0;
-          const speedKmh = speedMs * 3.6;
-          currentSpeedKmh = speedKmh;
-          maxSp = Math.max(maxSp, speedKmh);
-          totalSp += speedKmh;
-          count++;
+          const reported = pos.coords.speed;
+          let kmh: number;
+          if (reported !== null && reported !== undefined) {
+            kmh = reported * 3.6;
+          } else {
+            const fromDelta = speedFromDelta(pos);
+            // No usable speed this tick: keep the last reading rather than
+            // flickering to 0.0 while the device is clearly moving.
+            kmh = fromDelta === null ? currentSpeedKmh : fromDelta;
+          }
+
+          currentSpeedKmh = Math.max(0, kmh);
+          if (running) {
+            maxSp = Math.max(maxSp, currentSpeedKmh);
+            totalSp += currentSpeedKmh;
+            count++;
+          }
           renderSpeeds();
-          if (altEl) altEl.textContent = pos.coords.altitude ? Math.round(pos.coords.altitude).toString() : '—';
+
+          const alt = pos.coords.altitude;
+          if (altEl) altEl.textContent = alt === null || alt === undefined ? '—' : Math.round(alt).toString();
         },
         () => {},
         { enableHighAccuracy: true, maximumAge: 1000 },
@@ -464,7 +510,6 @@ const appLd = {
     }
 
     renderUnits();
-    // keep speedometer (trip timer) running by default
-    (window as any).startTrip();
+    renderSpeeds();
   })();
 </script>

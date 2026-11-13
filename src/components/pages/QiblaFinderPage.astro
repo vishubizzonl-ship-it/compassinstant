@@ -68,6 +68,10 @@ const appLd = {
             <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">{t('qibla.ui.title')}</h2>
             <p class="text-xs text-mute font-mono mt-1 min-h-[1rem]" id="qibla-status" aria-live="polite">Locating…</p>
             <p class="text-3xl font-semibold tracking-tight tabular-nums text-ink mt-2 min-h-[2.25rem]" id="qibla-bearing">—</p>
+            <!-- The script writes the source of the bearing here: GPS with accuracy,
+                 or an approximate IP city. Without this element the visitor cannot
+                 tell an exact reading from a guess. -->
+            <p class="text-xs text-mute font-mono mt-1 min-h-[1rem]" id="qibla-location"></p>
           </div>
 
           <div class="relative flex items-center justify-center py-4 overflow-hidden" aria-label={t('qibla.ui.title')}>
