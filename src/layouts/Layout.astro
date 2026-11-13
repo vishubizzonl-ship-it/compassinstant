@@ -25,6 +25,8 @@ interface Props {
   ogImageAlt?: string;
   /** Optional tag manager container id. Defaults to the compass silo. */
   gtmId?: string;
+  /** Optional GA4 measurement id. Defaults to the bubble level silo only. */
+  gaId?: string;
   /** Extra JSON-LD objects (BreadcrumbList, SoftwareApplication, FAQPage…). */
   breadcrumbLd?: Record<string, unknown>;
   appLd?: Record<string, unknown>;
@@ -58,6 +60,18 @@ const ogImageAlt = Astro.props.ogImageAlt ?? title;
 const GTM_ID = 'GTM-WBP336FR';
 const isCompassSilo = basePath === '/onlinecompass' || basePath.startsWith('/onlinecompass/');
 const gtmId = Astro.props.gtmId ?? (isCompassSilo ? GTM_ID : undefined);
+
+/**
+ * Google Analytics 4 — bubble level silo only.
+ * Covers /onlinebubblelevel/, its blog / about / contact / privacy / terms, the
+ * blog posts, the bubble level error pages and every localized
+ * /es/onlinebubblelevel/ style page (basePath is already locale-stripped).
+ * Every other route stays untracked.
+ */
+const GA4_ID = 'G-N3YD3ZXYKZ';
+const isBubbleLevelSilo =
+  basePath === '/onlinebubblelevel' || basePath.startsWith('/onlinebubblelevel/');
+const gaId = Astro.props.gaId ?? (isBubbleLevelSilo ? GA4_ID : undefined);
 
 const jsonLd =
   basePath === '/'
@@ -173,6 +187,19 @@ const jsonLd =
           j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
           f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', gtmId);
+      </script>
+    )}
+    {gaId && (
+      <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+    )}
+    {gaId && (
+      <script is:inline define:vars={{ gaId }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+          window.dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', gaId, { anonymize_ip: true });
       </script>
     )}
   </head>
