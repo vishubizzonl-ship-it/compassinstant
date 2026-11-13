@@ -140,40 +140,22 @@ check(
 );
 
 console.log('--- fullscreen layout');
+check('card becomes a screen-tall column', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*flex-direction:\s*column/.test(html), true);
+check('card no longer scrolls as a whole', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow:\s*hidden/.test(html), true);
 check(
-  'readout is pinned to the middle of the screen',
-  /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*(position:\s*absolute|inset:\s*0)/.test(html),
+  'readout keeps the middle and stays centred',
+  /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*flex:[^;}]*(auto|1)/.test(html) &&
+    /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*justify-content:\s*center/.test(html),
   true,
 );
 check(
-  'readout is centred inside that area',
-  /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*justify-content:\s*center/.test(html),
-  true,
-);
-check('card itself never scrolls', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow:\s*hidden/.test(html), true);
-check(
-  'recorded list is an overlay, not part of the flow',
-  /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*position:\s*absolute/.test(html),
-  true,
-);
-check(
-  'recorded list height comes from the measured variable',
-  /max-height:\s*var\(--records-max/.test(html),
-  true,
-);
-check(
-  'list scrolls inside itself',
+  'recorded list is capped and scrolls on its own',
   /#speed-card\[[^\]]*\]:fullscreen\s+#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
   true,
 );
-check('layout is measured on fullscreen change', /webkitFullscreenElement/.test(code), true);
-check('layout is measured again on resize', /addEventListener\(.resize.,/.test(code), true);
 check(
-  'measured space never exceeds the gap to the centred readout',
-  /--records-max/.test(html) &&
-    /clientHeight/.test(code) &&
-    /\/2-/.test(code.replace(/\s+/g, '')) &&
-    /Math\.max\(44,Math\.min\(/.test(code.replace(/\s+/g, '')),
+  'in-card block only takes the space that is left',
+  /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*max-height:\s*42vh/.test(html),
   true,
 );
 

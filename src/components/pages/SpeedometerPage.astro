@@ -331,63 +331,41 @@ const appLd = {
   .records-in-card {
     display: none;
   }
-
-  /* Fullscreen: the big readout is pinned to the middle of the screen and never
-     moves. Records are an overlay anchored above the stats bar, and the space
-     they are given is measured in JS (--records-max) so the list can never grow
-     into the number: it scrolls instead. */
+  /* In fullscreen the card becomes one screen-tall column: the speed stays in
+     the middle of the screen and the recorded list takes only the space that is
+     left, scrolling inside itself. Before, a growing list pushed the speed
+     upwards until it slid off the top. */
   #speed-card:fullscreen,
   #speed-card:-webkit-full-screen {
-    position: relative;
-    height: 100%;
-    overflow: hidden;
-    padding: 0;
-  }
-  #speed-card:fullscreen #speed-head,
-  #speed-card:-webkit-full-screen #speed-head {
-    position: absolute;
-    top: 0.75rem;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 0 1rem;
-    z-index: 2;
-  }
-  #speed-card:fullscreen #speed-main,
-  #speed-card:-webkit-full-screen #speed-main {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+    overflow: hidden;
+    padding-bottom: 1rem;
   }
+  #speed-card:fullscreen #speed-head,
+  #speed-card:-webkit-full-screen #speed-head,
   #speed-card:fullscreen #speed-stats,
   #speed-card:-webkit-full-screen #speed-stats {
-    position: absolute;
-    bottom: 0.75rem;
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 0 1rem;
-    z-index: 2;
+    flex: 0 0 auto;
+  }
+  /* The readout keeps the whole middle of the screen and stays centred in it,
+     however many records have piled up below. */
+  #speed-card:fullscreen #speed-main,
+  #speed-card:-webkit-full-screen #speed-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   #speed-card:fullscreen .records-in-card,
   #speed-card:-webkit-full-screen .records-in-card {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: var(--records-bottom, 8.5rem);
-    max-height: var(--records-max, 30vh);
-    overflow: hidden;
-    padding: 0.5rem 1rem 0;
-    background: var(--color-canvas-elevated, #fff);
-    border-top: 1px solid var(--color-hairline, #ebebeb);
-    z-index: 1;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 42vh;
   }
   /* Once the space runs out the older records scroll instead of growing. */
   #speed-card:fullscreen #records-list-card,
@@ -403,30 +381,6 @@ const appLd = {
   (function () {
     const card = document.getElementById('speed-card');
     const fsBtn = document.getElementById('speed-fullscreen-btn');
-    const headEl = document.getElementById('speed-head');
-    const mainEl = document.getElementById('speed-main');
-    const statsEl = document.getElementById('speed-stats');
-
-    /**
-     * In fullscreen the readout is pinned to the middle of the screen, so the
-     * recorded list is given exactly the space between the readout and the stats
-     * bar — never more. That is what keeps the number from being pushed up as
-     * records pile in; anything that does not fit scrolls inside the list.
-     */
-    function layoutFullscreen() {
-      if (!card) return;
-      const isFullscreen =
-        document.fullscreenElement === card || (document as any).webkitFullscreenElement === card;
-      if (!isFullscreen) return;
-      const height = card.clientHeight;
-      const statsH = statsEl ? statsEl.offsetHeight : 0;
-      const readout = document.getElementById('speed-display');
-      const readoutH = (readout ? readout.offsetHeight : 60) + 44; // number plus its unit row
-      const bottom = statsH + 16;
-      const available = height / 2 - readoutH / 2 - 16 - bottom;
-      card.style.setProperty('--records-bottom', bottom + 'px');
-      card.style.setProperty('--records-max', Math.max(44, Math.min(available, height * 0.32)) + 'px');
-    }
     function syncFsIcon() {
       if (!fsBtn) return;
       const entering = !document.fullscreenElement;
@@ -438,7 +392,6 @@ const appLd = {
         if (document.fullscreenElement) document.exitFullscreen();
         else if (card && card.requestFullscreen) card.requestFullscreen();
       });
-      window.addEventListener('resize', layoutFullscreen);
       document.addEventListener('fullscreenchange', () => {
         syncFsIcon();
         // Repaint the numbers and the recorded list as soon as the card fills
@@ -446,7 +399,6 @@ const appLd = {
         renderUnits();
         renderSpeeds();
         renderRecords();
-        layoutFullscreen();
         if (durEl && startTime) {
           const sec = Math.floor((Date.now() - startTime) / 1000);
           durEl.textContent =
