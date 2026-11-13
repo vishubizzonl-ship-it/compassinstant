@@ -137,21 +137,22 @@ check(
   true,
 );
 check(
-  'everything above the list keeps its natural height',
-  /#speed-card\[[^\]]*\]:fullscreen\s*>\s*\[[^\]]*\]\{[^}]*flex:\s*none/.test(html),
+  'a spacer above mirrors the list below',
+  /#speed-card\[[^\]]*\]:fullscreen:before\{[^}]*flex:\s*1 1 0/.test(html),
   true,
 );
 check(
-  'the panel takes the leftover space instead of pushing the speed up',
-  /records-in-card\[[^\]]*\]\{[^}]*flex:\s*auto/.test(html) &&
+  'the list gets the same share, so the speedometer stays centred',
+  /records-in-card\[[^\]]*\]\{[^}]*flex:\s*1 1 0/.test(html) &&
     /records-in-card\[[^\]]*\]\{[^}]*min-height:\s*0/.test(html),
   true,
 );
 check(
-  'only the list scrolls',
+  'the list scrolls inside its share instead of growing',
   /#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
   true,
 );
+check('the speedometer items keep their natural height', /:fullscreen>\[[^\]]*\]\{[^}]*flex:\s*none/.test(html), true);
 check('no fullscreen rule re-positions the readout', !/speed-main/.test(html), true);
 
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);

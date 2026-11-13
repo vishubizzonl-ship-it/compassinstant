@@ -333,13 +333,13 @@ const appLd = {
     display: none;
   }
 
-  /* Fullscreen is a fixed column:
-       1. the speedometer (title, buttons, readout, stats) keeps its natural
-          height, exactly where it sits when the screen opens,
-       2. the recorded list takes whatever space is left at the bottom and
-          scrolls inside itself.
-     The card never scrolls, so adding records cannot move the speedometer — it
-     stays exactly where it was on the first frame, centred as before. */
+  /* Fullscreen is a fixed column with two equal spacers: one above the
+     speedometer and one below it (the recorded list). Both are flex: 1 1 0, so
+     they always share the leftover space equally — which is exactly what keeps
+     the speedometer in the middle of the screen. Because the list's height is
+     set by that share and not by how many records there are, adding records can
+     never push the speedometer off centre: the list scrolls inside its share.
+     The card itself never scrolls. */
   #speed-card:fullscreen,
   #speed-card:-webkit-full-screen {
     display: flex;
@@ -352,16 +352,26 @@ const appLd = {
   #speed-card:-webkit-full-screen > * {
     flex: 0 0 auto;
   }
+
+  /* Spacer above the speedometer, the mirror of the list below it. */
+  #speed-card:fullscreen::before,
+  #speed-card:-webkit-full-screen::before {
+    content: '';
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
   #speed-card:fullscreen .records-in-card,
   #speed-card:-webkit-full-screen .records-in-card {
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-height: 0;
-    margin-top: 1rem;
+    overflow: hidden;
     padding-top: 0.75rem;
     border-top: 1px solid var(--color-hairline, #ebebeb);
   }
+
   /* Only the list scrolls, and only when the records no longer fit. */
   #speed-card:fullscreen #records-list-card,
   #speed-card:-webkit-full-screen #records-list-card {
