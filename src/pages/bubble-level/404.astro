@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+---
+
+<Layout title="404 — Page Not Found" description="This bubble level page could not be found." noindex>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-24 text-center">
+    <p class="font-mono text-sm text-mute mb-4">404</p>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-4">Page not found</h1>
+    <p class="text-body text-base leading-relaxed mb-8">
+      This page is not part of the bubble level tool. The link may be old, or the address may have a typo. The online bubble level is one tap away.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-8">
+      Looking for a guide instead? The how-to walkthrough, the accuracy check and the furniture and appliance guide are all listed in the bubble level blog.
+    </p>
+    <a
+      href={translatePath('/bubble-level/')}
+      class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
+    >
+      Back to bubble level
+    </a>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-body">
+      <a href={translatePath('/bubble-level/blog/')} class="hover:text-ink transition-colors">Bubble level guides</a>
+      <a href={translatePath('/bubble-level/about/')} class="hover:text-ink transition-colors">About</a>
+      <a href={translatePath('/bubble-level/contact/')} class="hover:text-ink transition-colors">Contact</a>
+      <a href="/" class="hover:text-ink transition-colors">All tools</a>
+    </div>
+  </main>
+  <Footer />
+</Layout>

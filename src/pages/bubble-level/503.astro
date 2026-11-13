@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+---
+
+<Layout title="503 — Service Unavailable" description="This bubble level page is temporarily unavailable." noindex>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-24 text-center">
+    <p class="font-mono text-sm text-mute mb-4">503</p>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-4">Service unavailable</h1>
+    <p class="text-body text-base leading-relaxed mb-8">
+      This bubble level page is temporarily unavailable. Please try again in a moment — the online bubble level needs nothing but your browser and its sensor.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-8">
+      Because the level runs entirely on your own device, the tool usually keeps working even when a page fails to load. Reloading the bubble level usually clears it.
+    </p>
+    <a
+      href={translatePath('/bubble-level/')}
+      class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
+    >
+      Back to bubble level
+    </a>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-body">
+      <a href={translatePath('/bubble-level/blog/')} class="hover:text-ink transition-colors">Bubble level guides</a>
+      <a href={translatePath('/bubble-level/about/')} class="hover:text-ink transition-colors">About</a>
+      <a href={translatePath('/bubble-level/contact/')} class="hover:text-ink transition-colors">Contact</a>
+      <a href="/" class="hover:text-ink transition-colors">All tools</a>
+    </div>
+  </main>
+  <Footer />
+</Layout>
