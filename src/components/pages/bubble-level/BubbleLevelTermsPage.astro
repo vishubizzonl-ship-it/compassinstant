@@ -7,8 +7,27 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const KWS =
+  'online bubble level, bubble level, free bubble level, bubble level google, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online level check google, online bubble level free, bubble level check';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Bubble Level', item: 'https://instanten.com/bubble-level/' },
+    { '@type': 'ListItem', position: 3, name: 'Terms', item: 'https://instanten.com/bubble-level/terms/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Terms of Use — Free Online Bubble Level Tool"
+  description="Terms of use for the online bubble level tool: free use, no warranty on measurements, acceptable use, intellectual property, and liability limits."
+  keywords={KWS}
+  ogImage="/og-bubble-level.png"
+  ogImageAlt="Terms of Use — Online Bubble Level"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/bubble-level/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>

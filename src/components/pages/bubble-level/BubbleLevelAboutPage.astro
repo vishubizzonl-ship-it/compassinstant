@@ -7,8 +7,27 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const KWS =
+  'online bubble level, bubble level, free bubble level, bubble level google, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online level check google, online bubble level free, bubble level check';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Bubble Level', item: 'https://instanten.com/bubble-level/' },
+    { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/bubble-level/about/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="About Online Bubble Level — Free Level Checker Tool"
+  description="About the online bubble level: how a phone measures tilt, who the free bubble level is for, and the accuracy you can expect from a level checker tool."
+  keywords={KWS}
+  ogImage="/og-bubble-level.png"
+  ogImageAlt="About Online Bubble Level — Free Level Checker Tool"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/bubble-level/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
@@ -21,6 +40,25 @@ const translatePath = useTranslatedPath(lang);
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       Unlike most online level tools that guess a surface, onlinecompass reads your device's accelerometer and orientation sensors directly through standard browser APIs. Once loaded, it works offline and keeps your sensor data on your device.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How a phone bubble level actually works</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Your phone contains an accelerometer, a tiny sensor that measures gravity. The browser reads it through
+      standard device-motion APIs, and this <strong>level checker tool online</strong> turns that reading into two
+      numbers: tilt along the long edge and tilt along the short edge. A centred bubble means both are close to
+      zero, which is what a spirit level vial shows with its air bubble.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      That is also why the tool needs a moment to settle. Put a phone down and the sensor output wobbles for a
+      fraction of a second before the filter smooths it. If you have ever searched <strong>bubble level google</strong>
+      and landed on a page where the bubble jitters, the sensor is fine — the page is simply showing raw values
+      instead of a filtered reading.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a <strong>vertical level tool online</strong> the maths changes. Held upright, the phone measures the
+      lean of its back face rather than the tilt of a table, so plumb readings are naturally a little noisier. We
+      show both axes at once so you can check a wall and a shelf without changing the view.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Our Mission</h2>
@@ -37,6 +75,32 @@ const translatePath = useTranslatedPath(lang);
       <li>Dark mode that respects your system preference</li>
       <li>Works on every modern browser — no download, no sign-up</li>
     </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Who the free bubble level is for</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Most people arrive here with one job: something in the house looks crooked and they want a number before
+      they drill. This <strong>free bubble level</strong> is built for that moment — hanging a picture, checking a
+      shelf, seeing whether a table rocks, or confirming a washing machine before it walks across the floor.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      It is also a sensible second opinion for people who own a real level and cannot find it, and a quick
+      <strong>leveler tool</strong> for renters who would rather not buy a 60 cm bar for four holes in a wall.
+      The <strong>water level tool online</strong> trick still has a place for long spans, but for the everyday
+      "is this straight?" question the phone in your hand wins on speed.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Accuracy you can expect</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A calibrated phone reads within about 0.5° on a flat surface, which is close to a small spirit level and
+      good enough for furniture, shelves and pictures. It is not a substitute for a long level when you are
+      building a wall or laying a floor, because a short base cannot see a slope spread over three metres.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      If a reading looks wrong, calibrate on a surface you trust, then run a <strong>bubble level check</strong>
+      a second time before you cut or drill. Our
+      <a href="/bubble-level/blog/how-accurate-is-a-phone-bubble-level" class="text-link hover:underline">accuracy guide</a>
+      explains the four common causes in detail.
+    </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
     <p class="text-body text-base leading-relaxed mb-4">

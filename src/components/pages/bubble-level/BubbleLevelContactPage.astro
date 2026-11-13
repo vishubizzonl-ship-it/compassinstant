@@ -7,8 +7,27 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const KWS =
+  'online bubble level, bubble level, free bubble level, bubble level google, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online level check google, online bubble level free, bubble level check';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Bubble Level', item: 'https://instanten.com/bubble-level/' },
+    { '@type': 'ListItem', position: 3, name: 'Contact', item: 'https://instanten.com/bubble-level/contact/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Contact Online Bubble Level — Feedback & Bug Reports"
+  description="Contact the online bubble level team. Report a calibration or accuracy problem with the free bubble level, suggest a feature, or ask a privacy question."
+  keywords={KWS}
+  ogImage="/og-bubble-level.png"
+  ogImageAlt="Contact Online Bubble Level — Feedback & Bug Reports"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/bubble-level/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
@@ -16,6 +35,39 @@ const translatePath = useTranslatedPath(lang);
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
     <p class="text-body text-base leading-relaxed mb-6">
       We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How the check works</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Before you write, it helps to know what the tool is doing. The online bubble level reads your device's
+      accelerometer through the browser and shows tilt in degrees on two axes. Nothing is uploaded: the reading
+      is calculated on your own phone, which is why the level checker tool online keeps working offline once the
+      page has loaded.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      That design also explains most support questions. The bubble only moves if the browser is allowed to read
+      motion sensors, and calibration is stored per device, so a new phone or a cleared browser cache starts from
+      zero again.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Quick fixes before you write</h2>
+    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
+      <li><strong>Bubble frozen at 0.0°:</strong> allow motion access when the browser asks, then reload the page.</li>
+      <li><strong>Reading looks off by a degree or two:</strong> recalibrate on a surface you trust, away from magnets and metal.</li>
+      <li><strong>Tool shows nothing at all:</strong> some desktop browsers have no accelerometer — use a phone or tablet.</li>
+      <li><strong>Vertical view feels noisy:</strong> hold the phone against the surface instead of judging it by eye.</li>
+    </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">What to tell us</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a bug report, tell us the device, the browser version, and what the number said when the bubble was
+      centred. For an accuracy complaint, mention whether the free bubble level was calibrated first and what you
+      compared it against — a spirit level, a second phone, or a surface you assumed was flat.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a feature request, describe the job rather than the button. "I want to hang a heavy mirror on a plaster
+      wall" tells us more than "add a save button", and it usually leads to a better guide as well as a better
+      tool.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Email</h2>
@@ -50,7 +102,22 @@ const translatePath = useTranslatedPath(lang);
       <button type="submit" class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
         Send message
       </button>
+
     </form>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Response times</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      This is a small project, so replies are not instant. Accuracy and calibration reports get priority because
+      they affect every user of the online bubble level; feature ideas are read and logged but may not get a
+      personal reply. Privacy questions are always answered.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      While you wait, the guides are worth a look: the
+      <a href="/bubble-level/blog/how-to-use-an-online-bubble-level" class="text-link hover:underline">step-by-step walkthrough</a>
+      and the
+      <a href="/bubble-level/blog/level-furniture-shelves-appliances" class="text-link hover:underline">furniture and appliance guide</a>
+      answer most level-check questions already.
+    </p>
   </main>
   <Footer />
 </Layout>
