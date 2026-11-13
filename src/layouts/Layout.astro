@@ -23,7 +23,7 @@ interface Props {
   ogImage?: string;
   /** Alt text for the OG image. Defaults to the page title. */
   ogImageAlt?: string;
-  /** Optional Google Tag Manager container id. Defaults to the compass silo. */
+  /** Optional tag manager container id. Defaults to the compass silo. */
   gtmId?: string;
   /** Extra JSON-LD objects (BreadcrumbList, SoftwareApplication, FAQPage…). */
   breadcrumbLd?: Record<string, unknown>;
@@ -50,7 +50,7 @@ const ogImageType = /\.png$/i.test(ogImage) ? 'image/png' : 'image/svg+xml';
 const ogImageAlt = Astro.props.ogImageAlt ?? title;
 
 /**
- * Google Tag Manager — compass silo only.
+ * Tag manager container — compass silo only.
  * Covers /compass/, its blog / about / contact / privacy / terms, the blog
  * posts, the compass error pages and every localized /es/compass/ style page
  * (basePath is already locale-stripped). Other tools stay untouched.
@@ -184,7 +184,7 @@ const jsonLd =
           height="0"
           width="0"
           style="display:none;visibility:hidden"
-          title="Google Tag Manager"
+          title="Analytics tag manager"
         />
       </noscript>
     )}
