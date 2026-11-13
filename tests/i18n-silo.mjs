@@ -168,5 +168,98 @@ check(
   jaContact.includes('お名前') && jaContact.includes('メッセージ'),
 );
 
+
+// --- 6. nothing English is left behind on the translated compass pages
+//
+// The signal is exact: a visible text node or a user-facing attribute that is
+// byte-identical to the English page cannot have been translated. Brand names,
+// language names, numbers, cardinal letters and words that are genuinely the
+// same in a given language are allow-listed below.
+// Words that are genuinely the same in a given language, or that are never
+// translated at all (brand, language names, technical values). Kept per locale,
+// because "Blog" is correct Spanish but wrong Japanese.
+const NEUTRAL_GLOBAL = new Set([
+  'onlinecompass', 'Twitter', 'GitHub', 'Qibla',
+  'English', 'Español', 'Français', 'Deutsch', 'Português', '日本語', '한국어', 'Italiano',
+  'hello@instanten.com',
+  // technical values that are never translated
+  '#ffffff', 'de_DE', 'en_US', 'es_ES', 'fr_FR', 'it_IT', 'ja_JP', 'ko_KR', 'pt_BR',
+  'https://instanten.com/og-image.png', 'image/png', 'summary_large_image', 'website',
+  'index, follow, max-image-preview:large', 'width=device-width, initial-scale=1.0',
+  'Analytics tag manager',
+]);
+
+const NEUTRAL_BY_LANG = {
+  en: [],
+  es: ['Blog', '2. Cookies'],
+  ja: [],
+  ko: [],
+  fr: ['Blog', 'Contact', 'Message', 'Direction', '8. Contact', '2. Cookies'],
+  de: ['Blog', 'Name', 'West', '2. Cookies'],
+  pt: ['Blog', '2. Cookies'],
+  it: ['Blog', 'Privacy', 'Email', 'onlinecompass — Home'],
+};
+
+function visibleChunks(file) {
+  const html = readFileSync(file, 'utf8')
+    .replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style[\s\S]*?<\/style>/g, ' ');
+  const attrs = [...html.matchAll(/(?:title|aria-label|placeholder|alt)="([^"]{2,})"/g)].map((m) => m[1]);
+  const text = html
+    .replace(/<[^>]+>/g, '\n')
+    .replace(/&amp;/g, '&')
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;/g, ' ');
+  const nodes = text
+    .split('\n')
+    .map((line) => line.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+  return new Set([...nodes, ...attrs]);
+}
+
+const NEUTRAL_PATTERNS = [/^[NSEW]{1,3}$/, /^[\d.,°%:/ +—·-]+$/];
+
+for (const page of ['', ...PAGES]) {
+  const enFile = `dist/onlinecompass/${page ? `${page}/` : ''}index.html`;
+  if (!existsSync(enFile)) continue;
+  const english = visibleChunks(enFile);
+
+  for (const lang of LOCALES) {
+    const file = `dist/${lang}/onlinecompass/${page ? `${page}/` : ''}index.html`;
+    if (!existsSync(file)) continue;
+    const leaked = [...visibleChunks(file)].filter(
+      (chunk) =>
+        english.has(chunk) &&
+        !NEUTRAL_GLOBAL.has(chunk) &&
+        !(NEUTRAL_BY_LANG[lang] ?? []).includes(chunk) &&
+        chunk.replace(/[^A-Za-z]/g, '').length > 1 &&
+        !NEUTRAL_PATTERNS.some((re) => re.test(chunk)),
+    );
+    check(
+      `${lang}/${page || 'compass'} has no untranslated English`,
+      leaked.length === 0,
+      leaked.slice(0, 6).join(' | '),
+    );
+  }
+}
+
+// --- 7. the compass widget's runtime messages come from the page, not the JS
+for (const lang of ['ja', 'ko']) {
+  const html = readFileSync(`dist/${lang}/onlinecompass/index.html`, 'utf8');
+  for (const attr of ['data-denied', 'data-blocked', 'data-error', 'data-calibrating', 'data-tap', 'data-https']) {
+    const value = html.match(new RegExp(`${attr}="([^"]*)"`))?.[1] ?? '';
+    check(
+      `${lang} compass ${attr} is localized`,
+      /[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]/.test(value),
+      value,
+    );
+  }
+  check(
+    `${lang} compass fullscreen label is localized`,
+    !/<button[^>]*aria-label="Fullscreen"/.test(html),
+  );
+}
+
 console.log(`i18n silo test: ${pass} pass, ${fail} fail`);
 process.exit(fail === 0 ? 0 : 1);

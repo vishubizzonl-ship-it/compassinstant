@@ -102,14 +102,14 @@ const toolLinks = activeTool
         <ul class="space-y-2.5">
           {(activeTool
             ? [
-                { href: `${toolHome[activeTool]}blog/`, label: 'Blog' },
+                { href: `${toolHome[activeTool]}blog/`, label: t('page.blog.title') },
                 { href: `${toolHome[activeTool]}about/`, label: t('footer.about') },
                 { href: `${toolHome[activeTool]}privacy/`, label: t('footer.privacy') },
                 { href: `${toolHome[activeTool]}terms/`, label: t('footer.terms') },
                 { href: `${toolHome[activeTool]}contact/`, label: t('footer.contact') },
               ]
             : [
-                { href: '/onlinecompass/blog/', label: 'Blog' },
+                { href: '/onlinecompass/blog/', label: t('page.blog.title') },
                 { href: '/onlinecompass/about/', label: t('footer.about') },
                 { href: '/onlinecompass/privacy/', label: t('footer.privacy') },
                 { href: '/onlinecompass/terms/', label: t('footer.terms') },

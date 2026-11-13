@@ -78,14 +78,14 @@ const navItems = [
 
 const companyItems = activeTool
   ? [
-      { href: `${toolHome[activeTool]}blog/`, label: 'Blog' },
+      { href: `${toolHome[activeTool]}blog/`, label: t('page.blog.title') },
       { href: `${toolHome[activeTool]}about/`, label: t('footer.about') },
       { href: `${toolHome[activeTool]}privacy/`, label: t('footer.privacy') },
       { href: `${toolHome[activeTool]}terms/`, label: t('footer.terms') },
       { href: `${toolHome[activeTool]}contact/`, label: t('footer.contact') },
     ]
   : [
-      { href: '/onlinecompass/blog/', label: 'Blog' },
+      { href: '/onlinecompass/blog/', label: t('page.blog.title') },
       { href: '/onlinecompass/about/', label: t('footer.about') },
       { href: '/onlinecompass/privacy/', label: t('footer.privacy') },
       { href: '/onlinecompass/terms/', label: t('footer.terms') },
@@ -132,7 +132,7 @@ const langSwitchPath = (code: LangCode) =>
         ))}
         <details class="relative">
           <summary class="list-none cursor-pointer rounded-full px-3 py-1.5 text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
-            Company
+            {t('footer.company')}
           </summary>
           <div class="absolute left-0 top-full mt-2 w-40 bg-canvas-elevated border border-hairline rounded-md shadow-lg overflow-hidden z-50">
             {companyItems.map((item) => (

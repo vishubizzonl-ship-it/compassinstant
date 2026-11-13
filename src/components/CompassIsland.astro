@@ -16,9 +16,11 @@ const t = useTranslations(lang);
   data-na={t('compass.ui.na')}
   data-calibrating={t('compass.ui.calibrating')}
   data-done={t('compass.ui.done')}
+  data-tap={t('compass.ui.tap')}
+  data-https={t('compass.ui.https')}
 >
   <div id="compass-card" class="border border-hairline rounded-md bg-canvas p-6 shadow-[0px_1px_1px_rgba(0,0,0,0.04)] relative">
-    <button type="button" id="compass-fullscreen-btn" aria-label="Fullscreen" class="absolute top-3 right-3 z-30 inline-flex items-center justify-center w-8 h-8 rounded-sm bg-canvas-elevated border border-hairline text-ink hover:bg-canvas transition-colors">
+    <button type="button" id="compass-fullscreen-btn" aria-label={t('action.fullscreen')} class="absolute top-3 right-3 z-30 inline-flex items-center justify-center w-8 h-8 rounded-sm bg-canvas-elevated border border-hairline text-ink hover:bg-canvas transition-colors">
       <svg class="icon-enter" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       <svg class="icon-exit hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
     </button>
@@ -103,6 +105,8 @@ const t = useTranslations(lang);
       calibrating: root.dataset.calibrating || 'Calibrating compass…',
       done: root.dataset.done || 'Compass ready.',
       active: root.dataset.active || 'Active',
+      tap: root.dataset.tap || 'Tap screen to enable motion sensors.',
+      https: root.dataset.https || ' HTTPS required.',
     };
 
     type E = DeviceOrientationEvent & {
@@ -281,7 +285,7 @@ const t = useTranslations(lang);
 
     async function enable() {
       if (!window.isSecureContext) {
-        setStatus(msg.error + ' HTTPS required.');
+        setStatus(msg.error + msg.https);
         setLive('');
         return;
       }
@@ -318,7 +322,7 @@ const t = useTranslations(lang);
 
     // init
     if (!window.isSecureContext) {
-      setStatus(msg.error + ' HTTPS required.');
+      setStatus(msg.error + msg.https);
       setLive('');
     } else if (!window.DeviceOrientationEvent) {
       setStatus(msg.unsupported);
@@ -326,7 +330,7 @@ const t = useTranslations(lang);
     } else {
       const doe: any = window.DeviceOrientationEvent;
       if (typeof doe.requestPermission === 'function') {
-        setStatus('Tap screen to enable motion sensors.');
+        setStatus(msg.tap);
         setLive('');
         enable();
       } else {
