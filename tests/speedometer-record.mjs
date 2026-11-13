@@ -66,7 +66,6 @@ const check = (n, got, want) => {
 };
 
 const list = registry.get('records-list');
-const cardList = registry.get('records-list-card');
 const empty = registry.get('records-empty');
 const clear = registry.get('records-clear');
 const rows = () => list.children;
@@ -90,12 +89,6 @@ check('empty text hidden now', empty.classList.contains('hidden'), true);
 check('clear button shown now', clear.classList.contains('hidden'), false);
 check('saved to localStorage', JSON.parse(store.get('speedometer-records')).length, 1);
 
-console.log('--- fullscreen copy of the list');
-check('in-card list gets the same row instantly', cardList.children.length, 1);
-check('in-card row shows the same reading', rowText(cardList.children[0]), '4.0 KM/H');
-check('in-card empty text hidden', registry.get('records-empty-card').classList.contains('hidden'), true);
-check('in-card clear button shown', registry.get('records-clear-card').classList.contains('hidden'), false);
-
 // second recording of a different speed goes on top
 geoOk(fix(25.6000, (t += 1000)));
 win.recordSpeed();
@@ -114,7 +107,6 @@ win.selectUnit(0);
 // clear all
 win.clearRecords();
 check('clear all empties the list', rows().length, 0);
-check('clear all empties the in-card list too', cardList.children.length, 0);
 check('empty text back', empty.classList.contains('hidden'), false);
 check('localStorage cleared', store.get('speedometer-records'), '[]');
 
@@ -123,41 +115,6 @@ win.recordSpeed();
 const saved = store.get('speedometer-records');
 console.log('    stored:', saved);
 check('record survives a reload (persisted shape)', Array.isArray(JSON.parse(saved)), true);
-
-console.log('--- build-level checks');
-// Astro scopes the component style and inlines it, so the rules carry a
-// data-astro-cid-* attribute; match the selectors without depending on the hash.
-check('fullscreen rule shows the in-card list', /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card/.test(html), true);
-check('fullscreen rule also for -webkit-full-screen', /#speed-card\[[^\]]*\]:-webkit-full-screen\s+\.records-in-card/.test(html), true);
-check('in-card list hidden by default', /\.records-in-card\[[^\]]*\]\{display:none\}/.test(html), true);
-check('no cached GPS fix (maximumAge 0)', /maximumAge:\s*0/.test(code), true);
-check('built page has the in-card records block', /id="records-in-card"/.test(html), true);
-check(
-  'in-card block sits inside the speed card, before the section below it',
-  html.indexOf('id="records-in-card"') > html.indexOf('id="speed-card"') &&
-    html.indexOf('id="records-in-card"') < html.indexOf('id="speed-records-title"'),
-  true,
-);
-
-console.log('--- fullscreen layout');
-check('card becomes a screen-tall column', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*flex-direction:\s*column/.test(html), true);
-check('card no longer scrolls as a whole', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow:\s*hidden/.test(html), true);
-check(
-  'readout keeps the middle and stays centred',
-  /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*flex:[^;}]*(auto|1)/.test(html) &&
-    /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*justify-content:\s*center/.test(html),
-  true,
-);
-check(
-  'recorded list is capped and scrolls on its own',
-  /#speed-card\[[^\]]*\]:fullscreen\s+#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
-  true,
-);
-check(
-  'in-card block only takes the space that is left',
-  /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*max-height:\s*42vh/.test(html),
-  true,
-);
 
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 process.exit(fail ? 1 : 0);

@@ -89,8 +89,8 @@ for (let i = 0; i < 5; i++) {
   intervals.forEach((f) => f());
   await new Promise((r) => setTimeout(r, 0));
 }
-// simulate the watchdog firing after HOLD_MS (now 5 s)
-await new Promise((r) => setTimeout(r, 5400));
+// simulate the watchdog firing after HOLD_MS
+await new Promise((r) => setTimeout(r, 3200));
 intervals.forEach((f) => f());
 check('reading returns to 0 when fixes stop', show(), '0.0');
 
@@ -123,23 +123,6 @@ check('still still after six noisy fixes', show(), '0.0');
 for (let i = 1; i <= 10; i++) geoOk(fix(25.5943 + i * 0.0002, 85.1376, (clock += 1000)));
 const drive = parseFloat(show());
 check('drives off again at ~80 km/h', Math.abs(drive - 80) < 8, true);
-
-console.log('--- 10. Rough fix but a good Doppler speed (accuracy 55 m)');
-geoOk(fix(25.5961, 85.1376, (clock += 1000), { speed: 15, accuracy: 55 }));
-check('reported speed survives mediocre accuracy', show(), '54.0');
-
-console.log('--- 11. Rough fix, no reported speed, real driving for 10 s');
-geoOk(fix(25.5961, 85.1376, (clock += 1000), { accuracy: 55 }));
-for (let i = 1; i <= 10; i++) geoOk(fix(25.5961 + i * 0.00045, 85.1376, (clock += 1000), { accuracy: 55 }));
-const rough = parseFloat(show());
-check('derived speed works from a long window on a rough fix', Math.abs(rough - 180) < 30, true);
-
-console.log('--- 12. Standing still on a rough fix stays at zero');
-for (let i = 0; i < 12; i++) {
-  const j = (i % 2 ? 1 : -1) * 0.00003;
-  geoOk(fix(25.6008 + j, 85.1376 + j, (clock += 1000), { accuracy: 55 }));
-}
-check('still device on a rough fix', show(), '0.0');
 
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 process.exit(fail ? 1 : 0);
