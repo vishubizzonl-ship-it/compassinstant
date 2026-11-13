@@ -7,37 +7,43 @@
  * that opens their mail app with everything filled in, and the page tells them
  * to press Send. Nothing is transmitted by the site itself.
  */
+import { getLangFromUrl } from '../i18n/utils';
+import { contactFormCopy } from '../i18n/contactForm';
+
 const EMAIL = 'hello@instanten.com';
+const lang = getLangFromUrl(Astro.url);
+const copy = contactFormCopy[lang] ?? contactFormCopy.en;
+const status = copy.status.replace('{email}', EMAIL);
 ---
 <form
   id="contact-form"
   class="space-y-4"
   data-email={EMAIL}
+  data-error={copy.error}
+  data-status={status}
   novalidate={false}>
   <div>
-    <label for="name" class="block text-sm font-medium text-ink mb-1">Name</label>
+    <label for="name" class="block text-sm font-medium text-ink mb-1">{copy.name}</label>
     <input id="name" name="name" type="text" required autocomplete="name" class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" />
   </div>
   <div>
-    <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
+    <label for="email" class="block text-sm font-medium text-ink mb-1">{copy.email}</label>
     <input id="email" name="email" type="email" required autocomplete="email" class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" />
   </div>
   <div>
-    <label for="subject" class="block text-sm font-medium text-ink mb-1">Subject</label>
+    <label for="subject" class="block text-sm font-medium text-ink mb-1">{copy.subject}</label>
     <select id="subject" name="subject" class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
-      <option>Bug report</option>
-      <option>Feature request</option>
-      <option>Calibration / accuracy issue</option>
-      <option>Privacy question</option>
-      <option>Other</option>
+      {copy.options.map((option) => (
+        <option>{option}</option>
+      ))}
     </select>
   </div>
   <div>
-    <label for="message" class="block text-sm font-medium text-ink mb-1">Message</label>
+    <label for="message" class="block text-sm font-medium text-ink mb-1">{copy.message}</label>
     <textarea id="message" name="message" rows="5" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"></textarea>
   </div>
   <button type="submit" class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
-    Send message
+    {copy.submit}
   </button>
   <p id="contact-form-status" role="status" aria-live="polite" class="text-sm text-body leading-relaxed"></p>
 </form>
@@ -58,7 +64,7 @@ const EMAIL = 'hello@instanten.com';
       const message = String(data.get('message') || '').trim();
 
       if (!name || !from || !message) {
-        if (status) status.textContent = 'Please fill in your name, email and message.';
+        if (status) status.textContent = form.dataset.error || '';
         return;
       }
 
@@ -72,9 +78,7 @@ const EMAIL = 'hello@instanten.com';
       window.location.href = href;
 
       if (status) {
-        status.textContent =
-          `Your email app is opening with this message ready to send. Press Send there — ` +
-          `nothing is sent until you do. If nothing opened, email ${email} directly.`;
+        status.textContent = (form.dataset.status || '').replace('{email}', email);
       }
     });
   })();

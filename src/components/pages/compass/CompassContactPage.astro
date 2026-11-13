@@ -3,28 +3,34 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
 import ContactForm from '../../ContactForm.astro';
+import CopyText from '../../CopyText.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { supportCopy } from '../../../i18n/supportCopy';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = supportCopy[lang] ?? supportCopy.en;
 ---
 <Layout>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinecompass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Compass</a>
+    <a href={translatePath('/onlinecompass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {copy.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.contact.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-xs text-mute font-mono mb-8">{copy.updated}</p>
     <p class="text-body text-base leading-relaxed mb-6">
-      We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.
+      {copy.contact.intro}
     </p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Email</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Reach us at <a href="mailto:hello@instanten.com" class="text-link hover:underline">hello@instanten.com</a>. We usually reply within a few business days.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{copy.contact.emailH}</h2>
+    <CopyText
+      text={copy.contact.email}
+      contactHref={translatePath('/onlinecompass/contact/')}
+      contactLabel={copy.contactLink}
+      contactCta={copy.about.contactCta}
+    />
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Send a message</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{copy.contact.sendH}</h2>
     <ContactForm />
   </main>
   <Footer />

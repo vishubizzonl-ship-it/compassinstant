@@ -19,9 +19,27 @@ export const routePaths = [
   "/onlineqibla/",
 ] as const;
 
+/**
+ * The compass silo pages have a translated copy in every locale as well
+ * (/es/onlinecompass/about/, /ja/onlinecompass/privacy/, …). The other three
+ * tools still keep their silo pages in English only, so these paths are listed
+ * separately rather than promoted into `routePaths`.
+ */
+export const compassSiloPaths = [
+  "/onlinecompass/about/",
+  "/onlinecompass/blog/",
+  "/onlinecompass/contact/",
+  "/onlinecompass/privacy/",
+  "/onlinecompass/terms/",
+] as const;
+
 /** True when `basePath` (locale-stripped) exists in every language. */
 export function hasLocaleVersion(basePath: string): boolean {
-  return (routePaths as readonly string[]).includes(normalizePath(basePath));
+  const normalized = normalizePath(basePath);
+  return (
+    (routePaths as readonly string[]).includes(normalized) ||
+    (compassSiloPaths as readonly string[]).includes(normalized)
+  );
 }
 
 /**
@@ -245,12 +263,17 @@ export function getPageSeo(lang: LangCode, pathname: string) {
   const segs = basePath.split("/").filter(Boolean);
   if (segs.length === 2 && toolNameKeys[segs[0]] && siloTitleKeys[segs[1]]) {
     const rawName = t(toolNameKeys[segs[0]]);
-    // Normalise to the site's "Online <Tool>" phrasing.
-    const toolName = /^online/i.test(rawName) ? rawName : `Online ${rawName}`;
+    // Only English needs the "Online <Tool>" prefix — every other locale already
+    // spells "online" in its own words ("オンラインコンパス", "Brújula en Línea").
+    const toolName =
+      lang === defaultLang && !/^online/i.test(rawName) ? `Online ${rawName}` : rawName;
     const pageName = t(siloTitleKeys[segs[1]]);
+    const pageDesc = t(siloDescKeys[segs[1]]);
     return {
       title: `${pageName} — ${toolName}`,
-      description: `${pageName} for ${toolName}. ${t(siloDescKeys[segs[1]])}`,
+      // "About Us for Online Compass" only reads correctly in English.
+      description:
+        lang === defaultLang ? `${pageName} for ${toolName}. ${pageDesc}` : `${pageName} — ${toolName}. ${pageDesc}`,
     };
   }
 

@@ -3,31 +3,37 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { supportCopy } from '../../../i18n/supportCopy';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = supportCopy[lang] ?? supportCopy.en;
 
-const posts = [
-  { href: '/onlinecompass/blog/how-to-find-north-without-a-compass', title: 'How to Find North Without a Compass (And With Your Phone)', date: 'November 7, 2026', desc: 'Find north in seconds with an online compass or with no tools at all. Step-by-step sensor setup, degree readings, and sun or shadow checks that confirm the result.' },
-  { href: '/onlinecompass/blog/how-to-read-a-compass-dial', title: 'How to Read a Compass Dial: Degrees, Cardinal Points, Bearings', date: 'November 7, 2026', desc: 'Read any compass dial correctly. Cardinal points, degrees, bearings and declination, with worked examples and fixes for the readings people get wrong most.' },
-  { href: '/onlinecompass/blog/how-to-use-an-online-compass', title: 'How to Use an Online Compass (Step-by-Step, With Real Examples)', date: 'October 4, 2026', desc: 'A practical guide to measuring direction with your phone. Calibrate, read N/S/E/W, and work through real examples.' },
-];
+/** Dates are formatted per locale so no English month names appear on /ja/ pages. */
+const dates = ['2026-11-07', '2026-11-07', '2026-10-04'];
+const formatter = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' });
+const posts = copy.blog.posts.map((post, i) => ({
+  ...post,
+  date: formatter.format(new Date(`${dates[i]}T12:00:00Z`)),
+  // Blog articles themselves are English-only, so they are never locale-prefixed.
+  href: `${post.href}`,
+}));
 ---
-<Layout title="Online Compass Blog" description="Guides and tips for reading direction with the online compass.">
+<Layout title={copy.blog.title} description={copy.blog.desc}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinecompass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Compass</a>
-    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">Blog</h1>
-    <p class="text-xs text-mute font-mono mb-4">Last updated: October 2026</p>
-    <p class="text-body text-base leading-relaxed mb-10">Guides and tips for navigating with onlinecompass.</p>
+    <a href={translatePath('/onlinecompass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {copy.back}</a>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.blog.title')}</h1>
+    <p class="text-xs text-mute font-mono mb-4">{copy.updated}</p>
+    <p class="text-body text-base leading-relaxed mb-10">{copy.blog.intro}</p>
 
     <ul class="space-y-8">
       {posts.map((post) => (
         <li class="border-b border-hairline pb-6">
           <p class="text-xs text-mute font-mono mb-2">{post.date}</p>
           <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mb-2">
-            <a href={translatePath(post.href)} class="hover:text-link transition-colors">{post.title}</a>
+            <a href={post.href} class="hover:text-link transition-colors">{post.title}</a>
           </h2>
           <p class="text-body text-base leading-relaxed">{post.desc}</p>
         </li>

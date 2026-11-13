@@ -17,7 +17,9 @@ const redirects = {
   ...Object.fromEntries(
     LOCALES.flatMap((locale) => [
       [`/${locale}/`, `/${locale}/onlinecompass/`],
-      ...SILO_PAGES.map((page) => [`/${locale}/${page}/`, `/onlinecompass/${page}/`]),
+      // The compass silo now has a translated copy in every locale, so the
+      // legacy locale URLs redirect there rather than to the English page.
+      ...SILO_PAGES.map((page) => [`/${locale}/${page}/`, `/${locale}/onlinecompass/${page}/`]),
     ]),
   ),
 };
