@@ -88,7 +88,7 @@ export const es: Record<string, ToolBlogContent> = {
     ],
     outro: "Para precisión de construcción, usa un nivel de burbuja físico. Para tareas diarias, tu teléfono es más que suficiente.",
   },
-  speedometer: {
+  onlinespeedometer: {
     title: "Tacómetro en línea: mide la velocidad con GPS",
     intro: [
       "Registra tu velocidad en tiempo real usando el GPS de tu dispositivo. El tacómetro en línea de onlinecompass muestra velocidad actual, máxima y promedio, además de altitud y duración del recorrido.",

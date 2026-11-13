@@ -28,13 +28,13 @@ const safePath = (routePaths as readonly string[]).includes(currentPath)
 /**
  * Every tool is a self-contained site.
  *
- * On any tool page (/, /compass/…, /onlinebubblelevel/…, /speedometer/…,
+ * On any tool page (/, /compass/…, /onlinebubblelevel/…, /onlinespeedometer/…,
  * /qibla-finder/…) the header shows that tool's own links only — Home, Blog,
  * About, Contact — so the page never advertises another tool. Pages that are
  * not part of a tool (the old site-wide /about/, /blog/, …) keep the full
  * navigation. The markup and classes are identical either way.
  */
-const toolSlugs = ['onlinecompass', 'onlinebubblelevel', 'speedometer', 'qibla-finder'] as const;
+const toolSlugs = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'qibla-finder'] as const;
 type ToolId = (typeof toolSlugs)[number];
 
 const firstSegment = currentPath.split('/').filter(Boolean)[0] ?? '';
@@ -48,20 +48,20 @@ const activeTool: ToolId | null =
 const toolHome: Record<ToolId, string> = {
   onlinecompass: '/onlinecompass/',
   'onlinebubblelevel': '/onlinebubblelevel/',
-  speedometer: '/speedometer/',
+  onlinespeedometer: '/onlinespeedometer/',
   'qibla-finder': '/qibla-finder/',
 };
 const toolLabelKey: Record<ToolId, Parameters<typeof t>[0]> = {
   onlinecompass: 'nav.compass',
   'onlinebubblelevel': 'nav.bubble',
-  speedometer: 'nav.speed',
+  onlinespeedometer: 'nav.speed',
   'qibla-finder': 'nav.qibla',
 };
 
 const toolWordmark: Record<ToolId, string> = {
   onlinecompass: 'onlinecompass',
   'onlinebubblelevel': 'BubbleLevel',
-  speedometer: 'Speedometer',
+  onlinespeedometer: 'Speedometer',
   'qibla-finder': 'Qibla',
 };
 const wordmark = activeTool ? toolWordmark[activeTool] : 'onlinecompass';
@@ -69,7 +69,7 @@ const wordmark = activeTool ? toolWordmark[activeTool] : 'onlinecompass';
 const navItems = [
   { href: '/onlinecompass/', label: t('nav.compass') },
   { href: '/onlinebubblelevel/', label: t('nav.bubble') },
-  { href: '/speedometer/', label: t('nav.speed') },
+  { href: '/onlinespeedometer/', label: t('nav.speed') },
   { href: '/qibla-finder/', label: t('nav.qibla') },
 ];
 

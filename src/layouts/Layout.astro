@@ -67,7 +67,7 @@ const gtmId = Astro.props.gtmId ?? (isCompassSilo ? GTM_ID : undefined);
  *
  *   /onlinecompass/…        → content_group = compass
  *   /onlinebubblelevel/…    → content_group = bubble-level
- *   /speedometer/…          → content_group = speedometer
+ *   /onlinespeedometer/…    → content_group = onlinespeedometer
  *   /qibla-finder/…         → content_group = qibla-finder
  *   /                       → content_group = home
  *   everything else         → content_group = site
@@ -84,8 +84,8 @@ const gaContentGroup =
     ? 'compass'
     : toolSegment === 'onlinebubblelevel'
       ? 'bubble-level'
-      : toolSegment === 'speedometer'
-        ? 'speedometer'
+      : toolSegment === 'onlinespeedometer'
+        ? 'onlinespeedometer'
         : toolSegment === 'qibla-finder'
           ? 'qibla-finder'
           : toolSegment === ''
@@ -237,7 +237,7 @@ const jsonLd =
     <slot />
     <script is:inline>
       (function () {
-        var tools = ['onlinecompass', 'onlinebubblelevel', 'speedometer', 'qibla-finder'];
+        var tools = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'qibla-finder'];
         var path = window.location.pathname;
         // detect locale prefix
         var segments = path.split('/').filter(Boolean);

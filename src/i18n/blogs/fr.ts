@@ -80,7 +80,7 @@ export const fr: Record<string, ToolBlogContent> = {
     ],
     outro: "Pour la précision de construction, utilisez un niveau à bulle physique. Pour les tâches quotidiennes, votre téléphone suffit largement.",
   },
-  speedometer: {
+  onlinespeedometer: {
     title: "Compteur de vitesse en ligne : mesurez la vitesse avec le GPS",
     intro: ["Suivez votre vitesse en temps réel grâce au GPS de votre appareil. Le compteur de vitesse en ligne de onlinecompass affiche la vitesse actuelle, maximale et moyenne, ainsi que l'altitude et la durée du trajet.", "Utile pour le cyclisme, la course, la conduite, la navigation et toute activité où vous voulez une lecture de vitesse en direct sans installer d'application.", "Ce guide explique comment fonctionne la vitesse GPS, comment obtenir une lecture précise, ce qui affecte la précision, comment utiliser les statistiques de trajet et comment lire les différentes unités de vitesse. Il couvre aussi les questions courantes sur la mesure de vitesse en ligne."],
     sections: [

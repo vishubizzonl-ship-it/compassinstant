@@ -24,7 +24,7 @@ const safePath = (routePaths as readonly string[]).includes(currentPath)
  * tool (its Tools column is dropped and its links point at that tool's own
  * pages). Markup and classes are unchanged; only the link targets differ.
  */
-const toolSlugs = ['onlinecompass', 'onlinebubblelevel', 'speedometer', 'qibla-finder'] as const;
+const toolSlugs = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'qibla-finder'] as const;
 type FooterTool = (typeof toolSlugs)[number];
 
 const firstSegment = currentPath.split('/').filter(Boolean)[0] ?? '';
@@ -38,7 +38,7 @@ const activeTool: FooterTool | null =
 const toolHome: Record<FooterTool, string> = {
   onlinecompass: '/onlinecompass/',
   'onlinebubblelevel': '/onlinebubblelevel/',
-  speedometer: '/speedometer/',
+  onlinespeedometer: '/onlinespeedometer/',
   'qibla-finder': '/qibla-finder/',
 };
 
@@ -47,7 +47,7 @@ const toolTaglines: Record<FooterTool, string> = {
     'A live compass in your browser — find north, read your heading, and measure bearing in degrees. Built with modern web sensors, no download and no account.',
   'onlinebubblelevel':
     'A bubble level in your browser — check level and plumb, read tilt in degrees. Built with modern web sensors, no download and no account.',
-  speedometer:
+  onlinespeedometer:
     'A speedometer in your browser — GPS speed with max, average, altitude and trip time. Built with modern web sensors, no download and no account.',
   'qibla-finder':
     'A Qibla finder in your browser — the bearing to the Kaaba from your own location. Built with modern web sensors, no download and no account.',
@@ -58,7 +58,7 @@ const toolLinks = activeTool
   : [
       { href: '/onlinecompass/', label: t('nav.compass') },
       { href: '/onlinebubblelevel/', label: t('nav.bubble') },
-      { href: '/speedometer/', label: t('nav.speed') },
+      { href: '/onlinespeedometer/', label: t('nav.speed') },
       { href: '/qibla-finder/', label: t('nav.qibla') },
     ];
 ---

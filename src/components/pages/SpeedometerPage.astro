@@ -3,10 +3,10 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import ToolBlog from '../ToolBlog.astro';
-import SpeedometerFaq from './speedometer/SpeedometerFaq.astro';
+import SpeedometerFaq from './onlinespeedometer/SpeedometerFaq.astro';
 import { getToolBlog } from '../../i18n/blogs';
 
-const toolBlogFaq = getToolBlog('speedometer', 'en')?.faq ?? [];
+const toolBlogFaq = getToolBlog('onlinespeedometer', 'en')?.faq ?? [];
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -23,7 +23,7 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}${baseUrl}/` },
-    { '@type': 'ListItem', position: 2, name: 'Speedometer', item: `${siteUrl}${baseUrl}/speedometer/` },
+    { '@type': 'ListItem', position: 2, name: 'Speedometer', item: `${siteUrl}${baseUrl}/onlinespeedometer/` },
   ],
 };
 
@@ -33,7 +33,7 @@ const appLd = {
   name: 'Online Speedometer',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: `${siteUrl}${baseUrl}/speedometer/`,
+  url: `${siteUrl}${baseUrl}/onlinespeedometer/`,
   description:
     'Free online speedometer: a GPS speedometer online that shows your live speed in km/h or mph, plus max speed, average speed, altitude and trip time in the browser. No install, no sign-up.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -263,7 +263,7 @@ const appLd = {
       </div>
     </section>
 
-  <ToolBlog tool="speedometer" faqLd={false} />
+  <ToolBlog tool="onlinespeedometer" faqLd={false} />
   <SpeedometerFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online speedometer" />
   </main>
   <Footer />

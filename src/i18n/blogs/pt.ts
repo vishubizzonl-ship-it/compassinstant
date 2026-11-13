@@ -80,7 +80,7 @@ export const pt: Record<string, ToolBlogContent> = {
     ],
     outro: "Para precisão de construção, use um nível de bolha físico. Para tarefas diárias, o telefone basta e sobra.",
   },
-  speedometer: {
+  onlinespeedometer: {
     title: "Velocímetro online: meça a velocidade com GPS",
     intro: ["Acompanhe sua velocidade em tempo real usando o GPS do dispositivo. O velocímetro online de onlinecompass mostra velocidade atual, máxima e média, mais altitude e duração da viagem.", "Útil para ciclismo, corrida, direção, navegação e qualquer atividade em que você queira uma leitura de velocidade ao vivo sem instalar um app.", "Este guia explica como funciona a velocidade GPS, como obter uma leitura precisa, o que afeta a precisão, como usar as estatísticas da viagem e como ler as diferentes unidades de velocidade. Também cobre as perguntas comuns sobre medir velocidade online."],
     sections: [

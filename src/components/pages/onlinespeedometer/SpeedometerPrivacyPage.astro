@@ -17,8 +17,8 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/speedometer/' },
-    { '@type': 'ListItem', position: 3, name: 'Privacy', item: 'https://instanten.com/speedometer/privacy/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/onlinespeedometer/' },
+    { '@type': 'ListItem', position: 3, name: 'Privacy', item: 'https://instanten.com/onlinespeedometer/privacy/' },
   ],
 };
 
@@ -32,7 +32,7 @@ const breadcrumbLd = {
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
+    <a href={translatePath('/onlinespeedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.privacy.title')}</h1>
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
 

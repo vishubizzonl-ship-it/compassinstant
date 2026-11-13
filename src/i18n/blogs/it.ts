@@ -80,7 +80,7 @@ export const it: Record<string, ToolBlogContent> = {
     ],
     outro: "Per precisione da costruzione, usa una livella a bolla fisica. Per compiti quotidiani, il telefono basta e avanza.",
   },
-  speedometer: {
+  onlinespeedometer: {
     title: "Tachimetro online: misura la velocità con il GPS",
     intro: ["Traccia la tua velocità in tempo reale usando il GPS del dispositivo. Il tachimetro online di onlinecompass mostra velocità attuale, massima e media, più altitudine e durata del viaggio.", "Utile per ciclismo, corsa, guida, navigazione e qualsiasi attività dove vuoi una lettura di velocità live senza installare un'app.", "Questa guida spiega come funziona la velocità GPS, come ottenere una lettura precisa, cosa influisce sulla precisione, come usare le statistiche del viaggio e come leggere le diverse unità di velocità. Copre anche le domande comuni sulla misurazione della velocità online."],
     sections: [

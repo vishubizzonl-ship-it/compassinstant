@@ -80,7 +80,7 @@ export const de: Record<string, ToolBlogContent> = {
     ],
     outro: "Für Bau-Genauigkeit nutzen Sie eine physische Wasserwaage. Für Alltagsaufgaben reicht Ihr Telefon mehr als aus.",
   },
-  speedometer: {
+  onlinespeedometer: {
     title: "Online-Tacho: Geschwindigkeit mit GPS messen",
     intro: ["Verfolgen Sie Ihre Geschwindigkeit in Echtzeit mit dem GPS Ihres Geräts. Der Online-Tacho von onlinecompass zeigt aktuelle, maximale und durchschnittliche Geschwindigkeit sowie Höhe und Fahrtdauer.", "Nützlich für Radfahren, Laufen, Autofahren, Bootfahren und überall, wo Sie eine Live-Geschwindigkeitsanzeige ohne App-Installation wollen.", "Dieser Leitfaden erklärt, wie GPS-Geschwindigkeit funktioniert, wie man eine genaue Ablesung erhält, was die Genauigkeit beeinflusst, wie man die Fahrtstatistiken nutzt und wie man die verschiedenen Geschwindigkeitseinheiten liest. Er behandelt auch häufige Fragen zur Geschwindigkeitsmessung online."],
     sections: [

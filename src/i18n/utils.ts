@@ -10,7 +10,7 @@ export const routePaths = [
   "/",
   "/onlinecompass/",
   "/onlinebubblelevel/",
-  "/speedometer/",
+  "/onlinespeedometer/",
   "/qibla-finder/",
   "/privacy/",
   "/terms/",
@@ -143,7 +143,7 @@ const routeMetaKeys: Record<
     description: "page.bubble.desc",
     brandSuffix: true,
   },
-  "/speedometer/": {
+  "/onlinespeedometer/": {
     title: "page.speed.title",
     description: "page.speed.desc",
     brandSuffix: true,
@@ -184,7 +184,7 @@ const routeMetaKeys: Record<
 const toolNameKeys: Record<string, TranslationKey> = {
   compass: "page.compass.title",
   "onlinebubblelevel": "page.bubble.title",
-  speedometer: "page.speed.title",
+  onlinespeedometer: "page.speed.title",
   "qibla-finder": "page.qibla.title",
 };
 

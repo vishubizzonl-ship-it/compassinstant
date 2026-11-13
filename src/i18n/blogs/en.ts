@@ -428,7 +428,7 @@ export const en: Record<string, ToolBlogContent> = {
     ],
     outro: "For construction-grade accuracy, use a physical spirit level. For everyday tasks, your phone is more than enough.",
   },
-  speedometer: {
+  onlinespeedometer: {
     title: "Online Speedometer: Measure Speed with GPS",
     intro: [
       "Track your real-time speed using your device's GPS. onlinecompass's online speedometer shows current, maximum, and average speed, plus altitude and trip duration.",
