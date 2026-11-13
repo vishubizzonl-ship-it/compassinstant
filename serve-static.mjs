@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 
 const P = +process.env.PORT || 4321;
@@ -38,7 +38,39 @@ async function loadRedirects() {
   }
 }
 
-const redirects = await loadRedirects();
+/**
+ * Astro emits a meta-refresh stub for every redirect it knows about. We never
+ * want a browser to *see* one, so the stubs in the build output are turned into
+ * real 301s as well. This keeps localhost correct even if vercel.json drifts.
+ */
+async function loadStubs() {
+  const map = new Map();
+  let entries = [];
+  try {
+    entries = await readdir(R, { recursive: true, withFileTypes: true });
+  } catch {
+    return map;
+  }
+  for (const e of entries) {
+    if (!e.isFile() || e.name !== 'index.html') continue;
+    const dir = e.parentPath ?? e.path;
+    const full = join(dir, e.name);
+    let html;
+    try {
+      html = await readFile(full, 'utf8');
+    } catch {
+      continue;
+    }
+    const m = html.match(/http-equiv=["']refresh["'][^>]*content=["'][^"']*url=([^"'>\s]+)/i);
+    if (!m) continue;
+    const rel = full.slice(R.length).replace(/index\.html$/, '');
+    map.set('/' + rel.replace(/\/$/, ''), m[1].replace(/^\/+/, '/'));
+  }
+  return map;
+}
+
+const stubs = await loadStubs();
+const redirects = new Map([...stubs, ...(await loadRedirects())]);
 
 async function f(p) {
   try {
@@ -75,6 +107,16 @@ createServer(async (q, r) => {
 
   let x = await f(join(R, u));
   if (!x) x = await f(join(R, u.replace(/\/$/, '') + '.html'));
+
+  // Last line of defence: never hand a meta-refresh stub to a browser.
+  if (x && x.endsWith('index.html') && x.slice(R.length).split('/').length <= 3) {
+    const html = await readFile(x, 'utf8');
+    const m = html.match(/http-equiv=["']refresh["'][^>]*content=["'][^"']*url=([^"'>\s]+)/i);
+    if (m) {
+      r.writeHead(301, { location: m[1], 'cache-control': 'no-cache' });
+      return r.end();
+    }
+  }
 
   let c = 200;
   if (!x) {

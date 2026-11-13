@@ -21,6 +21,56 @@ warn(){ printf '\033[33m!!\033[0m %s\n' "$*"; }
 alive(){ [ -f "$1" ] && kill -0 "$(cat "$1")" 2>/dev/null; }
 up(){ curl -fsS -o /dev/null --max-time 3 "http://127.0.0.1:$PORT/" 2>/dev/null; }
 
+# Purane server ko dhoondh kar maaro — pid file par bharosa nahi.
+# (Agar purana process zinda rahe to naya EADDRINUSE se marta hai aur purana
+# code hi chalta rehta hai — isi wajah se fix aane ke baad bhi purana page dikhta tha.)
+kill_servers(){
+  for d in /proc/[0-9]*; do
+    c=$(tr '\0' ' ' < "$d/cmdline" 2>/dev/null) || continue
+    case "$c" in
+      *serve-static.mjs*)
+        case "$c" in *bash*|*start.sh*) continue;; esac
+        kill "$(basename "$d")" 2>/dev/null && warn "purana server band kiya (pid $(basename "$d"))"
+        ;;
+    esac
+  done
+}
+
+# Port ka asli maalik kaun hai — /proc/net/tcp se inode nikaal kar fd scan.
+port_pid(){
+  ph=$(printf '%04X' "$PORT")
+  ino=""
+  for f in /proc/net/tcp /proc/net/tcp6; do
+    [ -r "$f" ] || continue
+    ino=$(awk -v p=":$ph" 'NR>1 && $2 ~ p"$" && $4=="0A" {print $10; exit}' "$f" 2>/dev/null)
+    [ -n "$ino" ] && break
+  done
+  [ -n "$ino" ] || return 1
+  for d in /proc/[0-9]*; do
+    for l in "$d"/fd/*; do
+      [ "$(readlink "$l" 2>/dev/null)" = "socket:[$ino]" ] && { basename "$d"; return 0; }
+    done
+  done
+  return 1
+}
+
+# Port khaali hone ka intezaar; na ho to maaro, phir bhi na ho to saaf batao.
+wait_port_free(){
+  for i in $(seq 40); do up || return 0; sleep 0.25; done
+  kill_servers; sleep 1
+  for i in $(seq 20); do up || return 0; sleep 0.25; done
+  if up; then
+    holder=$(port_pid) && [ -n "$holder" ] && {
+      warn "Port $PORT par pid $holder baitha hai: $(tr '\0' ' ' < /proc/$holder/cmdline 2>/dev/null)"
+      kill "$holder" 2>/dev/null; sleep 1
+      up && { kill -9 "$holder" 2>/dev/null; sleep 1; }
+    }
+  fi
+  for i in $(seq 20); do up || return 0; sleep 0.25; done
+  return 1
+}
+
+
 # --------------------------------------------------------------- node
 NODE=""
 for c in "$HOME/node22/bin/node" "$PREFIX/bin/node" "$(command -v node)"; do
@@ -51,8 +101,11 @@ rebuild(){
   [ -x node_modules/.bin/astro ] || "$NPM" install --no-audit --no-fund >>$LOG 2>&1
   if "$NPM" run build >>$LOG 2>&1; then
     alive $RUN/server.pid && kill "$(cat $RUN/server.pid)" 2>/dev/null
-    # Purana server port chhod de tab tak wait karo, warna naya EADDRINUSE se mar jata hai
-    for i in $(seq 40); do up || break; sleep 0.25; done
+    kill_servers
+    if ! wait_port_free; then
+      no "Port $PORT kisi purane server ne pakda hua hai — band karo aur dobara chalao"
+      return 1
+    fi
     for try in 1 2 3; do
       PORT=$PORT nohup "$NODE" serve-static.mjs >>$LOG 2>&1 &
       echo $! > $RUN/server.pid
@@ -98,14 +151,17 @@ esac
 ok "Node $("$NODE" -v)"
 boot_install
 
+# Koi server pehle se chal raha hai? Ho sakta hai woh PURANE code ka ho.
+# Use chalta chhod kar nikalna hi asli bug tha: fix aane ke baad bhi purana
+# page dikhta rehta tha. Isliye purana band karo aur neeche se taaza banao.
 if up; then
-  if ! alive $RUN/watch.pid; then
-    rm -f $RUN/stop
-    nohup bash "$SELF" __watch >>$RUN/logs/watch.log 2>&1 & echo $! >$RUN/watch.pid
-    ok "Auto-update phir se ON"
+  warn "Pehle se ek server chal raha hai — taaza code se badal raha hoon…"
+  alive $RUN/server.pid && kill "$(cat $RUN/server.pid)" 2>/dev/null
+  kill_servers
+  if ! wait_port_free; then
+    no "Port $PORT chhoot nahi raha. Chalaye: bash start.sh stop"
+    exit 1
   fi
-  ok "Pehle se chal rahi hai: http://localhost:$PORT/"
-  exit 0
 fi
 
 # ---------------------------------------------------------- latest code
@@ -157,7 +213,11 @@ fi
 # --------------------------------------------------------------- serve
 alive $RUN/server.pid && kill "$(cat $RUN/server.pid)" 2>/dev/null
 command -v pkill >/dev/null && pkill -f serve-static.mjs 2>/dev/null
-for i in $(seq 40); do up || break; sleep 0.25; done
+kill_servers
+if ! wait_port_free; then
+  no "Port $PORT kisi purane server ne pakda hua hai. Chalaye: bash start.sh stop"
+  exit 1
+fi
 for try in 1 2 3; do
   PORT=$PORT nohup "$NODE" serve-static.mjs >>$LOG 2>&1 & echo $! >$RUN/server.pid
   up && break
