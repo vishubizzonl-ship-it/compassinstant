@@ -23,6 +23,8 @@ interface Props {
   ogImage?: string;
   /** Alt text for the OG image. Defaults to the page title. */
   ogImageAlt?: string;
+  /** Optional Google Tag Manager container id. Defaults to the compass silo. */
+  gtmId?: string;
   /** Extra JSON-LD objects (BreadcrumbList, SoftwareApplication, FAQPage…). */
   breadcrumbLd?: Record<string, unknown>;
   appLd?: Record<string, unknown>;
@@ -46,6 +48,16 @@ const ogImage = /^https?:\/\//.test(rawOg)
   : `${SITE_URL}${baseUrl}${rawOg.startsWith('/') ? '' : '/'}${rawOg}`;
 const ogImageType = /\.png$/i.test(ogImage) ? 'image/png' : 'image/svg+xml';
 const ogImageAlt = Astro.props.ogImageAlt ?? title;
+
+/**
+ * Google Tag Manager — compass silo only.
+ * Covers /compass/, its blog / about / contact / privacy / terms, the blog
+ * posts, the compass error pages and every localized /es/compass/ style page
+ * (basePath is already locale-stripped). Other tools stay untouched.
+ */
+const GTM_ID = 'GTM-WBP336FR';
+const isCompassSilo = basePath === '/compass' || basePath.startsWith('/compass/');
+const gtmId = Astro.props.gtmId ?? (isCompassSilo ? GTM_ID : undefined);
 
 const jsonLd =
   basePath === '/'
@@ -149,8 +161,33 @@ const jsonLd =
         } catch (e) {}
       })();
     </script>
+    {gtmId && (
+      <script is:inline define:vars={{ gtmId }}>
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', gtmId);
+      </script>
+    )}
   </head>
   <body class="min-h-screen bg-canvas text-ink antialiased">
+    {gtmId && (
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+          height="0"
+          width="0"
+          style="display:none;visibility:hidden"
+          title="Google Tag Manager"
+        />
+      </noscript>
+    )}
     <slot />
     <script is:inline>
       (function () {
