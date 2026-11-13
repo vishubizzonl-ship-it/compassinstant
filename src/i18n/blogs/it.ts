@@ -41,7 +41,7 @@ export const it: Record<string, ToolBlogContent> = {
     ],
     outro: "Per navigazione precisa, abbina questa bussola online a una mappa e punti di riferimento noti. Lo strumento è gratuito, funziona su qualsiasi browser moderno e ti aiuta a trovare nord, sud, est e ovest in secondi.",
   },
-  "bubble-level": {
+  "onlinebubblelevel": {
     title: "Livella a bolla online: verifica superfici con il telefono",
     intro: ["Trasforma il telefono in una livella a bolla digitale. La livella di onlinecompass usa l'accelerometro del dispositivo per mostrare l'inclinazione in tempo reale, con viste orizzontale, verticale e a occhio di bue.", "Pratica per appendere quadri, livellare mobili, controllare elettrodomestici e qualsiasi lavoro fai-da-te dove contano pochi gradi.", "Questa guida spiega come funziona una livella digitale, come calibrarla, come leggere gradi e direzioni di inclinazione e come ottenere la lettura più precisa dal telefono. Risponde anche alle domande comuni come precisione di una livella del telefono, se calibrabile, se funziona senza internet e se basta per il fai-da-te."],
     sections: [

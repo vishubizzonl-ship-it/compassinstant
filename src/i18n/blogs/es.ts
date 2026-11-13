@@ -45,7 +45,7 @@ export const es: Record<string, ToolBlogContent> = {
     ],
     outro: "Para navegación precisa, combina esta brújula en línea con un mapa y puntos de referencia conocidos. La herramienta es gratuita, funciona en cualquier navegador moderno y te ayuda a encontrar norte, sur, este y oeste en segundos.",
   },
-  "bubble-level": {
+  "onlinebubblelevel": {
     title: "Nivel de burbuja en línea: revisa superficies con tu teléfono",
     intro: [
       "Convierte tu teléfono en un nivel de burbuja digital. El nivel de onlinecompass usa el acelerómetro del dispositivo para mostrar la inclinación en tiempo real, con vistas horizontal, vertical y de ojo de buey.",

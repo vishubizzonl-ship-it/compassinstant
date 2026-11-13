@@ -223,7 +223,7 @@ export const en: Record<string, ToolBlogContent> = {
     ],
     outro: "For precise navigation, pair this online compass with a map and known landmarks. The tool is free, works on any modern browser, and helps you find north, south, east, and west in seconds.",
   },
-  "bubble-level": {
+  "onlinebubblelevel": {
     title: "Online Bubble Level: Check Surfaces with Your Phone",
     intro: [
       "Turn your phone into a digital spirit level. onlinecompass's bubble level uses the device accelerometer to show tilt in real time, with horizontal, vertical, and bull's-eye views.",

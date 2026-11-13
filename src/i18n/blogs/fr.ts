@@ -41,7 +41,7 @@ export const fr: Record<string, ToolBlogContent> = {
     ],
     outro: "Pour une navigation précise, associez cette boussole en ligne à une carte et des points de repère connus. L'outil est gratuit, fonctionne sur tout navigateur moderne et vous aide à trouver nord, sud, est et ouest en quelques secondes.",
   },
-  "bubble-level": {
+  "onlinebubblelevel": {
     title: "Niveau à bulle en ligne : vérifiez les surfaces avec votre téléphone",
     intro: ["Transformez votre téléphone en niveau à bulle numérique. Le niveau de onlinecompass utilise l'accéléromètre de l'appareil pour afficher l'inclinaison en temps réel, avec vues horizontale, verticale et œil-de-bœuf.", "Pratique pour accrocher des tableaux, niveler des meubles, vérifier des appareils et tout bricolage où quelques degrés comptent.", "Ce guide explique comment fonctionne un niveau numérique, comment le calibrer, comment lire les degrés et les directions d'inclinaison, et comment obtenir la lecture la plus précise depuis votre téléphone. Il répond aussi aux questions courantes comme la précision d'un niveau de téléphone, s'il est calibrable, s'il fonctionne sans internet et s'il suffit pour le bricolage."],
     sections: [

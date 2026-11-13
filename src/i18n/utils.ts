@@ -9,7 +9,7 @@ export const SITE_URL = "https://instanten.com";
 export const routePaths = [
   "/",
   "/onlinecompass/",
-  "/bubble-level/",
+  "/onlinebubblelevel/",
   "/speedometer/",
   "/qibla-finder/",
   "/privacy/",
@@ -138,7 +138,7 @@ const routeMetaKeys: Record<
     description: "page.compass.desc",
     brandSuffix: true,
   },
-  "/bubble-level/": {
+  "/onlinebubblelevel/": {
     title: "page.bubble.title",
     description: "page.bubble.desc",
     brandSuffix: true,
@@ -183,7 +183,7 @@ const routeMetaKeys: Record<
 /** Localized <title> and meta description for the current route. */
 const toolNameKeys: Record<string, TranslationKey> = {
   compass: "page.compass.title",
-  "bubble-level": "page.bubble.title",
+  "onlinebubblelevel": "page.bubble.title",
   speedometer: "page.speed.title",
   "qibla-finder": "page.qibla.title",
 };

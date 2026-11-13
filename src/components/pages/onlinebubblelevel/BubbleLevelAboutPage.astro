@@ -16,8 +16,8 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Bubble Level', item: 'https://instanten.com/bubble-level/' },
-    { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/bubble-level/about/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Bubble Level', item: 'https://instanten.com/onlinebubblelevel/' },
+    { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/onlinebubblelevel/about/' },
   ],
 };
 
@@ -31,7 +31,7 @@ const breadcrumbLd = {
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/bubble-level/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
+    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.about.title')}</h1>
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
 
@@ -99,18 +99,18 @@ const breadcrumbLd = {
     <p class="text-body text-base leading-relaxed mb-4">
       If a reading looks wrong, calibrate on a surface you trust, then run a <strong>bubble level check</strong>
       a second time before you cut or drill. Our
-      <a href="/bubble-level/blog/how-accurate-is-a-phone-bubble-level" class="text-link hover:underline">accuracy guide</a>
+      <a href="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level" class="text-link hover:underline">accuracy guide</a>
       explains the four common causes in detail.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/bubble-level/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
+      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/onlinebubblelevel/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Contact</h2>
     <p class="text-body text-base leading-relaxed">
-      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/bubble-level/contact/')} class="text-link hover:underline">Contact us here</a>.
+      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/onlinebubblelevel/contact/')} class="text-link hover:underline">Contact us here</a>.
     </p>
   <BubbleLevelFaq heading="Frequently asked questions about the online bubble level" />
   </main>

@@ -3,11 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import ToolBlog from '../ToolBlog.astro';
-import BubbleLevelFaq from './bubble-level/BubbleLevelFaq.astro';
+import BubbleLevelFaq from './onlinebubblelevel/BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 import { getToolBlog } from '../../i18n/blogs';
 
-const toolBlogFaq = getToolBlog('bubble-level', 'en')?.faq ?? [];
+const toolBlogFaq = getToolBlog('onlinebubblelevel', 'en')?.faq ?? [];
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -18,7 +18,7 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}${baseUrl}/` },
-    { '@type': 'ListItem', position: 2, name: 'Bubble Level', item: `${siteUrl}${baseUrl}/bubble-level/` },
+    { '@type': 'ListItem', position: 2, name: 'Bubble Level', item: `${siteUrl}${baseUrl}/onlinebubblelevel/` },
   ],
 };
 const appLd = {
@@ -27,7 +27,7 @@ const appLd = {
   name: 'Online Bubble Level',
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
-  url: `${siteUrl}${baseUrl}/bubble-level/`,
+  url: `${siteUrl}${baseUrl}/onlinebubblelevel/`,
   description:
     'Free online bubble level: a level checker tool and spirit level online that turns your phone into a leveler tool to check any surface in your browser. No install, no sign-up.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
@@ -251,7 +251,7 @@ const appLd = {
       </div>
     </section>
 
-  <ToolBlog tool="bubble-level" faqLd={false} />
+  <ToolBlog tool="onlinebubblelevel" faqLd={false} />
 
   <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="bubble-guides-title">
     <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
@@ -260,32 +260,32 @@ const appLd = {
       </h2>
       <ul class="flex flex-col gap-0 border border-hairline rounded-md overflow-hidden">
         <li class="border-b border-hairline last:border-b-0">
-          <a href="/bubble-level/blog/how-to-use-an-online-bubble-level" class="block px-4 py-4 hover:bg-canvas transition-colors">
+          <a href="/onlinebubblelevel/blog/how-to-use-an-online-bubble-level" class="block px-4 py-4 hover:bg-canvas transition-colors">
             <span class="block font-sans text-base font-medium text-ink">How to Use an Online Bubble Level (Step-by-Step)</span>
             <span class="block text-sm text-body mt-1">Open the page, place the phone flat, calibrate, and read the tilt in degrees.</span>
           </a>
         </li>
         <li class="border-b border-hairline last:border-b-0">
-          <a href="/bubble-level/blog/how-accurate-is-a-phone-bubble-level" class="block px-4 py-4 hover:bg-canvas transition-colors">
+          <a href="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level" class="block px-4 py-4 hover:bg-canvas transition-colors">
             <span class="block font-sans text-base font-medium text-ink">How Accurate Is a Phone Bubble Level?</span>
             <span class="block text-sm text-body mt-1">Typical error, what ruins a reading, and how to calibrate for a reliable check.</span>
           </a>
         </li>
         <li class="border-b border-hairline last:border-b-0">
-          <a href="/bubble-level/blog/level-furniture-shelves-appliances" class="block px-4 py-4 hover:bg-canvas transition-colors">
+          <a href="/onlinebubblelevel/blog/level-furniture-shelves-appliances" class="block px-4 py-4 hover:bg-canvas transition-colors">
             <span class="block font-sans text-base font-medium text-ink">How to Level Furniture, Shelves and Appliances</span>
             <span class="block text-sm text-body mt-1">Step-by-step checks for a rocking table, a leaning bookcase and a walking washing machine.</span>
           </a>
         </li>
         <li class="border-b border-hairline last:border-b-0">
-          <a href="/bubble-level/blog/bubble-level-vs-spirit-level" class="block px-4 py-4 hover:bg-canvas transition-colors">
+          <a href="/onlinebubblelevel/blog/bubble-level-vs-spirit-level" class="block px-4 py-4 hover:bg-canvas transition-colors">
             <span class="block font-sans text-base font-medium text-ink">Bubble Level vs Spirit Level</span>
             <span class="block text-sm text-body mt-1">Accuracy, cost and speed compared, and when to reach for a real level.</span>
           </a>
         </li>
       </ul>
       <p class="text-body text-base leading-relaxed mt-6">
-        <a href="/bubble-level/blog/" class="text-link hover:underline">See all Online Bubble Level guides →</a>
+        <a href="/onlinebubblelevel/blog/" class="text-link hover:underline">See all Online Bubble Level guides →</a>
       </p>
     </div>
   </section>

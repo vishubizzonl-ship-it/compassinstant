@@ -41,7 +41,7 @@ export const de: Record<string, ToolBlogContent> = {
     ],
     outro: "Für präzise Navigation kombinieren Sie diesen Online-Kompass mit einer Karte und bekannten Orientierungspunkten. Das Werkzeug ist kostenlos, funktioniert in jedem modernen Browser und hilft Ihnen, Nord, Süd, Ost und West in Sekunden zu finden.",
   },
-  "bubble-level": {
+  "onlinebubblelevel": {
     title: "Online-Wasserwaage: Oberflächen mit dem Handy prüfen",
     intro: ["Verwandeln Sie Ihr Telefon in eine digitale Wasserwaage. Die Wasserwaage von onlinecompass nutzt den Beschleunigungssensor des Geräts, um die Neigung in Echtzeit anzuzeigen, mit horizontaler, vertikaler und Bull's-Eye-Ansicht.", "Praktisch zum Aufhängen von Bildern, Nivellieren von Möbeln, Überprüfen von Geräten und jedem DIY-Projekt, bei dem wenige Grad wichtig sind.", "Dieser Leitfaden erklärt, wie eine digitale Wasserwaage funktioniert, wie man sie kalibriert, wie man Grad und Neigungsrichtungen liest und wie man die genaueste Ablesung vom Telefon erhält. Er beantwortet auch häufige Fragen wie Genauigkeit eines Handy-Niveaus, ob kalibrierbar, ob ohne Internet funktioniert und ob für DIY ausreichend."],
     sections: [

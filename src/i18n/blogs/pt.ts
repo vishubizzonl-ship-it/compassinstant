@@ -41,7 +41,7 @@ export const pt: Record<string, ToolBlogContent> = {
     ],
     outro: "Para navegação precisa, combine esta bússola online com um mapa e pontos de referência conhecidos. A ferramenta é gratuita, funciona em qualquer navegador moderno e ajuda a encontrar norte, sul, leste e oeste em segundos.",
   },
-  "bubble-level": {
+  "onlinebubblelevel": {
     title: "Nível de bolha online: verifique superfícies com o telefone",
     intro: ["Transforme o telefone em um nível de bolha digital. O nível de onlinecompass usa o acelerômetro do dispositivo para mostrar a inclinação em tempo real, com vistas horizontal, vertical e olho de boi.", "Prático para pendurar quadros, nivelar móveis, verificar eletrodomésticos e qualquer trabalho faça-você-mesmo em que alguns graus importam.", "Este guia explica como funciona um nível digital, como calibrá-lo, como ler graus e direções de inclinação e como obter a leitura mais precisa do telefone. Também responde às perguntas comuns como precisão de um nível de telefone, se calibrável, se funciona sem internet e se basta para faça-você-mesmo."],
     sections: [
