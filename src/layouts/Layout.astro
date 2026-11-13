@@ -126,15 +126,20 @@ const jsonLd =
 
     <link rel="canonical" href={canonical} />
 
-    <!-- hreflang: every locale points at the equivalent page, not the homepage -->
-    {alternates.map((alternate) => (
-      <link
-        rel="alternate"
-        hreflang={alternate.hreflang}
-        href={alternate.href}
-      />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={xDefault} />
+    <!-- hreflang: alternate links are only emitted for indexable pages, and only
+         for pages that really exist in each locale (see getAlternateLinks). -->
+    {!Astro.props.noindex && (
+      <>
+        {alternates.map((alternate) => (
+          <link
+            rel="alternate"
+            hreflang={alternate.hreflang}
+            href={alternate.href}
+          />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={xDefault} />
+      </>
+    )}
 
     <!-- Open Graph -->
     <meta property="og:type" content={Astro.props.type ?? 'website'} />
@@ -170,10 +175,10 @@ const jsonLd =
       <script type="application/ld+json" set:html={JSON.stringify(Astro.props.appLd)} />
     )}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" as="style" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" />
+    <!-- Fonts are self-hosted (public/fonts): no third-party request, no extra
+         DNS/TLS handshake, and no visitor IP sent to a font CDN. -->
+    <link rel="preload" href="/fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/fonts/fonts.css" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
