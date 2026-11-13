@@ -1,0 +1,36 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { getLangFromUrl, useTranslatedPath } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const translatePath = useTranslatedPath(lang);
+---
+
+<Layout title="403 — Forbidden" description="You do not have permission to open this speedometer page." noindex>
+  <Nav />
+  <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-24 text-center">
+    <p class="font-mono text-sm text-mute mb-4">403</p>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-4">Forbidden</h1>
+    <p class="text-body text-base leading-relaxed mb-8">
+      You do not have permission to open this page. Head back to the online speedometer and continue from there — the tool itself needs no account and nothing to install.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-8">
+      If you followed a link from somewhere else, it may point to a restricted part of the speedometer silo. The free speedometer, the guides and the contact form all stay open to everyone.
+    </p>
+    <a
+      href={translatePath('/speedometer/')}
+      class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
+    >
+      Back to speedometer
+    </a>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-body">
+      <a href={translatePath('/speedometer/blog/')} class="hover:text-ink transition-colors">Speedometer guides</a>
+      <a href={translatePath('/speedometer/about/')} class="hover:text-ink transition-colors">About</a>
+      <a href={translatePath('/speedometer/contact/')} class="hover:text-ink transition-colors">Contact</a>
+      <a href="/" class="hover:text-ink transition-colors">All tools</a>
+    </div>
+  </main>
+  <Footer />
+</Layout>
