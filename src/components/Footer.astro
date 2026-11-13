@@ -3,12 +3,15 @@ import Logo from "./Logo.astro";
 import {
   getLangFromUrl,
   getLocalizedPath,
+  hasLocaleVersion,
   routePaths,
   stripLocale,
+  translatePathIfExists,
   useTranslations,
   useTranslatedPath,
   languages,
 } from '../i18n/utils';
+import type { LangCode } from '../i18n/ui';
 
 const url = new URL(Astro.url);
 const lang = getLangFromUrl(url);
@@ -17,7 +20,7 @@ const translatePath = useTranslatedPath(lang);
 const currentPath = stripLocale(url.pathname);
 const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
-  : '/';
+  : '/onlinecompass/';
 
 /**
  * The footer follows the header: inside a tool's own pages it stays within that
@@ -41,6 +44,15 @@ const toolHome: Record<FooterTool, string> = {
   onlinespeedometer: '/onlinespeedometer/',
   'onlineqibla': '/onlineqibla/',
 };
+
+// The footer wordmark follows the header: the full online name of the tool.
+const toolWordmark: Record<FooterTool, string> = {
+  onlinecompass: 'onlinecompass',
+  onlinebubblelevel: 'onlinebubblelevel',
+  onlinespeedometer: 'onlinespeedometer',
+  onlineqibla: 'onlineqibla',
+};
+const wordmark = activeTool ? toolWordmark[activeTool] : 'onlinecompass';
 
 const toolTaglines: Record<FooterTool, string> = {
   onlinecompass:
@@ -67,9 +79,9 @@ const toolLinks = activeTool
   <div class="mx-auto max-w-7xl px-6 lg:px-8 py-12 lg:py-16">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8">
       <div class="md:col-span-2">
-        <a href={translatePath(activeTool ? toolHome[activeTool] : '/')} class="inline-flex items-center gap-2.5 rounded-full px-2 py-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label="onlinecompass — {t('nav.home')}">
+        <a href={translatePath(activeTool ? toolHome[activeTool] : '/')} class="inline-flex items-center gap-2.5 rounded-full px-2 py-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label={`${wordmark} — ${t('nav.home')}`}>
           <Logo size="sm" />
-          <span class="font-sans text-sm font-semibold tracking-tight text-ink">onlinecompass</span>
+          <span class="font-sans text-sm font-semibold tracking-tight text-ink">{wordmark}</span>
         </a>
         <p class="mt-4 text-sm text-body max-w-[24rem] leading-relaxed">
           {activeTool ? toolTaglines[activeTool] : t('footer.tagline')}
@@ -103,15 +115,15 @@ const toolLinks = activeTool
                 { href: `${toolHome[activeTool]}contact/`, label: t('footer.contact') },
               ]
             : [
-                { href: '/blog/', label: 'Blog' },
-                { href: '/about/', label: t('footer.about') },
-                { href: '/privacy/', label: t('footer.privacy') },
-                { href: '/terms/', label: t('footer.terms') },
-                { href: '/contact/', label: t('footer.contact') },
+                { href: '/onlinecompass/blog/', label: 'Blog' },
+                { href: '/onlinecompass/about/', label: t('footer.about') },
+                { href: '/onlinecompass/privacy/', label: t('footer.privacy') },
+                { href: '/onlinecompass/terms/', label: t('footer.terms') },
+                { href: '/onlinecompass/contact/', label: t('footer.contact') },
               ]
           ).map((item) => (
             <li>
-              <a href={translatePath(item.href)} class="text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm">{item.label}</a>
+              <a href={translatePathIfExists(lang, item.href)} class="text-sm text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm">{item.label}</a>
             </li>
           ))}
         </ul>
@@ -125,7 +137,10 @@ const toolLinks = activeTool
         {Object.entries(languages).map(([code, name]) => (
           <li>
             <a
-              href={getLocalizedPath(code as keyof typeof languages, safePath)}
+              href={getLocalizedPath(
+                code as LangCode,
+                hasLocaleVersion(currentPath) ? currentPath : activeTool ? toolHome[activeTool] : '/onlinecompass/',
+              )}
               hreflang={code}
               lang={code}
               aria-current={code === lang ? 'true' : undefined}

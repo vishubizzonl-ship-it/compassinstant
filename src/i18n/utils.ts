@@ -5,19 +5,33 @@ export { languages, defaultLang, showDefaultLang };
 
 export const SITE_URL = "https://instanten.com";
 
-/** All routes that exist in every locale. Used for hreflang + sitemap-safe links. */
+/**
+ * The only routes that have a translated copy in every locale: the four tool
+ * home pages. Silo sub-pages (blog / about / privacy / terms / contact) and the
+ * blog posts exist in English only, so hreflang, the language switcher and the
+ * header/footer links must never invent a localized URL for them — that is what
+ * produced hundreds of 404s and dead hreflang entries.
+ */
 export const routePaths = [
-  "/",
   "/onlinecompass/",
   "/onlinebubblelevel/",
   "/onlinespeedometer/",
   "/onlineqibla/",
-  "/privacy/",
-  "/terms/",
-  "/about/",
-  "/contact/",
-  "/blog/",
 ] as const;
+
+/** True when `basePath` (locale-stripped) exists in every language. */
+export function hasLocaleVersion(basePath: string): boolean {
+  return (routePaths as readonly string[]).includes(normalizePath(basePath));
+}
+
+/**
+ * Localize a path only when that locale version actually exists.
+ * Otherwise return the English path, so a link never points at a missing page.
+ */
+export function translatePathIfExists(lang: LangCode, path: string): string {
+  const normalized = normalizePath(path);
+  return getLocalizedPath(hasLocaleVersion(normalized) ? lang : defaultLang, normalized);
+}
 
 export function isLang(value: string): value is LangCode {
   return value in languages;
@@ -103,6 +117,23 @@ export function getAlternateLinks(
   siteUrl: string = SITE_URL,
 ): { alternates: AlternateLink[]; xDefault: string } {
   const basePath = stripLocale(pathname);
+
+  // English-only page (blog post, about, …): advertise just itself. Claiming
+  // seven translations that do not exist is worse than claiming none.
+  if (!hasLocaleVersion(basePath)) {
+    return {
+      alternates: [
+        {
+          lang: defaultLang,
+          hreflang: defaultLang,
+          label: languages[defaultLang],
+          href: new URL(getLocalizedPath(defaultLang, basePath), siteUrl).href,
+        },
+      ],
+      xDefault: new URL(getLocalizedPath(defaultLang, basePath), siteUrl).href,
+    };
+  }
+
   const alternates = (Object.keys(languages) as LangCode[]).map((lang) => ({
     lang,
     hreflang: lang,
@@ -182,7 +213,7 @@ const routeMetaKeys: Record<
 
 /** Localized <title> and meta description for the current route. */
 const toolNameKeys: Record<string, TranslationKey> = {
-  compass: "page.compass.title",
+  onlinecompass: "page.compass.title",
   "onlinebubblelevel": "page.bubble.title",
   onlinespeedometer: "page.speed.title",
   "onlineqibla": "page.qibla.title",
@@ -233,9 +264,12 @@ export function getPageSeo(lang: LangCode, pathname: string) {
 }
 
 export function useTranslations(lang: LangCode) {
-  const localizedUI = ui[lang] || ui[defaultLang];
+  // Each locale file may carry a slightly different key set, so the lookup is
+  // typed as a plain string map rather than the English literal union.
+  const localizedUI = (ui[lang] || ui[defaultLang]) as Record<string, string>;
+  const fallbackUI = ui[defaultLang] as Record<string, string>;
   return function t(key: TranslationKey): string {
-    return localizedUI[key] || ui[defaultLang][key] || key;
+    return localizedUI[key] || fallbackUI[key] || key;
   };
 }
 

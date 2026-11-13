@@ -4,11 +4,14 @@ import { languages } from '../i18n/ui';
 import {
   getLangFromUrl,
   getLocalizedPath,
+  hasLocaleVersion,
   routePaths,
   stripLocale,
+  translatePathIfExists,
   useTranslations,
   useTranslatedPath,
 } from '../i18n/utils';
+import type { LangCode } from '../i18n/ui';
 
 const url = new URL(Astro.url);
 const lang = getLangFromUrl(url);
@@ -23,7 +26,7 @@ const currentPath = stripLocale(url.pathname);
 const activePath = currentPath === '/' ? '/onlinecompass/' : currentPath;
 const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
-  : '/';
+  : '/onlinecompass/';
 
 /**
  * Every tool is a self-contained site.
@@ -82,12 +85,24 @@ const companyItems = activeTool
       { href: `${toolHome[activeTool]}contact/`, label: t('footer.contact') },
     ]
   : [
-      { href: '/blog/', label: 'Blog' },
-      { href: '/about/', label: t('footer.about') },
-      { href: '/privacy/', label: t('footer.privacy') },
-      { href: '/terms/', label: t('footer.terms') },
-      { href: '/contact/', label: t('footer.contact') },
+      { href: '/onlinecompass/blog/', label: 'Blog' },
+      { href: '/onlinecompass/about/', label: t('footer.about') },
+      { href: '/onlinecompass/privacy/', label: t('footer.privacy') },
+      { href: '/onlinecompass/terms/', label: t('footer.terms') },
+      { href: '/onlinecompass/contact/', label: t('footer.contact') },
     ];
+
+/**
+ * Language switcher target for the current page.
+ * Tool home pages exist in every locale, so they switch to the same page.
+ * Everything else (blog, about, error pages) is English-only, so the switcher
+ * goes to that locale's tool home instead of a URL that would 404.
+ */
+const langSwitchPath = (code: LangCode) =>
+  getLocalizedPath(
+    code,
+    hasLocaleVersion(currentPath) ? currentPath : activeTool ? toolHome[activeTool] : '/onlinecompass/',
+  );
 ---
 
 <nav class="sticky top-0 z-50 bg-canvas/90 backdrop-blur-md border-b border-hairline" aria-label={t('nav.primary')}>
@@ -122,7 +137,7 @@ const companyItems = activeTool
           <div class="absolute left-0 top-full mt-2 w-40 bg-canvas-elevated border border-hairline rounded-md shadow-lg overflow-hidden z-50">
             {companyItems.map((item) => (
               <a
-                href={translatePath(item.href)}
+                href={translatePathIfExists(lang, item.href)}
                 class="block px-4 py-2.5 text-sm text-body hover:text-ink hover:bg-canvas transition-colors"
               >
                 {item.label}
@@ -143,7 +158,7 @@ const companyItems = activeTool
           <div id="lang-menu" class="hidden absolute right-0 top-full mt-2 w-44 bg-canvas-elevated border border-hairline rounded-md shadow-lg overflow-hidden z-50">
             {Object.entries(languages).map(([code, name]) => (
               <a
-                href={getLocalizedPath(code as keyof typeof languages, safePath)}
+                href={langSwitchPath(code as LangCode)}
                 hreflang={code}
                 lang={code}
                 aria-current={code === lang ? 'true' : undefined}
@@ -190,7 +205,7 @@ const companyItems = activeTool
     <div class="mx-auto max-w-7xl px-4 sm:px-6 py-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 -mx-1 border-t border-hairline">
       {companyItems.map((item) => (
         <a
-          href={translatePath(item.href)}
+          href={translatePathIfExists(lang, item.href)}
           aria-current={activePath === item.href ? 'page' : undefined}
           class="whitespace-nowrap rounded-full px-2 py-1 text-[11px] text-body hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
         >
