@@ -652,7 +652,7 @@ export const en: Record<string, ToolBlogContent> = {
     title: "Qibla Finder: Find the Direction of Prayer Anywhere",
     intro: [
       "Find the direction of the Kaaba from anywhere in the world. onlinecompass's qibla finder combines your location with a compass to show the qibla bearing in real time.",
-      "It works in your browser with no download, and your location is used only on your device.",
+      "It works in your browser with no download. Your coordinates are used inside the page to calculate the bearing and are not stored; if you block the location prompt, the page falls back to an approximate city looked up from your IP address.",
       "This guide explains how the qibla bearing is calculated, how to get an accurate reading, what affects accuracy, and how to use the tool while traveling. It also covers the most common questions people ask, such as how to find qibla, does it work offline, and is my location stored.",
     ],
     sections: [
@@ -843,7 +843,7 @@ export const en: Record<string, ToolBlogContent> = {
     faq: [
       { q: "Does the qibla finder work without internet?", a: "The calculation runs locally, but location permission and an initial page load are needed." },
       { q: "Why is the direction off?", a: "Compass interference or a poor GPS fix. Recalibrate and get a better location lock." },
-      { q: "Is my location stored?", a: "No. It is used only on your device for the bearing." },
+      { q: "Is my location stored?", a: "No. With location access allowed, the coordinates are used inside the page for the bearing and then discarded. If you decline the prompt, an approximate city is looked up from your IP address for that one request only." },
       { q: "Does it work on desktop?", a: "Only with location and orientation support, which most desktops lack." },
       { q: "How accurate is an online qibla finder?", a: "Usually within a few degrees with a good GPS fix and a calibrated compass." },
       { q: "Which direction is qibla from my location?", a: "Open the online qibla finder and allow location. The bearing in degrees and the dial show the direction to face." },

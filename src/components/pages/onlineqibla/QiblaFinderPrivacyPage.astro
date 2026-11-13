@@ -73,9 +73,26 @@ const breadcrumbLd = {
       back to you even in principle.
     </p>
 
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1b. The location prompt and the IP fallback</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Opening the Qibla finder triggers the browser's own location prompt. If you allow it, your
+      coordinates are read inside the tab, the bearing is computed locally, and nothing is sent
+      anywhere. If you decline, or your device cannot get a fix, the page requests a city-level
+      location from a third-party IP lookup service so it can still show a <strong>Qibla
+      direction</strong> instead of an empty dial. In that single case your IP address is sent to that
+      service for the request; the result is used once, in the tab, and is not logged or stored by us.
+      The fallback is skipped completely when location access is granted.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The fallback is deliberately labelled on screen as approximate, because an IP lookup resolves to
+      a city rather than a street. If the <strong>online Qibla compass</strong> says "approximate", the
+      number can be a degree or two out — allow location access and reload for an exact
+      <strong>online Qibla location</strong>.
+    </p>
+
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Cookies</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass does not use advertising cookies. We do use one third-party analytics service to count page views, with IP anonymisation switched on and no advertising or cross-site tracking features enabled; it sets its own analytics cookies. We also use localStorage (not cookies) to remember your calibration and theme preference between visits, and that data never leaves your device.
+      onlinecompass does not use advertising cookies. We do use one third-party analytics service to count page views, with IP anonymisation switched on and no advertising or cross-site tracking features enabled; it sets its own analytics cookies. One further third-party request is made only if you block location access — the IP lookup described in 1b above. We also use localStorage (not cookies) to remember your calibration and theme preference between visits, and that data never leaves your device.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       You can clear this data at any time by clearing your browser's site data for onlinecompass.
@@ -104,7 +121,8 @@ const breadcrumbLd = {
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       One practical consequence: because there is no stored last location, this
-      <strong>online Qibla finder</strong> always asks the browser for a fresh fix. That is deliberately
+      <strong>online Qibla finder</strong> always asks the browser for a fresh fix (or, if you decline,
+      for a fresh IP-based estimate). That is deliberately
       less convenient than an app and considerably more private — the
       <strong>online Qibla compass</strong> has no memory to leak if the phone changes hands.
     </p>

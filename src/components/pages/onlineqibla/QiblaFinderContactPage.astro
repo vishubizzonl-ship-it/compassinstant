@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
+import ContactForm from '../../ContactForm.astro';
 import QiblaFinderFaq from './QiblaFinderFaq.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
 
@@ -42,9 +43,10 @@ const breadcrumbLd = {
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How the bearing is calculated</h2>
     <p class="text-body text-base leading-relaxed mb-4">
       Before you write, it helps to know what the page is doing. This <strong>online Qibla</strong> tool
-      takes your GPS coordinates, computes the great-circle bearing to the Kaaba, and combines it with
-      your phone's compass heading to draw the <strong>Qibla direction arrow</strong>. Both inputs are
-      read in the browser, and neither is uploaded.
+      takes your coordinates, computes the great-circle bearing to the Kaaba, and combines it with your
+      phone's compass heading to draw the <strong>Qibla direction arrow</strong>. Both inputs are read
+      in the browser and neither is uploaded — the only exception is that, if you block the location
+      prompt, an approximate city is looked up from your IP address so the page can still work.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       That explains most support questions: a bearing that looks wrong is usually a magnetometer
@@ -80,33 +82,7 @@ const breadcrumbLd = {
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Send a message</h2>
-    <form class="space-y-4" action="mailto:hello@instanten.com" method="post" enctype="text/plain">
-      <div>
-        <label for="name" class="block text-sm font-medium text-ink mb-1">Name</label>
-        <input id="name" name="name" type="text" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" />
-      </div>
-      <div>
-        <label for="email" class="block text-sm font-medium text-ink mb-1">Email</label>
-        <input id="email" name="email" type="email" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" />
-      </div>
-      <div>
-        <label for="subject" class="block text-sm font-medium text-ink mb-1">Subject</label>
-        <select id="subject" name="subject" class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
-          <option>Bug report</option>
-          <option>Feature request</option>
-          <option>Calibration / accuracy issue</option>
-          <option>Privacy question</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div>
-        <label for="message" class="block text-sm font-medium text-ink mb-1">Message</label>
-        <textarea id="message" name="message" rows="5" required class="w-full rounded-md border border-hairline bg-canvas px-3 py-2 text-sm text-ink focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"></textarea>
-      </div>
-      <button type="submit" class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
-        Send message
-      </button>
-    </form>
+    <ContactForm />
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Before you send a screenshot</h2>
     <p class="text-body text-base leading-relaxed mb-4">

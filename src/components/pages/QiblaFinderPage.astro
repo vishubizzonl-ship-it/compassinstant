@@ -66,7 +66,7 @@ const appLd = {
           </button>
           <div class="text-center mb-4">
             <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">{t('qibla.ui.title')}</h2>
-            <p class="text-xs text-mute font-mono mt-1 min-h-[1rem]" id="qibla-status">Locating…</p>
+            <p class="text-xs text-mute font-mono mt-1 min-h-[1rem]" id="qibla-status" aria-live="polite">Locating…</p>
             <p class="text-3xl font-semibold tracking-tight tabular-nums text-ink mt-2 min-h-[2.25rem]" id="qibla-bearing">—</p>
           </div>
 
@@ -249,9 +249,10 @@ const appLd = {
           number attached.
         </p>
         <p class="text-body text-base leading-relaxed mb-4">
-          The tool is free, needs no account, and your location is used only to calculate the bearing in
-          the moment — nothing is stored and no history is kept. That makes it practical on a shared
-          device, and it means an <strong>online Qibla direction</strong> check leaves nothing behind.
+          The tool is free and needs no account. Your coordinates are used in the tab to calculate the
+          bearing and are never stored, so an <strong>online Qibla direction</strong> check leaves
+          nothing behind: allow location access for an exact bearing, or let the page fall back to an
+          approximate city from your IP address if you decline.
         </p>
 
         <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
@@ -321,18 +322,70 @@ const appLd = {
       if (locText) locText.textContent = 'Qibla bearing: ' + bearing.toFixed(1) + '°';
     }
 
-    async function getLocation() {
+    type Coords = { lat: number; lng: number; accuracy?: number };
+
+    /** The device's own position — the exact answer. Asks permission once. */
+    function locateWithGps(): Promise<Coords | null> {
+      if (!('geolocation' in navigator)) return Promise.resolve(null);
+      return new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) =>
+            resolve({
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+              accuracy: pos.coords.accuracy,
+            }),
+          () => resolve(null),
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+        );
+      });
+    }
+
+    /**
+     * City-level guess from the IP address. Only used when the visitor blocks or
+     * has no GPS — it can be a whole city out, so the tool says so on screen.
+     */
+    async function locateWithIp(): Promise<Coords | null> {
       try {
         const r = await fetch('https://ipapi.co/json/');
         const data = await r.json();
         if (data && typeof data.latitude === 'number' && typeof data.longitude === 'number') {
-          const b = qiblaBearing(data.latitude, data.longitude);
-          applyBearing(b);
-          return;
+          return { lat: data.latitude, lng: data.longitude };
         }
       } catch {}
+      return null;
+    }
+
+    function setLocationLabel(text: string) {
+      if (locText) locText.textContent = text;
+    }
+
+    async function getLocation() {
+      if (statusEl) statusEl.textContent = 'Locating…';
+
+      const gps = await locateWithGps();
+      if (gps) {
+        applyBearing(qiblaBearing(gps.lat, gps.lng));
+        const acc = gps.accuracy ? Math.round(gps.accuracy) : null;
+        setLocationLabel(
+          'Qibla bearing from your location (GPS' + (acc !== null ? ' ±' + acc + ' m' : '') + ')',
+        );
+        return;
+      }
+
+      if (statusEl) statusEl.textContent = 'Location blocked — estimating your city…';
+      const ip = await locateWithIp();
+      if (ip) {
+        applyBearing(qiblaBearing(ip.lat, ip.lng));
+        setLocationLabel(
+          'Approximate bearing from your IP city — allow location access for an exact one',
+        );
+        if (statusEl) statusEl.textContent = 'Approximate location';
+        return;
+      }
+
       if (statusEl) statusEl.textContent = 'Location unavailable';
-      if (locText) locText.textContent = 'Could not determine location.';
+      setLocationLabel('Could not determine location — allow location access and reload.');
     }
 
     type E = DeviceOrientationEvent & { webkitCompassHeading?: number | null; alpha?: number | null; beta?: number | null; gamma?: number | null; absolute?: boolean };
@@ -455,7 +508,9 @@ const appLd = {
       if ('ondeviceorientationabsolute' in window) {
         window.addEventListener('deviceorientationabsolute', handleOrientation as any, true);
       } else {
-        window.addEventListener('deviceorientation', handleOrientation as any);
+        // TS narrows `window` to never inside this branch; the cast keeps the
+        // fallback listener type-safe.
+        (window as Window).addEventListener('deviceorientation', handleOrientation as any);
       }
     }
 
