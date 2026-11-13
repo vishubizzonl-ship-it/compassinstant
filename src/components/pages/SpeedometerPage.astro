@@ -228,8 +228,8 @@ const appLd = {
           repeats itself.
         </p>
         <p class="text-body text-base leading-relaxed mb-4">
-          Expect two limits. Tall buildings, trees and tunnels cause dropouts, and the speed will hold
-          its last value or freeze until the fix returns. And rapid acceleration can lag by a second,
+          Expect two limits. Tall buildings, trees and tunnels cause dropouts, and the reading holds
+          for a few seconds before it drops back to zero until the fix returns. And rapid acceleration can lag by a second,
           because the chip averages positions. Neither matters for normal use, but do not treat any
           <strong>HardSpeedometer test</strong> at high speed as a precision measurement — for that a
           calibrated unit still wins.
@@ -445,9 +445,23 @@ const appLd = {
     };
 
     // --- live speed ----------------------------------------------------------
-    // coords.speed is null on plenty of phones and on most desktops, which used
-    // to show a permanent 0.0 while the device was moving. When the browser does
-    // not report a speed, fall back to the distance between two fixes over time.
+    // Three things used to make a parked device show a speed:
+    //   1. coords.speed is noisy on Android and often reports 0.1-0.5 m/s while
+    //      the phone sits on a table.
+    //   2. the distance fallback compared two fixes ~1 s apart, where GPS jitter
+    //      is bigger than the real movement.
+    //   3. an unusable fix kept the previous reading, so after stopping the
+    //      display froze at the last speed and never came back to zero.
+    // The rules below keep the readout on the device's actual speed: a dead band,
+    // a longer measuring window with a jitter floor, and a hold that expires.
+    // GPS noise on a parked phone reads up to ~0.5 m/s (1.8 km/h), so anything
+    // under 2 km/h is shown as zero. Walking is 4-5 km/h and is unaffected.
+    const SPEED_ZERO_KMH = 2;
+    const HOLD_MS = 3000; // how long a missing fix may keep the last reading
+    const MIN_SPAN_MS = 4000; // never derive speed from a shorter interval
+    const MAX_SPAN_MS = 15000; // or from a gap longer than this
+    const MAX_ACCURACY_M = 40; // worse than this and speed off the delta is junk
+
     function haversineKm(a: GeolocationCoordinates, b: GeolocationCoordinates) {
       const R = 6371;
       const toRad = (d: number) => (d * Math.PI) / 180;
@@ -459,47 +473,107 @@ const appLd = {
       return 2 * R * Math.asin(Math.min(1, Math.sqrt(s)));
     }
 
-    let prev: { coords: GeolocationCoordinates; t: number } | null = null;
+    type Fix = { lat: number; lon: number; t: number; acc: number };
+    const fixes: Fix[] = [];
+    let lastGoodWall = 0;
+    let lastFixWall = 0;
 
-    function speedFromDelta(pos: GeolocationPosition): number | null {
-      const now = pos.timestamp || Date.now();
-      const current = { coords: pos.coords, t: now };
-      const previous = prev;
-      prev = current;
-      if (!previous) return null;
-      const dt = (now - previous.t) / 1000;
-      if (dt < 0.5 || dt > 10) return null;
-      // A poor fix jumps around by tens of metres: deriving speed from it would
-      // invent 70 km/h spikes while standing still.
-      if (typeof pos.coords.accuracy === 'number' && pos.coords.accuracy > 40) return null;
-      const km = haversineKm(previous.coords, pos.coords);
-      // Below ~1.5 m of movement the GPS jitter dominates: treat as standing still.
-      if (km < 0.0015) return 0;
-      const kmh = (km / dt) * 3600;
+    const metres = (a: Fix, b: Fix) =>
+      haversineKm({ latitude: a.lat, longitude: a.lon } as GeolocationCoordinates, {
+        latitude: b.lat,
+        longitude: b.lon,
+      } as GeolocationCoordinates) * 1000;
+
+    /**
+     * Speed from the distance travelled over a window of at least MIN_SPAN_MS.
+     * A longer window is what makes this usable while standing still: over 4 s the
+     * jitter averages out instead of turning into a fake 12 km/h.
+     * Returns null when there is not enough history to say anything trustworthy.
+     */
+    function pushFix(pos: GeolocationPosition): Fix {
+      const fix: Fix = {
+        lat: pos.coords.latitude,
+        lon: pos.coords.longitude,
+        t: pos.timestamp || Date.now(),
+        acc: typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : 99,
+      };
+      fixes.push(fix);
+      while (fixes.length > 30) fixes.shift();
+      return fix;
+    }
+
+    function speedFromWindow(fix: Fix): number | null {
+      const acc = fix.acc;
+      if (acc > MAX_ACCURACY_M) return null;
+
+      // The newest fix that is at least MIN_SPAN old — i.e. the shortest usable
+      // window. Taking the oldest fix instead would compare against a position
+      // from half a minute ago and reject perfectly good readings.
+      let idx = -1;
+      for (let i = fixes.length - 2; i >= 0; i--) {
+        if (fix.t - fixes[i].t >= MIN_SPAN_MS) {
+          idx = i;
+          break;
+        }
+      }
+      if (idx < 0) return null;
+      const oldest = fixes[idx];
+      const span = (fix.t - oldest.t) / 1000;
+      if (span > MAX_SPAN_MS / 1000) return null;
+
+      const net = metres(oldest, fix);
+      // Positions wander by roughly their own accuracy. Anything shorter than
+      // this is the chip breathing, not the device moving.
+      const floor = Math.max(2.5, Math.min(oldest.acc, acc) * 0.4);
+      if (net < floor) return 0;
+
+      // Jitter goes back and forth, so the path travelled is far longer than the
+      // distance between the two ends. Real movement keeps them about equal.
+      let path = 0;
+      for (let i = idx + 1; i < fixes.length; i++) path += metres(fixes[i - 1], fixes[i]);
+      const kmh = (net / span) * 3.6;
+      if (kmh < 10 && path > net * 2.5) return 0;
+
       return kmh > 300 ? null : kmh;
+    }
+
+    /** A reading is only allowed to change the display if it can be trusted. */
+    function applySpeed(measured: number | null) {
+      const wall = Date.now();
+      if (measured === null) {
+        // Hold the last reading briefly while a fix is missing, then let go.
+        // Without the timeout a parked device stayed frozen at its last speed.
+        if (lastGoodWall && wall - lastGoodWall > HOLD_MS && currentSpeedKmh !== 0) {
+          currentSpeedKmh = 0;
+          renderSpeeds();
+        }
+        return;
+      }
+      lastGoodWall = wall;
+      const next = measured <= SPEED_ZERO_KMH ? 0 : measured;
+      if (Math.abs(next - currentSpeedKmh) < 0.05 && next !== 0) return;
+      currentSpeedKmh = next;
+      if (running) {
+        maxSp = Math.max(maxSp, currentSpeedKmh);
+        totalSp += currentSpeedKmh;
+        count++;
+      }
+      renderSpeeds();
     }
 
     if (navigator.geolocation) {
       navigator.geolocation.watchPosition(
         (pos) => {
+          lastFixWall = Date.now();
           const reported = pos.coords.speed;
-          let kmh: number;
-          if (reported !== null && reported !== undefined) {
-            kmh = reported * 3.6;
-          } else {
-            const fromDelta = speedFromDelta(pos);
-            // No usable speed this tick: keep the last reading rather than
-            // flickering to 0.0 while the device is clearly moving.
-            kmh = fromDelta === null ? currentSpeedKmh : fromDelta;
-          }
-
-          currentSpeedKmh = Math.max(0, kmh);
-          if (running) {
-            maxSp = Math.max(maxSp, currentSpeedKmh);
-            totalSp += currentSpeedKmh;
-            count++;
-          }
-          renderSpeeds();
+          const acc = typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : 99;
+          const usableReport =
+            typeof reported === 'number' && Number.isFinite(reported) && reported >= 0 && acc <= MAX_ACCURACY_M;
+          // Always record the fix, whichever source ends up driving the display:
+          // if the chip stops reporting coords.speed the window is already warm
+          // instead of leaving a four second hole.
+          const fix = pushFix(pos);
+          applySpeed(usableReport ? reported * 3.6 : speedFromWindow(fix));
 
           const alt = pos.coords.altitude;
           if (altEl) altEl.textContent = alt === null || alt === undefined ? '—' : Math.round(alt).toString();
@@ -507,6 +581,16 @@ const appLd = {
         () => {},
         { enableHighAccuracy: true, maximumAge: 1000 },
       );
+
+      // Fixes can stop arriving altogether when the device is idle. Without this
+      // watchdog the display would keep the last speed forever.
+      window.setInterval(() => {
+        if (!lastFixWall) return;
+        if (Date.now() - lastFixWall > HOLD_MS && currentSpeedKmh !== 0) {
+          currentSpeedKmh = 0;
+          renderSpeeds();
+        }
+      }, 1000);
     }
 
     renderUnits();
