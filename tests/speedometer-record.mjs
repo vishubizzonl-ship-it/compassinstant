@@ -139,5 +139,25 @@ check(
   true,
 );
 
+console.log('--- fullscreen layout');
+check('card becomes a screen-tall column', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*flex-direction:\s*column/.test(html), true);
+check('card no longer scrolls as a whole', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow:\s*hidden/.test(html), true);
+check(
+  'readout keeps the middle and stays centred',
+  /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*flex:[^;}]*(auto|1)/.test(html) &&
+    /#speed-card\[[^\]]*\]:fullscreen\s+#speed-main\[[^\]]*\]\{[^}]*justify-content:\s*center/.test(html),
+  true,
+);
+check(
+  'recorded list is capped and scrolls on its own',
+  /#speed-card\[[^\]]*\]:fullscreen\s+#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
+  true,
+);
+check(
+  'in-card block only takes the space that is left',
+  /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*max-height:\s*42vh/.test(html),
+  true,
+);
+
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 process.exit(fail ? 1 : 0);

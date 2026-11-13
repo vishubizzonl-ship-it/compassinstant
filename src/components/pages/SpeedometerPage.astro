@@ -66,7 +66,7 @@ const appLd = {
             <svg class="icon-enter" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             <svg class="icon-exit hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
           </button>
-          <div class="text-center mb-4">
+          <div id="speed-head" class="text-center mb-4">
             <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">{t('speed.ui.title')}</h2>
             <p class="text-xs text-mute font-mono mt-1">{t('speed.ui.gpsActive')}</p>
             <div class="flex gap-2 justify-center mt-3">
@@ -76,7 +76,7 @@ const appLd = {
             </div>
           </div>
 
-          <div class="text-center py-4 mb-4">
+          <div id="speed-main" class="text-center py-4 mb-4">
             <p class="text-5xl lg:text-6xl font-semibold tracking-tighter text-ink tabular-nums transition-transform duration-200 origin-center" id="speed-display">0</p>
             <div class="flex items-center justify-center gap-3 mt-2">
               <p class="text-sm text-mute font-mono" id="speed-unit">KM/H</p>
@@ -95,7 +95,7 @@ const appLd = {
             </div>
           </div>
 
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div id="speed-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <div class="p-2 rounded-sm bg-canvas border border-hairline">
               <p class="text-[10px] text-mute font-mono uppercase tracking-wide">{t('speed.ui.max')}</p>
               <p id="max-speed" class="text-lg font-semibold tabular-nums text-ink">0.0</p>
@@ -331,14 +331,50 @@ const appLd = {
   .records-in-card {
     display: none;
   }
-  #speed-card:fullscreen .records-in-card,
-  #speed-card:-webkit-full-screen .records-in-card {
-    display: block;
-  }
+  /* In fullscreen the card becomes one screen-tall column: the speed stays in
+     the middle of the screen and the recorded list takes only the space that is
+     left, scrolling inside itself. Before, a growing list pushed the speed
+     upwards until it slid off the top. */
   #speed-card:fullscreen,
   #speed-card:-webkit-full-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding-bottom: 1rem;
+  }
+  #speed-card:fullscreen #speed-head,
+  #speed-card:-webkit-full-screen #speed-head,
+  #speed-card:fullscreen #speed-stats,
+  #speed-card:-webkit-full-screen #speed-stats {
+    flex: 0 0 auto;
+  }
+  /* The readout keeps the whole middle of the screen and stays centred in it,
+     however many records have piled up below. */
+  #speed-card:fullscreen #speed-main,
+  #speed-card:-webkit-full-screen #speed-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #speed-card:fullscreen .records-in-card,
+  #speed-card:-webkit-full-screen .records-in-card {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto;
+    min-height: 0;
+    max-height: 42vh;
+  }
+  /* Once the space runs out the older records scroll instead of growing. */
+  #speed-card:fullscreen #records-list-card,
+  #speed-card:-webkit-full-screen #records-list-card {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
     overflow-y: auto;
-    padding-bottom: 1.5rem;
+    overscroll-behavior: contain;
   }
 </style>
 <script>
@@ -639,10 +675,16 @@ const appLd = {
     // GPS noise on a parked phone reads up to ~0.5 m/s (1.8 km/h), so anything
     // under 2 km/h is shown as zero. Walking is 4-5 km/h and is unaffected.
     const SPEED_ZERO_KMH = 2;
-    const HOLD_MS = 3000; // how long a missing fix may keep the last reading
+    const HOLD_MS = 5000; // how long a missing fix may keep the last reading
     const MIN_SPAN_MS = 4000; // never derive speed from a shorter interval
+    const MIN_SPAN_POOR_MS = 8000; // rough fix: average over a longer stretch
     const MAX_SPAN_MS = 15000; // or from a gap longer than this
-    const MAX_ACCURACY_M = 40; // worse than this and speed off the delta is junk
+    // Android often reports 40-70 m accuracy in a car while coords.speed is still
+    // perfectly good (that comes from the Doppler shift, not from the position).
+    // Gating the reported speed on accuracy was why the display sometimes stayed
+    // at zero for seconds at a time.
+    const MAX_REPORT_ACCURACY_M = 200; // reported speed: almost always usable
+    const MAX_ACCURACY_M = 100; // position-derived speed: needs a longer window
 
     function haversineKm(a: GeolocationCoordinates, b: GeolocationCoordinates) {
       const R = 6371;
@@ -687,13 +729,15 @@ const appLd = {
     function speedFromWindow(fix: Fix): number | null {
       const acc = fix.acc;
       if (acc > MAX_ACCURACY_M) return null;
+      // A rough fix wanders further, so it needs a longer stretch to average over.
+      const needSpan = acc > 40 ? MIN_SPAN_POOR_MS : MIN_SPAN_MS;
 
       // The newest fix that is at least MIN_SPAN old — i.e. the shortest usable
       // window. Taking the oldest fix instead would compare against a position
       // from half a minute ago and reject perfectly good readings.
       let idx = -1;
       for (let i = fixes.length - 2; i >= 0; i--) {
-        if (fix.t - fixes[i].t >= MIN_SPAN_MS) {
+        if (fix.t - fixes[i].t >= needSpan) {
           idx = i;
           break;
         }
@@ -723,6 +767,9 @@ const appLd = {
     function applySpeed(measured: number | null) {
       const wall = Date.now();
       if (measured === null) {
+        // A fix arrived but could not be trusted: the hold below still applies,
+        // and fixes keep coming, so lastGoodWall is refreshed by the next good one.
+
         // Hold the last reading briefly while a fix is missing, then let go.
         // Without the timeout a parked device stayed frozen at its last speed.
         if (lastGoodWall && wall - lastGoodWall > HOLD_MS && currentSpeedKmh !== 0) {
@@ -750,7 +797,7 @@ const appLd = {
           const reported = pos.coords.speed;
           const acc = typeof pos.coords.accuracy === 'number' ? pos.coords.accuracy : 99;
           const usableReport =
-            typeof reported === 'number' && Number.isFinite(reported) && reported >= 0 && acc <= MAX_ACCURACY_M;
+            typeof reported === 'number' && Number.isFinite(reported) && reported >= 0 && acc <= MAX_REPORT_ACCURACY_M;
           // Always record the fix, whichever source ends up driving the display:
           // if the chip stops reporting coords.speed the window is already warm
           // instead of leaving a four second hole.
