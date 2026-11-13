@@ -21,6 +21,9 @@ type Entry = {
 const entries: Entry[] = [
   { path: '/onlineqibla/', changefreq: 'weekly', priority: '1.0' },
   { path: '/onlineqibla/blog/', changefreq: 'weekly', priority: '0.8' },
+  { path: '/onlineqibla/blog/qibla-direction-compass-degrees/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/onlineqibla/blog/why-is-my-qibla-direction-wrong/', changefreq: 'monthly', priority: '0.7' },
+  { path: '/onlineqibla/blog/how-to-find-qibla-direction-anywhere/', changefreq: 'monthly', priority: '0.7' },
   { path: '/onlineqibla/about/', changefreq: 'yearly', priority: '0.5' },
   { path: '/onlineqibla/contact/', changefreq: 'yearly', priority: '0.5' },
   { path: '/onlineqibla/privacy/', changefreq: 'yearly', priority: '0.3' },
