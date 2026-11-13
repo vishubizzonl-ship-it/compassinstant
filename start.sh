@@ -51,10 +51,19 @@ rebuild(){
   [ -x node_modules/.bin/astro ] || "$NPM" install --no-audit --no-fund >>$LOG 2>&1
   if "$NPM" run build >>$LOG 2>&1; then
     alive $RUN/server.pid && kill "$(cat $RUN/server.pid)" 2>/dev/null
-    sleep 0.5
-    PORT=$PORT nohup "$NODE" serve-static.mjs >>$LOG 2>&1 &
-    echo $! > $RUN/server.pid
-    ok "Site update ho gayi  $(date '+%H:%M:%S')  ($(git rev-parse --short HEAD 2>/dev/null))"
+    # Purana server port chhod de tab tak wait karo, warna naya EADDRINUSE se mar jata hai
+    for i in $(seq 40); do up || break; sleep 0.25; done
+    for try in 1 2 3; do
+      PORT=$PORT nohup "$NODE" serve-static.mjs >>$LOG 2>&1 &
+      echo $! > $RUN/server.pid
+      up && break
+      sleep 1
+    done
+    if up; then
+      ok "Site update ho gayi  $(date '+%H:%M:%S')  ($(git rev-parse --short HEAD 2>/dev/null))"
+    else
+      warn "Server start nahi hua — log: $LOG"
+    fi
     return 0
   fi
   warn "Build fail — purani site chalu hai  $(date '+%H:%M:%S')"
@@ -146,9 +155,14 @@ if ! "$NPM" run build >>$LOG 2>&1; then
 fi
 
 # --------------------------------------------------------------- serve
-pkill -f serve-static.mjs 2>/dev/null; sleep 1
-PORT=$PORT nohup "$NODE" serve-static.mjs >>$LOG 2>&1 & echo $! >$RUN/server.pid
-for i in $(seq 20); do up && break; sleep 0.5; done
+alive $RUN/server.pid && kill "$(cat $RUN/server.pid)" 2>/dev/null
+command -v pkill >/dev/null && pkill -f serve-static.mjs 2>/dev/null
+for i in $(seq 40); do up || break; sleep 0.25; done
+for try in 1 2 3; do
+  PORT=$PORT nohup "$NODE" serve-static.mjs >>$LOG 2>&1 & echo $! >$RUN/server.pid
+  up && break
+  sleep 1
+done
 up || { tail -n 20 $LOG; no "Server start nahi hua"; exit 1; }
 
 command -v termux-wake-lock >/dev/null && termux-wake-lock 2>/dev/null
