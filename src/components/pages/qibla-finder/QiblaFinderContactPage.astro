@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
+    { '@type': 'ListItem', position: 3, name: 'Contact', item: 'https://instanten.com/qibla-finder/contact/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Contact Online Qibla — Feedback & Bug Reports"
+  description="Contact the online Qibla team. Report a Qibla direction or compass accuracy problem, suggest a feature, or ask a privacy question about your location."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Contact Online Qibla — Feedback & Bug Reports"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
@@ -16,6 +36,41 @@ const translatePath = useTranslatedPath(lang);
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
     <p class="text-body text-base leading-relaxed mb-6">
       We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How the bearing is calculated</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Before you write, it helps to know what the page is doing. This <strong>online Qibla</strong> tool
+      takes your GPS coordinates, computes the great-circle bearing to the Kaaba, and combines it with
+      your phone's compass heading to draw the <strong>Qibla direction arrow</strong>. Both inputs are
+      read in the browser, and neither is uploaded.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      That explains most support questions: a bearing that looks wrong is usually a magnetometer
+      problem, and a bearing that never settles is usually a weak GPS fix. The
+      <strong>Qibla direction compass degrees</strong> number itself is arithmetic — it does not drift.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Quick fixes before you write</h2>
+    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
+      <li><strong>Status stuck on “Locating…”:</strong> allow location access, then reload the page.</li>
+      <li><strong>Arrow swings wildly:</strong> move away from speakers, magnets, metal desks and cars.</li>
+      <li><strong>Heading feels slow or laggy:</strong> wave the phone in a figure-eight twice to recalibrate.</li>
+      <li><strong>Nothing moves on desktop:</strong> laptops rarely have a magnetometer — use a phone.</li>
+    </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">What to tell us</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a bug report, tell us the city, the phone, the browser, and what the
+      <strong>Qibla direction</strong> number showed. If you compared it with a mosque app or a physical
+      compass, mention the difference in degrees — that tells us immediately whether you are seeing
+      sensor drift or something in the calculation.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a feature request, describe the situation rather than the button. “I want to lay out a prayer
+      mat in a hotel room without holding the phone” tells us more than “add a save button”, and a
+      <strong>live gibla direction online</strong> view that stays visible while the phone is on the
+      floor is a real improvement we can act on.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Email</h2>
@@ -51,6 +106,33 @@ const translatePath = useTranslatedPath(lang);
         Send message
       </button>
     </form>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Before you send a screenshot</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A screenshot helps most when it shows the bearing, the city and the arrow together. If you were
+      standing next to a <strong>compass Qibla</strong> pointer or a mosque sign, mention both values in
+      degrees; if you were in a hotel room trying to <strong>find Qibla direction</strong> for the first
+      time, say what the phone was resting on. A metal desk is a very common cause of a wrong heading.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      People also write in after a <strong>quick Qibla direction</strong> check outdoors matched a mosque
+      and an indoor reading did not, or after asking “<em>where is Qibla direction</em>” in a city they
+      had just landed in. Both are useful reports: they tell us whether an
+      <strong>online Qibla location</strong> fix was weak or whether an
+      <strong>online Qibla compass</strong> reading was pulled by interference.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Response times</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      This is a small project, so replies are not instant. Accuracy reports get priority because they
+      affect every user of the <strong>online Qibla finder</strong>; feature ideas are read and logged
+      but may not get a personal reply. Privacy questions about location are always answered.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      While you wait, the <a href="/qibla-finder/blog/" class="text-link hover:underline">Qibla
+      guides</a> cover how the <strong>online Qibla direction</strong> is measured and how to get a
+      steady reading in a room full of metal.
+    </p>
   </main>
   <Footer />
 </Layout>

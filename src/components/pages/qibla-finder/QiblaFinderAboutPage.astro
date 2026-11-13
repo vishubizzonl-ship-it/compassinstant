@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
+    { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/qibla-finder/about/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="About Online Qibla — Free Qibla Direction Finder"
+  description="About the online Qibla finder: how the Qibla direction is calculated from your location, who the free Qibla compass is for, and the accuracy to expect."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="About Online Qibla — Free Qibla Direction Finder"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
@@ -21,6 +41,26 @@ const translatePath = useTranslatedPath(lang);
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       Unlike most online qibla tools that guess a bearing, onlinecompass reads your device's magnetometer and GPS directly through standard browser APIs. Once loaded, your location is used only on your device.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How the Qibla direction is worked out</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The Kaaba is at roughly 21.4225° N, 39.8262° E. This <strong>online Qibla</strong> tool reads your
+      own latitude and longitude from the browser, then calculates the great-circle bearing between your
+      position and the Kaaba. That is the shortest path over the Earth's curved surface, and it is the
+      number the page shows as the <strong>Qibla direction compass degrees</strong> value.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Because the maths uses live coordinates, the answer changes the moment you travel. A
+      <strong>compass Qibla</strong> bearing in one city is not the same as the one you need in another,
+      which is exactly why a fixed sticker on a wall is unreliable and an
+      <strong>online Qibla location</strong> lookup is not.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The second half of the tool is your phone's magnetometer. It tells the page which way you are
+      facing, so the <strong>Qibla direction arrow</strong> can stay fixed on the screen while you turn.
+      If that sensor is biased by nearby metal, the arrow will be biased too — which is why the page asks
+      you to stand clear of magnets and steel rather than simply trusting the needle.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Our Mission</h2>
@@ -37,6 +77,33 @@ const translatePath = useTranslatedPath(lang);
       <li>Dark mode that respects your system preference</li>
       <li>Works on every modern browser — no download, no sign-up</li>
     </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Who the free Qibla finder is for</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Anyone who needs to <strong>find Qibla direction</strong> somewhere unfamiliar: a hotel room in a
+      new city, an office floor with no marker, a hostel, an airport lounge, or a room where the only
+      available answer is “that way, roughly”. A <strong>quick Qibla direction</strong> check before
+      prayer is the whole use case, and speed matters more than ceremony — which is why this
+      <strong>online Qibla finder</strong> opens straight onto the compass.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      It is also a sensible second opinion. If the wall sticker says one thing and a
+      <strong>live gibla direction online</strong> reading says another, you can compare the bearing with the
+      <strong>qibla finder</strong> number and decide — instead of arguing with a sticker.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Accuracy you can expect</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The calculation itself is exact to a fraction of a degree; the uncertainty comes from the phone.
+      A magnetometer typically carries two to five degrees of error, and more near speakers, magnetic
+      mounts, cars and steel desks. Indoors, GPS can also drift, which shifts the
+      <strong>online Qibla direction</strong> slightly if you are far from the Kaaba.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      In practice this <strong>online Qibla compass</strong> gives a usable <strong>where is Qibla direction</strong> answer once the phone is calibrated:
+      good enough for a prayer mat in a hotel room, and honest about being a phone rather than a survey
+      instrument. Step to a window, recalibrate with a figure-eight, and the number settles.
+    </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
     <p class="text-body text-base leading-relaxed mb-4">

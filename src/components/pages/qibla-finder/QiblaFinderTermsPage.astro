@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
+    { '@type': 'ListItem', position: 3, name: 'Terms', item: 'https://instanten.com/qibla-finder/terms/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Terms of Use — Free Online Qibla Finder"
+  description="Terms of use for the online Qibla tool: free use, no warranty that a compass bearing is exact, acceptable use, intellectual property, and liability limits."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Terms of Use — Free Online Qibla Finder"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
@@ -20,7 +40,9 @@ const translatePath = useTranslatedPath(lang);
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1. Use of the Service</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is provided free of charge for personal and professional use. You may use the Service to calculate the qibla direction for your location. No registration or payment is required.
+      This <strong>online Qibla finder</strong> is provided free of charge for personal use. You may use
+      the Service to calculate the <strong>Qibla direction</strong> for your location, so a
+      <strong>quick Qibla direction</strong> check before prayer costs nothing and needs no registration.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">You agree not to:</p>
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
@@ -33,6 +55,40 @@ const translatePath = useTranslatedPath(lang);
     <p class="text-body text-base leading-relaxed mb-4">
       onlinecompass is designed to provide accurate readings when properly calibrated. However, accuracy depends on:
     </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>Qibla direction</strong> shown here is a calculation plus a phone sensor, not a surveyed
+      bearing. Magnetometer error of two to five degrees is normal, and it grows near speakers, magnetic
+      mounts, cars and steel structures. Treat the <strong>Qibla direction compass degrees</strong>
+      figure as a good guide and confirm with a local marker where one exists.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>compass Qibla</strong> reading is also personal to the device. Two phones in the same room
+      can differ by a few degrees, and asking “<em>where is Qibla direction</em>” of this page is not the
+      same as commissioning a survey. Where accuracy matters, use a device with a recent calibration and
+      accept that an <strong>online Qibla direction</strong> figure is a guide rather than a ruling.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Do not rely on this <strong>online Qibla compass</strong> where a legal or structural decision
+      depends on exact orientation — for mosque construction or a permanent Qibla wall, use a qualified
+      survey. For everyday prayer in an unfamiliar room, the bearing here is intended to be enough.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Concretely: a <strong>Qibla direction arrow</strong> drawn from a phone reading may be off by a
+      few degrees, and an <strong>online Qibla location</strong> fix indoors can be worse still. Where
+      you need certainty, <strong>find Qibla direction</strong> twice from two different spots in the
+      room, and if the
+      <strong>Qibla direction compass</strong> readings agree, the interference is probably low. If they
+      disagree, one of the spots is compromised.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We also do not warrant that a <strong>quick Qibla direction</strong> check will match a local
+      mosque's own marker. Where a community has surveyed a Qibla wall, that surveyed bearing takes
+      precedence over any <strong>online Qibla compass</strong> reading, including ours. The tool is
+      offered as a convenience, and a <strong>live gibla direction online</strong> result should be
+      treated as guidance rather than as a ruling.
+    </p>
+
+
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
       <li>Correct calibration by the user</li>
       <li>The physical characteristics of your specific device</li>

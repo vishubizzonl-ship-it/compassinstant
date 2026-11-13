@@ -11,14 +11,65 @@ const translatePath = useTranslatedPath(lang);
 const posts = [
   { href: '/qibla-finder/', title: 'How to Find Qibla Direction Anywhere', date: 'October 4, 2026', desc: 'Find the direction of the Kaaba from any location with compass and location integration.' },
 ];
+
+const KWS =
+  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
+    { '@type': 'ListItem', position: 3, name: 'Blog', item: 'https://instanten.com/qibla-finder/blog/' },
+  ],
+};
+
 ---
-<Layout title="Online Qibla Finder Blog" description="Guides and tips for finding the Qibla direction with the online qibla finder.">
+<Layout
+  title="Online Qibla Blog — Qibla Direction Guides"
+  description="Guides for the online Qibla: how the Qibla direction is measured, compass accuracy tips, and how to set out a prayer space wherever you are."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Online Qibla blog"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">Blog</h1>
-    <p class="text-xs text-mute font-mono mb-4">Last updated: October 2026</p>
-    <p class="text-body text-base leading-relaxed mb-10">Guides and tips for navigating with onlinecompass.</p>
+    <p class="text-xs text-mute font-mono mb-4">Last updated: November 2026</p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Practical guides for the <strong>online Qibla</strong>: how the bearing is worked out from your own
+      coordinates, why a phone compass drifts near metal, and how to set out a prayer space in a room you
+      have never used before.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>qibla direction compass</strong> reading is only as good as the sensor behind it, so the
+      notes here cover calibration, interference and the difference between a magnetic heading and a
+      true bearing. There is also a walkthrough for the traveller's case — a
+      <strong>quick Qibla direction</strong> check in a hotel room with no marker on the wall — and an
+      explainer for the <strong>qibla direction arrow</strong> and what it is actually pointing at.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      If you are standing in a room right now, the short answer is on the main page: allow location, read
+      the <strong>qibla direction compass degrees</strong> value, then turn until the arrow lines up. The
+      notes below are the long answer — why a <strong>compass qibla</strong> reading drifts, why a
+      <em>where is qibla direction</em> search gives five different answers, and how to get a steady
+      <strong>online Qibla compass</strong> reading in a building full of steel.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Two more cases get their own notes: the traveller's <strong>online Qibla location</strong> check on
+      landing in a new city, and the car or train where a
+      <strong>live gibla direction online</strong> reading keeps moving because the vehicle does. Keep an
+      <strong>online Qibla finder</strong> tab open and both become a two-second glance.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-10">
+      Every guide uses the same free <strong>Qibla finder</strong> above, so you can read a step and try
+      it straight away. If a <strong>Qibla direction</strong> reading looks wrong, start with the accuracy
+      notes — nine times out of ten it is interference, not the calculation. If you only need one line: an
+      <strong>online Qibla direction</strong> reading is right to a couple of degrees when the phone is
+      calibrated and away from metal.
+    </p>
 
     <ul class="space-y-8">
       {posts.map((post) => (

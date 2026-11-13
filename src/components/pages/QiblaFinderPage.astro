@@ -7,8 +7,50 @@ import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const siteUrl = 'https://instanten.com';
+
+const KWS =
+  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}${baseUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Qibla Finder', item: `${siteUrl}${baseUrl}/qibla-finder/` },
+  ],
+};
+
+const appLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Online Qibla Finder',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Any',
+  url: `${siteUrl}${baseUrl}/qibla-finder/`,
+  description:
+    'Free online Qibla finder: shows the Qibla direction from your own location with a live compass, the bearing in degrees and a direction arrow. No install, no sign-up.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Online Qibla direction from your GPS location',
+    'Qibla direction compass with degrees and arrow',
+    'Works on mobile and desktop browsers, no install',
+    'No account and no stored location history',
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title={lang === 'en' ? 'Online Qibla — Free Qibla Direction Compass & Finder' : undefined}
+  description={lang === 'en' ? 'Free online Qibla finder: see the Qibla direction from your location on a live compass, with the bearing in degrees and a clear arrow.' : undefined}
+  keywords={lang === 'en' ? KWS : undefined}
+  breadcrumbLd={breadcrumbLd}
+  appLd={appLd}
+  ogImage="/og-image.png"
+  ogImageAlt={lang === 'en' ? 'Online Qibla finder — qibla direction compass showing the bearing in degrees from your location' : undefined}
+>
   <Nav />
   <main>
     <section class="py-2 lg:py-4 pt-2 lg:pt-4" aria-label={t('page.qibla.title')}>
@@ -100,6 +142,128 @@ const t = useTranslations(lang);
         </div>
       </div>
     </section>
+
+    <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="about-online-qibla">
+      <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
+        <h2 id="about-online-qibla" class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-0 mb-4">
+          The online Qibla finder that works from where you stand
+        </h2>
+        <p class="text-body text-base leading-relaxed mb-4">
+          This <strong>online Qibla</strong> tool answers one question in one tap: which way is the
+          Qibla from here? Allow location, hold the phone flat, and the page shows the
+          <strong>Qibla direction</strong> on a live compass along with the bearing in degrees. There is
+          nothing to install, no account to create and no waiting for an app to update — it is a
+          <strong>online Qibla finder</strong> built for the moment you actually need it.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          If you have ever searched for “<em>where is Qibla direction</em>”, “<em>find Qibla
+          direction</em>” or a <em>live gibla direction online</em> phrase typed in a hurry, you already know the problem. Hotel
+          rooms have a sticker pointing at a wall, mosque apps want a download, and a plain compass
+          tells you north but not the bearing you need. This page closes that gap with a
+          <strong>Qibla direction arrow</strong> and a number you can trust.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          How the online Qibla direction is calculated
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          The Kaaba sits at roughly 21.4225° N, 39.8262° E. Your phone reports its own latitude and
+          longitude through the browser, and the page computes the great-circle bearing between the two
+          points — the shortest path over the Earth's surface. The result is your
+          <strong>Qibla direction compass degrees</strong> value, measured clockwise from true north.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Because the maths uses your real coordinates, the answer is different in every city, and it
+          is correct wherever you travel. A <strong>compass Qibla</strong> bearing in Delhi is not the
+          same as one in London or Jakarta, and this page recalculates the moment location changes, so
+          an <strong>online Qibla compass</strong> in a new city is never a guess based on the last trip.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          How to use the Qibla direction compass
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Open the page, allow location, then hold the phone flat in front of you with the top pointing
+          away. Turn on the spot until the arrow lines up with the marker, and you are facing the Qibla.
+          For a prayer mat, note the bearing first and then lay the mat along that line.
+        </p>
+        <ul class="list-disc pl-6 mb-4 space-y-2 text-body text-base leading-relaxed">
+          <li>Stand away from magnets, speakers, laptops and metal furniture before trusting the heading.</li>
+          <li>Move the phone in a figure-eight twice if the compass feels slow or jumpy.</li>
+          <li>Compare the bearing with the direction of the sun at noon for a rough sanity check.</li>
+          <li>Turn off any magnetic case — it biases the sensor more than anything else.</li>
+          <li>Use a fixed surface for a prayer mat rather than balancing the phone by hand.</li>
+        </ul>
+        <p class="text-body text-base leading-relaxed mb-4">
+          That is the whole <strong>quick Qibla direction</strong> routine: location, flat phone, turn
+          until the arrow locks. When you only have a moment before prayer, it takes less time than
+          opening an app store page, and the <strong>live Qibla direction online</strong> reading keeps
+          updating as you rotate rather than freezing on one number.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Online Qibla compass versus a phone app
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          An app is fine if you use one every day in the same place. The advantage of an
+          <strong>online Qibla location</strong> page is that it works on any phone you pick up — a
+          borrowed phone, a tablet on a hotel desk, a laptop in a room where you have never prayed
+          before — with no install permissions to fight through.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          It is also honest about uncertainty. A phone compass carries a few degrees of error, so the
+          page shows the bearing as a number: you can see whether you are 2° off or 40° off, which
+          matters far more than a needle that looks confident. Treat a
+          <strong>Qibla finder</strong> reading as accurate to a couple of degrees, and use the arrow as
+          the practical answer.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Accuracy, interference and what to expect indoors
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Two things decide how good a <strong>Qibla direction compass degrees</strong> reading is: the
+          magnetometer and your location fix. Indoors, GPS can drift by tens of metres, which barely
+          changes the bearing over long distances but does matter if you are far from the Kaaba and near
+          a large steel structure. Move to a window for a better fix.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Magnetometer error is the bigger factor. Speakers, magnetic phone mounts, steel desks, cars and
+          even a laptop fan can pull a compass several degrees. If the
+          <strong>online Qibla direction</strong> number swings when you rotate slowly, recalibrate with
+          the figure-eight motion and step away from the interference before you commit.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          Who this online Qibla tool is for
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Travellers in an unfamiliar hotel room, office workers looking for a corner to pray in,
+          students in a new hostel, and anyone whose local mosque is out of sight. It is equally useful
+          as a cross-check: if the sticker on the wall says one thing and the
+          <strong>online Qibla compass</strong> says another, you now have a second opinion with a
+          number attached.
+        </p>
+        <p class="text-body text-base leading-relaxed mb-4">
+          The tool is free, needs no account, and your location is used only to calculate the bearing in
+          the moment — nothing is stored and no history is kept. That makes it practical on a shared
+          device, and it means an <strong>online Qibla direction</strong> check leaves nothing behind.
+        </p>
+
+        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+          The short version
+        </h3>
+        <p class="text-body text-base leading-relaxed mb-4">
+          Allow location, hold the phone flat, turn until the arrow lines up, and note the degrees if
+          you need to lay out a mat. Stay away from magnets and metal, recalibrate if the needle feels
+          sluggish, and treat the reading as good to a couple of degrees. Whether you searched for a
+          <em>Qibla direction arrow</em>, <em>find Qibla direction</em> or an
+          <strong>online Qibla location</strong> from a new city, the answer is the same page — free,
+          private and no install.
+        </p>
+      </div>
+    </section>
+
   <ToolBlog tool="qibla-finder" />
   </main>
   <Footer />

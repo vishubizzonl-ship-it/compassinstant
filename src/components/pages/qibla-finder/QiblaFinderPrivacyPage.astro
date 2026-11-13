@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
+    { '@type': 'ListItem', position: 3, name: 'Privacy', item: 'https://instanten.com/qibla-finder/privacy/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Privacy Policy — Online Qibla Tool"
+  description="Privacy policy for the online Qibla finder: your location is used only to calculate the bearing, nothing is stored, and here is which analytics run."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Privacy Policy — Online Qibla Tool"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
@@ -37,6 +57,21 @@ const translatePath = useTranslatedPath(lang);
       <li>Country-level geographic region (not precise location)</li>
     </ul>
 
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1a. What the tool does with your location</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>Qibla finder</strong> cannot work without knowing roughly where you are, and that is the
+      one sensitive input this page asks for. The browser hands your coordinates to the page, the page
+      computes the bearing to the Kaaba, and the coordinate is then discarded. No location history is
+      written, no coordinate is stored in a database, and there is no way for us to see where you
+      prayed.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The compass heading is treated the same way. Your phone's magnetometer feeds the
+      <strong>Qibla direction arrow</strong> inside the tab, and nothing about your heading leaves the
+      device. Because there is no account, an <strong>online Qibla location</strong> check cannot be tied
+      back to you even in principle.
+    </p>
+
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Cookies</h2>
     <p class="text-body text-base leading-relaxed mb-4">
       onlinecompass does not use advertising cookies. We do use one third-party analytics service to count page views, with IP anonymisation switched on and no advertising or cross-site tracking features enabled; it sets its own analytics cookies. We also use localStorage (not cookies) to remember your calibration and theme preference between visits, and that data never leaves your device.
@@ -44,6 +79,35 @@ const translatePath = useTranslatedPath(lang);
     <p class="text-body text-base leading-relaxed mb-4">
       You can clear this data at any time by clearing your browser's site data for onlinecompass.
     </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2a. What is never collected</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      There is no location history, no saved prayer direction and no account that could hold either —
+      whether you used it to <strong>find Qibla direction</strong> once or every day. A
+      <strong>compass qibla</strong> reading is computed once per page load and forgotten. If you close
+      the tab, the <strong>qibla direction compass</strong> value is gone, and reopening the page means a
+      fresh fix rather than a stored answer.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The same applies to a <strong>quick Qibla direction</strong> check made on a shared phone: nothing
+      on the device records that you used it, apart from your browser's ordinary cache. If you would
+      rather not leave even that, use a private window — the <strong>online Qibla direction</strong>
+      still works, because the calculation runs on your own device.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      We cannot see a <strong>qibla direction arrow</strong> you were shown, a
+      <strong>qibla direction compass degrees</strong> figure you read, or the fact that you searched
+      for <em>where is qibla direction</em> at all. Only aggregate page views reach our analytics, and
+      those carry a page path, not a coordinate. Anyone can verify the same behaviour with a
+      <strong>live gibla direction online</strong> check in a private window and a network inspector.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      One practical consequence: because there is no stored last location, this
+      <strong>online Qibla finder</strong> always asks the browser for a fresh fix. That is deliberately
+      less convenient than an app and considerably more private — the
+      <strong>online Qibla compass</strong> has no memory to leak if the phone changes hands.
+    </p>
+
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">3. Third-Party Services</h2>
     <p class="text-body text-base leading-relaxed mb-4">
