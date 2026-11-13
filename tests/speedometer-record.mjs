@@ -137,16 +137,14 @@ check(
   true,
 );
 check(
-  'a spacer above mirrors the list below',
-  /#speed-card\[[^\]]*\]:fullscreen:before\{[^}]*flex:\s*1 1 0/.test(html),
+  'the list is sized by measurement, not by its content',
+  /records-in-card\[[^\]]*\]\{[^}]*flex:\s*none/.test(html) &&
+    /records-in-card\[[^\]]*\]\{[^}]*overflow:\s*hidden/.test(html),
   true,
 );
-check(
-  'the list gets the same share, so the speedometer stays centred',
-  /records-in-card\[[^\]]*\]\{[^}]*flex:\s*1 1 0/.test(html) &&
-    /records-in-card\[[^\]]*\]\{[^}]*min-height:\s*0/.test(html),
-  true,
-);
+check('the gap above is written by the script', /marginTop=/.test(code), true);
+check('the list height is written by the script', /style\.height=/.test(code), true);
+check('both are cleared when leaving fullscreen', /marginTop=``/.test(code) && /style\.height=``/.test(code), true);
 check(
   'the list scrolls inside its share instead of growing',
   /#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),

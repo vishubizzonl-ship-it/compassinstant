@@ -66,7 +66,7 @@ const appLd = {
             <svg class="icon-enter" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             <svg class="icon-exit hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
           </button>
-          <div class="text-center mb-4">
+          <div id="speed-head" class="text-center mb-4">
             <h2 class="font-sans text-xl font-semibold tracking-tight text-ink">{t('speed.ui.title')}</h2>
             <p class="text-xs text-mute font-mono mt-1">{t('speed.ui.gpsActive')}</p>
             <div class="flex gap-2 justify-center mt-3">
@@ -95,7 +95,7 @@ const appLd = {
             </div>
           </div>
 
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div id="speed-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <div class="p-2 rounded-sm bg-canvas border border-hairline">
               <p class="text-[10px] text-mute font-mono uppercase tracking-wide">{t('speed.ui.max')}</p>
               <p id="max-speed" class="text-lg font-semibold tabular-nums text-ink">0.0</p>
@@ -333,13 +333,11 @@ const appLd = {
     display: none;
   }
 
-  /* Fullscreen is a fixed column with two equal spacers: one above the
-     speedometer and one below it (the recorded list). Both are flex: 1 1 0, so
-     they always share the leftover space equally — which is exactly what keeps
-     the speedometer in the middle of the screen. Because the list's height is
-     set by that share and not by how many records there are, adding records can
-     never push the speedometer off centre: the list scrolls inside its share.
-     The card itself never scrolls. */
+  /* Fullscreen is a fixed column: nothing scrolls here and nothing is sized by
+     its content, so the speedometer can never drift. centreFullscreen() measures
+     the speedometer block and sets the gap above it and the height of the list
+     below to exactly the same amount, which is what puts it in the middle of the
+     screen. The list scrolls inside its own height when the records do not fit. */
   #speed-card:fullscreen,
   #speed-card:-webkit-full-screen {
     display: flex;
@@ -352,27 +350,16 @@ const appLd = {
   #speed-card:-webkit-full-screen > * {
     flex: 0 0 auto;
   }
-
-  /* Spacer above the speedometer, the mirror of the list below it. */
-  #speed-card:fullscreen::before,
-  #speed-card:-webkit-full-screen::before {
-    content: '';
-    flex: 1 1 0;
-    min-height: 0;
-  }
-
   #speed-card:fullscreen .records-in-card,
   #speed-card:-webkit-full-screen .records-in-card {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
+    flex: 0 0 auto;
     min-height: 0;
     overflow: hidden;
     padding-top: 0.75rem;
     border-top: 1px solid var(--color-hairline, #ebebeb);
   }
-
-  /* Only the list scrolls, and only when the records no longer fit. */
   #speed-card:fullscreen #records-list-card,
   #speed-card:-webkit-full-screen #records-list-card {
     flex: 1 1 auto;
@@ -385,6 +372,48 @@ const appLd = {
   (function () {
     const card = document.getElementById('speed-card');
     const fsBtn = document.getElementById('speed-fullscreen-btn');
+    const headEl = document.getElementById('speed-head');
+    const statsEl = document.getElementById('speed-stats');
+    const panelEl = document.getElementById('records-in-card');
+
+    /**
+     * Puts the speedometer exactly in the middle of the fullscreen screen.
+     *
+     * Measured, not assumed: the height of the whole speedometer block (title,
+     * buttons, readout, stats) is taken from the real layout, the leftover space
+     * is split in half, and the same half is used twice — as a gap above the
+     * speedometer and as the height of the recorded list below it. Both numbers
+     * are fixed inline styles, so once measured nothing can move: adding records
+     * only fills the list, and the list scrolls inside its own height.
+     */
+    function centreFullscreen() {
+      if (!card) return;
+      const isFullscreen =
+        document.fullscreenElement === card || (document as any).webkitFullscreenElement === card;
+      // Always start from a clean slate so every measurement is honest.
+      if (headEl) headEl.style.marginTop = '';
+      if (panelEl) panelEl.style.height = '';
+      if (!isFullscreen || !headEl || !statsEl || !panelEl) return;
+
+      const cardTop = card.getBoundingClientRect().top;
+      const headTop = headEl.getBoundingClientRect().top - cardTop;
+      // The whole speedometer: from the top of the title to the bottom of the
+      // stat boxes (this already includes the title's own height).
+      const blockHeight = statsEl.getBoundingClientRect().bottom - cardTop - headTop;
+      const screenHeight = card.clientHeight;
+      const bottomPadding = 16;
+
+      // Equal space above and below the speedometer.
+      const gap = Math.max(0, (screenHeight - blockHeight) / 2);
+      const extraTop = Math.max(0, gap - headTop);
+      if (extraTop > 0) headEl.style.marginTop = extraTop + 'px';
+
+      // The list gets exactly the space that is left below the block, so it can
+      // never grow into the speedometer.
+      const blockTop = headTop + extraTop;
+      const available = Math.max(44, screenHeight - blockTop - blockHeight - bottomPadding);
+      panelEl.style.height = available + 'px';
+    }
 
     function syncFsIcon() {
       if (!fsBtn) return;
@@ -400,7 +429,14 @@ const appLd = {
       document.addEventListener('fullscreenchange', () => {
         syncFsIcon();
         renderRecords();
+        centreFullscreen();
+        // The layout settles a frame later on some phones.
+        requestAnimationFrame(centreFullscreen);
+        setTimeout(centreFullscreen, 120);
       });
+      (document as any).addEventListener('webkitfullscreenchange', centreFullscreen);
+      window.addEventListener('resize', centreFullscreen);
+      window.addEventListener('orientationchange', centreFullscreen);
       syncFsIcon();
     }
     let maxSp = 0;
