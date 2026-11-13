@@ -17,8 +17,8 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
-    { '@type': 'ListItem', position: 3, name: 'Terms', item: 'https://instanten.com/qibla-finder/terms/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/onlineqibla/' },
+    { '@type': 'ListItem', position: 3, name: 'Terms', item: 'https://instanten.com/onlineqibla/terms/' },
   ],
 };
 
@@ -32,7 +32,7 @@ const breadcrumbLd = {
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
+    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.terms.title')}</h1>
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
     <p class="text-body text-base leading-relaxed mb-6">

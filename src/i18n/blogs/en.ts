@@ -648,7 +648,7 @@ export const en: Record<string, ToolBlogContent> = {
     ],
     outro: "For precise training data, pair the speedometer with a dedicated GPS watch. For everyday use, your phone is plenty.",
   },
-  "qibla-finder": {
+  "onlineqibla": {
     title: "Qibla Finder: Find the Direction of Prayer Anywhere",
     intro: [
       "Find the direction of the Kaaba from anywhere in the world. onlinecompass's qibla finder combines your location with a compass to show the qibla bearing in real time.",

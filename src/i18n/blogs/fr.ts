@@ -120,7 +120,7 @@ export const fr: Record<string, ToolBlogContent> = {
     ],
     outro: "Pour des données d'entraînement précises, associez le compteur à une montre GPS dédiée. Pour l'usage quotidien, votre téléphone suffit largement.",
   },
-  "qibla-finder": {
+  "onlineqibla": {
     title: "Chercheur de Qibla : trouvez la direction de prière de n'importe où",
     intro: ["Trouvez la direction de la Kaaba depuis n'importe où dans le monde. Le chercheur de Qibla de onlinecompass combine votre position avec une boussole pour afficher le cap de la Qibla en temps réel.", "Fonctionne dans votre navigateur sans téléchargement, et votre position est utilisée uniquement sur votre appareil.", "Ce guide explique comment le cap de la Qibla est calculé, comment obtenir une lecture précise, ce qui affecte la précision et comment utiliser l'outil en voyage. Il couvre aussi les questions courantes comme comment trouver la Qibla, si ça fonctionne hors ligne et si la position est stockée."],
     sections: [

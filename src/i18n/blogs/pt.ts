@@ -120,7 +120,7 @@ export const pt: Record<string, ToolBlogContent> = {
     ],
     outro: "Para dados de treino precisos, combine o velocímetro com um relógio GPS dedicado. Para uso diário, o telefone basta.",
   },
-  "qibla-finder": {
+  "onlineqibla": {
     title: "Localizador de Qibla: encontre a direção de oração de qualquer lugar",
     intro: ["Encontre a direção da Kaaba de qualquer lugar do mundo. O localizador de Qibla de onlinecompass combina sua localização com uma bússola para mostrar a direção da Qibla em tempo real.", "Funciona no navegador sem download, e sua localização é usada apenas no seu dispositivo.", "Este guia explica como a direção da Qibla é calculada, como obter uma leitura precisa, o que afeta a precisão e como usar a ferramenta em viagem. Também cobre as perguntas comuns como como encontrar a Qibla, se funciona offline e se a localização é armazenada."],
     sections: [

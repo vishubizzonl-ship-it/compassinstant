@@ -132,7 +132,7 @@ export const es: Record<string, ToolBlogContent> = {
     ],
     outro: "Para datos de entrenamiento precisos, combina el tacómetro con un reloj GPS dedicado. Para uso diario, tu teléfono es suficiente.",
   },
-  "qibla-finder": {
+  "onlineqibla": {
     title: "Buscador de Qibla: encuentra la dirección de oración desde cualquier lugar",
     intro: [
       "Encuentra la dirección de la Kaaba desde cualquier lugar del mundo. El buscador de Qibla de onlinecompass combina tu ubicación con una brújula para mostrar el rumbo de la Qibla en tiempo real.",

@@ -8,27 +8,27 @@ const lang = getLangFromUrl(Astro.url);
 const translatePath = useTranslatedPath(lang);
 ---
 
-<Layout title="404 — Page Not Found" description="This Qibla page could not be found." noindex>
+<Layout title="503 — Service Unavailable" description="This Qibla page is temporarily unavailable." noindex>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-24 text-center">
-    <p class="font-mono text-sm text-mute mb-4">404</p>
-    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-4">Page not found</h1>
+    <p class="font-mono text-sm text-mute mb-4">503</p>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-4">Service unavailable</h1>
     <p class="text-body text-base leading-relaxed mb-8">
-      This page is not part of the Qibla tool. The link may be old, or the address may have a typo. The online Qibla finder is one tap away.
+      This Qibla page is temporarily unavailable. Please try again in a moment — the online Qibla finder needs nothing but your browser, your location and your phone compass.
     </p>
     <p class="text-body text-base leading-relaxed mb-8">
-      Looking for a guide instead? The Qibla direction explainer, the compass accuracy notes and the travel guide are all listed in the Qibla blog.
+      Because the bearing is calculated on your own device, the tool usually keeps working even when a page fails to load. Reloading the Qibla finder usually clears it.
     </p>
     <a
-      href={translatePath('/qibla-finder/')}
+      href={translatePath('/onlineqibla/')}
       class="inline-flex items-center rounded-full bg-ink text-canvas px-5 py-2 text-sm font-medium hover:opacity-90 transition-opacity focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none"
     >
       Back to Qibla finder
     </a>
     <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-body">
-      <a href={translatePath('/qibla-finder/blog/')} class="hover:text-ink transition-colors">Qibla guides</a>
-      <a href={translatePath('/qibla-finder/about/')} class="hover:text-ink transition-colors">About</a>
-      <a href={translatePath('/qibla-finder/contact/')} class="hover:text-ink transition-colors">Contact</a>
+      <a href={translatePath('/onlineqibla/blog/')} class="hover:text-ink transition-colors">Qibla guides</a>
+      <a href={translatePath('/onlineqibla/about/')} class="hover:text-ink transition-colors">About</a>
+      <a href={translatePath('/onlineqibla/contact/')} class="hover:text-ink transition-colors">Contact</a>
       <a href="/" class="hover:text-ink transition-colors">All tools</a>
     </div>
   </main>

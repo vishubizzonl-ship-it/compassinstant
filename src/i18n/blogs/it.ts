@@ -120,7 +120,7 @@ export const it: Record<string, ToolBlogContent> = {
     ],
     outro: "Per dati di allenamento precisi, abbina il tachimetro a un orologio GPS dedicato. Per uso quotidiano, il telefono basta.",
   },
-  "qibla-finder": {
+  "onlineqibla": {
     title: "Cercatore di Qibla: trova la direzione di preghiera da qualsiasi luogo",
     intro: ["Trova la direzione della Kaaba da qualsiasi luogo nel mondo. Il cercatore di Qibla di onlinecompass combina la tua posizione con una bussola per mostrare la prua della Qibla in tempo reale.", "Funziona nel browser senza download, e la tua posizione è usata solo sul tuo dispositivo.", "Questa guida spiega come viene calcolata la prua della Qibla, come ottenere una lettura precisa, cosa influisce sulla precisione e come usare lo strumento in viaggio. Copre anche le domande comuni come come trovare la Qibla, se funziona offline e se la posizione viene memorizzata."],
     sections: [

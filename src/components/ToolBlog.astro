@@ -36,7 +36,7 @@ const toolKeyMap: Record<string, string> = {
   "onlinecompass": "compass",
   "onlinebubblelevel": "bubble",
   "onlinespeedometer": "speed",
-  "qibla-finder": "qibla",
+  "onlineqibla": "qibla",
 };
 const toolKey = toolKeyMap[tool];
 const blogTitle = blog?.title ?? (toolKey ? t(`page.${toolKey}.title` as any) : "");

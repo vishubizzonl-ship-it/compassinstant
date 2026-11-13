@@ -120,7 +120,7 @@ export const de: Record<string, ToolBlogContent> = {
     ],
     outro: "Für präzise Trainingsdaten kombinieren Sie den Tacho mit einer dedizierten GPS-Uhr. Für den Alltag reicht Ihr Telefon völlig aus.",
   },
-  "qibla-finder": {
+  "onlineqibla": {
     title: "Qibla-Finder: Gebetsrichtung von überall finden",
     intro: ["Finden Sie die Richtung zur Kaaba von überall auf der Welt. Der Qibla-Finder von onlinecompass kombiniert Ihren Standort mit einem Kompass, um die Qibla-Peilung in Echtzeit anzuzeigen.", "Er funktioniert im Browser ohne Download, und Ihr Standort wird nur auf Ihrem Gerät verwendet.", "Dieser Leitfaden erklärt, wie die Qibla-Peilung berechnet wird, wie man eine genaue Ablesung erhält, was die Genauigkeit beeinflusst und wie man das Werkzeug auf Reisen nutzt. Er beantwortet auch häufige Fragen wie wie finde ich Qibla, funktioniert es offline und wird mein Standort gespeichert."],
     sections: [

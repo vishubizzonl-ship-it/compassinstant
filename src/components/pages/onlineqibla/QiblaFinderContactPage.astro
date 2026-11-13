@@ -17,8 +17,8 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
-    { '@type': 'ListItem', position: 3, name: 'Contact', item: 'https://instanten.com/qibla-finder/contact/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/onlineqibla/' },
+    { '@type': 'ListItem', position: 3, name: 'Contact', item: 'https://instanten.com/onlineqibla/contact/' },
   ],
 };
 
@@ -32,7 +32,7 @@ const breadcrumbLd = {
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
+    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.contact.title')}</h1>
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
     <p class="text-body text-base leading-relaxed mb-6">
@@ -130,7 +130,7 @@ const breadcrumbLd = {
       but may not get a personal reply. Privacy questions about location are always answered.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
-      While you wait, the <a href="/qibla-finder/blog/" class="text-link hover:underline">Qibla
+      While you wait, the <a href="/onlineqibla/blog/" class="text-link hover:underline">Qibla
       guides</a> cover how the <strong>online Qibla direction</strong> is measured and how to get a
       steady reading in a room full of metal.
     </p>

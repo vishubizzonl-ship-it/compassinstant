@@ -10,7 +10,7 @@ const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
 
 const posts = [
-  { href: '/qibla-finder/', title: 'How to Find Qibla Direction Anywhere', date: 'October 4, 2026', desc: 'Find the direction of the Kaaba from any location with compass and location integration.' },
+  { href: '/onlineqibla/', title: 'How to Find Qibla Direction Anywhere', date: 'October 4, 2026', desc: 'Find the direction of the Kaaba from any location with compass and location integration.' },
 ];
 
 const KWS =
@@ -21,8 +21,8 @@ const breadcrumbLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/qibla-finder/' },
-    { '@type': 'ListItem', position: 3, name: 'Blog', item: 'https://instanten.com/qibla-finder/blog/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/onlineqibla/' },
+    { '@type': 'ListItem', position: 3, name: 'Blog', item: 'https://instanten.com/onlineqibla/blog/' },
   ],
 };
 
@@ -36,7 +36,7 @@ const breadcrumbLd = {
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/qibla-finder/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
+    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">Blog</h1>
     <p class="text-xs text-mute font-mono mb-4">Last updated: November 2026</p>
     <p class="text-body text-base leading-relaxed mb-4">

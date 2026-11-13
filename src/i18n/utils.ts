@@ -11,7 +11,7 @@ export const routePaths = [
   "/onlinecompass/",
   "/onlinebubblelevel/",
   "/onlinespeedometer/",
-  "/qibla-finder/",
+  "/onlineqibla/",
   "/privacy/",
   "/terms/",
   "/about/",
@@ -148,7 +148,7 @@ const routeMetaKeys: Record<
     description: "page.speed.desc",
     brandSuffix: true,
   },
-  "/qibla-finder/": {
+  "/onlineqibla/": {
     title: "page.qibla.title",
     description: "page.qibla.desc",
     brandSuffix: true,
@@ -185,7 +185,7 @@ const toolNameKeys: Record<string, TranslationKey> = {
   compass: "page.compass.title",
   "onlinebubblelevel": "page.bubble.title",
   onlinespeedometer: "page.speed.title",
-  "qibla-finder": "page.qibla.title",
+  "onlineqibla": "page.qibla.title",
 };
 
 const siloTitleKeys: Record<string, TranslationKey> = {

@@ -5,4 +5,4 @@ Sitemap: https://instanten.com/sitemap-index.xml
 Sitemap: https://instanten.com/onlinecompass/sitemap.xml
 Sitemap: https://instanten.com/onlinebubblelevel/sitemap.xml
 Sitemap: https://instanten.com/onlinespeedometer/sitemap.xml
-Sitemap: https://instanten.com/qibla-finder/sitemap.xml
+Sitemap: https://instanten.com/onlineqibla/sitemap.xml
