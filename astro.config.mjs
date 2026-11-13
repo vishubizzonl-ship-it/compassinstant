@@ -4,7 +4,6 @@ import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
   site: 'https://instanten.com',
-  base: '/onlinecompass',
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es', 'ja', 'fr', 'de', 'pt', 'ko', 'it'],
