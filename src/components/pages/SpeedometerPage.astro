@@ -76,7 +76,7 @@ const appLd = {
             </div>
           </div>
 
-          <div id="speed-main" class="text-center py-4 mb-4">
+          <div class="text-center py-4 mb-4">
             <p class="text-5xl lg:text-6xl font-semibold tracking-tighter text-ink tabular-nums transition-transform duration-200 origin-center" id="speed-display">0</p>
             <div class="flex items-center justify-center gap-3 mt-2">
               <p class="text-sm text-mute font-mono" id="speed-unit">KM/H</p>
@@ -95,7 +95,7 @@ const appLd = {
             </div>
           </div>
 
-          <div id="speed-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <div class="p-2 rounded-sm bg-canvas border border-hairline">
               <p class="text-[10px] text-mute font-mono uppercase tracking-wide">{t('speed.ui.max')}</p>
               <p id="max-speed" class="text-lg font-semibold tabular-nums text-ink">0.0</p>
@@ -333,62 +333,32 @@ const appLd = {
     display: none;
   }
 
-  /* In fullscreen the card is the whole screen and records appear underneath the
-     readout. The panel is taken out of the flow and anchored to the bottom, so
-     the speed readout keeps the exact position it already had — nothing above it
-     is restyled or moved. Only space that is free is used: the list is capped at
-     --records-max and scrolls inside itself, letting extra records run off the
-     bottom instead of pushing the speed upwards. */
-  #speed-card:fullscreen .records-in-card,
-  #speed-card:-webkit-full-screen .records-in-card {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: var(--records-bottom, 7.5rem);
-    max-height: var(--records-max, 26vh);
-    overflow: hidden;
-    padding: 0.5rem 1rem 0;
-    background: var(--color-canvas-elevated, #fff);
-    border-top: 1px solid var(--color-hairline, #ebebeb);
-  }
-  #speed-card:fullscreen #records-list-card,
-  #speed-card:-webkit-full-screen #records-list-card {
-    flex: 1 1 auto;
-    min-height: 0;
+  /* Fullscreen: the card is the whole screen and simply grows downwards. The
+     recorded list sits in normal flow, directly below the last element of the
+     speedometer (the Max / Average / Altitude / Duration boxes), so nothing can
+     ever overlap them. When the list gets longer than the screen it runs off the
+     bottom and the card itself scrolls — every record is reachable, and the
+     speedometer above is not restyled or re-positioned at all. */
+  #speed-card:fullscreen,
+  #speed-card:-webkit-full-screen {
+    height: 100%;
     overflow-y: auto;
     overscroll-behavior: contain;
+    padding-bottom: 2rem;
+  }
+  #speed-card:fullscreen .records-in-card,
+  #speed-card:-webkit-full-screen .records-in-card {
+    display: block;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--color-hairline, #ebebeb);
   }
 </style>
 <script>
   (function () {
     const card = document.getElementById('speed-card');
     const fsBtn = document.getElementById('speed-fullscreen-btn');
-    const mainEl = document.getElementById('speed-main');
 
-    /**
-     * Fullscreen only: measure the free space under the readout and hand exactly
-     * that to the recorded list. Nothing above is touched — the readout keeps its
-     * position — and the list scrolls inside this height, so a long list runs off
-     * the bottom instead of moving the speed.
-     */
-    function fitRecordsPanel() {
-      if (!card) return;
-      const isFullscreen =
-        document.fullscreenElement === card || (document as any).webkitFullscreenElement === card;
-      if (!isFullscreen) return;
-      const cardRect = card.getBoundingClientRect();
-      const statsH = statsEl ? statsEl.offsetHeight : 0;
-      const readoutBottom = mainEl ? mainEl.getBoundingClientRect().bottom - cardRect.top : 0;
-      const bottom = statsH + 16;
-      const available = cardRect.height - bottom - readoutBottom - 8;
-      card.style.setProperty('--records-bottom', bottom + 'px');
-      card.style.setProperty(
-        '--records-max',
-        Math.max(48, Math.min(available, cardRect.height * 0.45)) + 'px',
-      );
-    }
     function syncFsIcon() {
       if (!fsBtn) return;
       const entering = !document.fullscreenElement;
@@ -403,9 +373,7 @@ const appLd = {
       document.addEventListener('fullscreenchange', () => {
         syncFsIcon();
         renderRecords();
-        fitRecordsPanel();
       });
-      window.addEventListener('resize', fitRecordsPanel);
       syncFsIcon();
     }
     let maxSp = 0;
@@ -444,7 +412,6 @@ const appLd = {
     const recordsListCard = document.getElementById('records-list-card');
     const recordsEmptyCard = document.getElementById('records-empty-card');
     const recordsClearCard = document.getElementById('records-clear-card');
-    const statsEl = document.getElementById('speed-stats');
 
     function label() { return units[unitIndex].label; }
     function factor() { return units[unitIndex].factor; }

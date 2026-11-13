@@ -91,6 +91,7 @@ check('clear button shown now', clear.classList.contains('hidden'), false);
 check('saved to localStorage', JSON.parse(store.get('speedometer-records')).length, 1);
 check('the fullscreen copy shows the same row instantly', cardList.children.length, 1);
 check('the fullscreen copy shows the same reading', rowText(cardList.children[0]), '4.0 KM/H');
+check('newest record sits on top of the fullscreen list too', rowText(cardList.children[0]).startsWith('4.0'), true);
 
 // second recording of a different speed goes on top
 geoOk(fix(25.6000, (t += 1000)));
@@ -123,24 +124,21 @@ check('record survives a reload (persisted shape)', Array.isArray(JSON.parse(sav
 console.log('--- fullscreen panel, without touching the speedometer');
 check('card only shows the panel in fullscreen', /\.records-in-card\[[^\]]*\]\{display:none\}/.test(html), true);
 check(
-  'panel is anchored to the bottom, out of the flow',
-  /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*position:\s*absolute/.test(html) &&
-    /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*bottom:\s*var\(--records-bottom/.test(html),
+  'panel is in normal flow (no absolute positioning, so it cannot overlap)',
+  !/records-in-card\[[^\]]*\]\{[^}]*position:\s*absolute/.test(html) &&
+    !/records-in-card\[[^\]]*\]\{[^}]*bottom:/.test(html),
   true,
 );
 check(
-  'panel height is the measured free space',
-  /max-height:\s*var\(--records-max/.test(html),
+  'panel follows the stats boxes in the markup',
+  html.indexOf('id="records-in-card"') > html.indexOf('id="avg-speed"') &&
+    html.indexOf('id="records-in-card"') > html.indexOf('id="duration"'),
   true,
 );
-check(
-  'a long list scrolls inside the panel',
-  /#speed-card\[[^\]]*\]:fullscreen\s+#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
-  true,
-);
-check('the readout is never re-positioned in fullscreen', /#speed-main\[[^\]]*\]/.test(html.replace(/id="speed-main"[^>]*/g, '')) === false, true);
-check('free space is measured from the real readout position', /getBoundingClientRect/.test(code), true);
-check('measured again on resize', /addEventListener\(.resize./.test(code), true);
+check('panel is not height-capped, so it can run off the bottom', !/records-in-card\[[^\]]*\]\{[^}]*max-height/.test(html), true);
+check('the card itself scrolls in fullscreen', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow-y:\s*auto/.test(html), true);
+check('the list has no scrollbar of its own', !/#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html), true);
+check('no fullscreen rule re-positions the readout', !/speed-main/.test(html), true);
 
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 process.exit(fail ? 1 : 0);
