@@ -333,25 +333,42 @@ const appLd = {
     display: none;
   }
 
-  /* Fullscreen: the card is the whole screen and simply grows downwards. The
-     recorded list sits in normal flow, directly below the last element of the
-     speedometer (the Max / Average / Altitude / Duration boxes), so nothing can
-     ever overlap them. When the list gets longer than the screen it runs off the
-     bottom and the card itself scrolls — every record is reachable, and the
-     speedometer above is not restyled or re-positioned at all. */
+  /* Fullscreen is a fixed column:
+       1. the speedometer (title, buttons, readout, stats) keeps its natural
+          height, exactly where it sits when the screen opens,
+       2. the recorded list takes whatever space is left at the bottom and
+          scrolls inside itself.
+     The card never scrolls, so adding records cannot move the speedometer — it
+     stays exactly where it was on the first frame, centred as before. */
   #speed-card:fullscreen,
   #speed-card:-webkit-full-screen {
+    display: flex;
+    flex-direction: column;
     height: 100%;
-    overflow-y: auto;
+    overflow: hidden;
     overscroll-behavior: contain;
-    padding-bottom: 2rem;
+  }
+  #speed-card:fullscreen > *,
+  #speed-card:-webkit-full-screen > * {
+    flex: 0 0 auto;
   }
   #speed-card:fullscreen .records-in-card,
   #speed-card:-webkit-full-screen .records-in-card {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
     margin-top: 1rem;
     padding-top: 0.75rem;
     border-top: 1px solid var(--color-hairline, #ebebeb);
+  }
+  /* Only the list scrolls, and only when the records no longer fit. */
+  #speed-card:fullscreen #records-list-card,
+  #speed-card:-webkit-full-screen #records-list-card {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 </style>
 <script>

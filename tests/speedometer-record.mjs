@@ -123,21 +123,35 @@ check('record survives a reload (persisted shape)', Array.isArray(JSON.parse(sav
 
 console.log('--- fullscreen panel, without touching the speedometer');
 check('card only shows the panel in fullscreen', /\.records-in-card\[[^\]]*\]\{display:none\}/.test(html), true);
-check(
-  'panel is in normal flow (no absolute positioning, so it cannot overlap)',
-  !/records-in-card\[[^\]]*\]\{[^}]*position:\s*absolute/.test(html) &&
-    !/records-in-card\[[^\]]*\]\{[^}]*bottom:/.test(html),
-  true,
-);
+check('panel is not absolutely positioned, so it cannot overlap', !/records-in-card\[[^\]]*\]\{[^}]*position:\s*absolute/.test(html), true);
 check(
   'panel follows the stats boxes in the markup',
   html.indexOf('id="records-in-card"') > html.indexOf('id="avg-speed"') &&
     html.indexOf('id="records-in-card"') > html.indexOf('id="duration"'),
   true,
 );
-check('panel is not height-capped, so it can run off the bottom', !/records-in-card\[[^\]]*\]\{[^}]*max-height/.test(html), true);
-check('the card itself scrolls in fullscreen', /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow-y:\s*auto/.test(html), true);
-check('the list has no scrollbar of its own', !/#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html), true);
+check(
+  'fullscreen is a fixed column and the card never scrolls',
+  /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*display:\s*flex/.test(html) &&
+    /#speed-card\[[^\]]*\]:fullscreen\s*\{[^}]*overflow:\s*hidden/.test(html),
+  true,
+);
+check(
+  'everything above the list keeps its natural height',
+  /#speed-card\[[^\]]*\]:fullscreen\s*>\s*\[[^\]]*\]\{[^}]*flex:\s*none/.test(html),
+  true,
+);
+check(
+  'the panel takes the leftover space instead of pushing the speed up',
+  /records-in-card\[[^\]]*\]\{[^}]*flex:\s*auto/.test(html) &&
+    /records-in-card\[[^\]]*\]\{[^}]*min-height:\s*0/.test(html),
+  true,
+);
+check(
+  'only the list scrolls',
+  /#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
+  true,
+);
 check('no fullscreen rule re-positions the readout', !/speed-main/.test(html), true);
 
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
