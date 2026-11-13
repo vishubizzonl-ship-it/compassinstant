@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/speedometer/' },
+    { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/speedometer/about/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="About Online Speedometer — Free GPS Speed Test Tool"
+  description="About the online speedometer: how a phone measures speed with GPS, who the free online speedometer is for, and the accuracy of a live speed test."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="About Online Speedometer — Free GPS Speed Test Tool"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
@@ -21,6 +41,27 @@ const translatePath = useTranslatedPath(lang);
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       Unlike most online speed tools that estimate from map data, onlinecompass reads your device's GPS directly through standard browser APIs. Once loaded, your route stays on your device and is never uploaded.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How a phone speedometer actually works</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Your phone contains a GPS receiver that reports a position roughly once a second. This
+      <strong>online speedometer</strong> compares each new position with the last, divides the
+      distance by the time, and shows the result as a speed. A <strong>speedometer digital</strong>
+      readout replaces the needle with a number, so you read 62 km/h instead of judging where a pointer
+      sits between two marks.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      That is also why a <strong>GPS speedometer online</strong> can disagree with a car dashboard. The
+      dashboard counts wheel rotations and assumes a tyre size; the phone measures how far you actually
+      moved over the ground. When a car has had a wheel change, or the tyres are worn, the phone is
+      usually the honest one.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The trade-off is that GPS needs sky. Under trees, in tunnels and inside buildings the fix drops
+      and the number holds its last value or freezes. A <strong>live speedometer</strong> in a browser
+      has no better source of truth than the chip, so treat a stall as a signal problem rather than a
+      bug.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Our Mission</h2>
@@ -37,6 +78,43 @@ const translatePath = useTranslatedPath(lang);
       <li>Dark mode that respects your system preference</li>
       <li>Works on every modern browser — no download, no sign-up</li>
     </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Who the free speedometer is for</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Most people arrive here for one of four reasons: they want a
+      <strong>live speed test</strong> as a passenger, they want to check a dashboard after a tyre
+      change, they want a <strong>speedometer online train</strong> reading on a route with no seat-back
+      display, or they want an <strong>online speedometer mph</strong> figure for a car whose dial is in
+      km/h.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      It is also a fair <strong>speedometer test online</strong> for a second-hand car: note the reading
+      at a steady 50 km/h, then compare it with the dash. And because it is
+      <strong>online speedometer free</strong> with no account, it is a sensible
+      <strong>online speedometer free</strong> alternative to installing yet another app for a one-off
+      question.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Accuracy you can expect</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      In open sky a phone reads speed to within about 1–2 km/h, which is tighter than most dashboards.
+      The number updates once a second, so sharp acceleration lags slightly, and a reading taken in a
+      tunnel is worth nothing until the fix returns. For anything that needs a certified figure, a
+      calibrated instrument still wins over any <strong>speedometer online</strong> page.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      If a reading looks wrong, run the same stretch twice and compare. A number that repeats is a
+      number you can use — the same habit that makes a <strong>speedometer test online</strong> useful
+      rather than decorative, and it is why an <strong>online speedometer test</strong> beats a single
+      glance at a dial.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Search habits tell the same story: people arrive through “<em>free online speedometer</em>”,
+      “<em>my speed km/h</em>”, “<em>zspeed</em>” and “<em>online speedometer mph</em>” and all of them
+      want the same one number. Treat a <strong>HardSpeedometer test</strong> on a track, or a
+      <strong>speedometer online train</strong> check on a commute, as the same question asked in a
+      different place.
+    </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
     <p class="text-body text-base leading-relaxed mb-4">

@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/speedometer/' },
+    { '@type': 'ListItem', position: 3, name: 'Privacy', item: 'https://instanten.com/speedometer/privacy/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Privacy Policy — Online Speedometer Tool"
+  description="Privacy policy for the online speedometer: GPS and trip readings stay on your device, what is stored locally, and which analytics and cookies run."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Privacy Policy — Online Speedometer Tool"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
@@ -25,7 +45,12 @@ const translatePath = useTranslatedPath(lang);
       <strong>We do not require you to create an account or provide any personal information to use onlinecompass.</strong>
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
-      The speedometer runs entirely in your browser, and your route never leaves the page. Any calibration data (your sensor readings, chosen calibration method, theme preference) is stored only in your browser's localStorage and never transmitted to our servers.
+      This <strong>online speedometer</strong> runs entirely in your browser, and your route never leaves the page. GPS positions are read by the browser to calculate the number on screen, and they are never uploaded. Any preferences you set (units, theme) are stored only in your browser's localStorage and never transmitted to our servers.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      That is what makes the <strong>free online speedometer</strong> useful on a borrowed phone: start a
+      <strong>live speed test</strong>, close the tab, and nothing about the trip remains on our side.
+      There is no account, no trip history and no server copy of your route.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       We may collect the following non-personal, aggregated data through standard server logs and analytics:
@@ -37,9 +62,26 @@ const translatePath = useTranslatedPath(lang);
       <li>Country-level geographic region (not precise location)</li>
     </ul>
 
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1a. What the tool does with GPS</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>gps speedometer</strong> needs your position, and that is the one sensitive input this
+      page asks for. The browser hands your coordinates to the page, the page turns movement between two
+      fixes into a speed, and the coordinate is then discarded. Nothing is written to a database, no
+      trip log is created, and there is no way for us to see a <strong>live speedometer</strong> session
+      after you close the tab.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The same applies to the trip figures. Max speed, average speed, distance and altitude are
+      calculated in the tab and reset when you press Reset or reload. An
+      <strong>online speedometer free</strong> of accounts means there is no profile to attach them to,
+      and a <strong>speedometer digital</strong> reading is never linked to an identity.
+    </p>
+
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Cookies</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass does not use advertising cookies or third-party tracking cookies. We use localStorage (not cookies) to remember your calibration and theme preference between visits. This data never leaves your device.
+      The <strong>speedometer online</strong> tool does not use advertising cookies or third-party
+      tracking cookies. We use localStorage (not cookies) to remember your chosen units and theme
+      preference between visits. This data never leaves your device, and clearing site data removes it.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
       You can clear this data at any time by clearing your browser's site data for onlinecompass.

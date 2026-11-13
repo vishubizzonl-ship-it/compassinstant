@@ -7,8 +7,28 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/speedometer/' },
+    { '@type': 'ListItem', position: 3, name: 'Contact', item: 'https://instanten.com/speedometer/contact/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Contact Online Speedometer — Feedback & Bug Reports"
+  description="Contact the online speedometer team. Report a GPS accuracy problem with the free speedometer, suggest a feature, or ask a privacy question."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Contact Online Speedometer — Feedback & Bug Reports"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
@@ -16,6 +36,48 @@ const translatePath = useTranslatedPath(lang);
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
     <p class="text-body text-base leading-relaxed mb-6">
       We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How the speed reading works</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Before you write, it helps to know what the tool is doing. The <strong>online speedometer</strong>
+      reads your device's GPS position through the browser and converts movement between fixes into a
+      speed in km/h, mph, m/s or knots. Nothing is uploaded, which is why the
+      <strong>free online speedometer</strong> keeps counting after the page has loaded even without a
+      data connection.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      That design explains most support questions. A number that freezes means the GPS fix dropped, not
+      that the tool stopped. A reading that starts late is normal — a
+      <strong>live speed test</strong> needs the first few positions before it can calculate anything.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Quick fixes before you write</h2>
+    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
+      <li><strong>Speed stuck at 0:</strong> allow location access when the browser asks, then reload the page.</li>
+      <li><strong>Number jumps or freezes:</strong> move outdoors — buildings, trees and tunnels block GPS.</li>
+      <li><strong>Reading differs from the car dash:</strong> expected; a dash is optimistic by a few percent.</li>
+      <li><strong>No units you want:</strong> use the unit button for km/h, mph, m/s or knots.</li>
+    </ul>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">What to tell us</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a bug report, tell us the phone, the browser, whether you were moving or stationary, and what
+      the number showed. For an accuracy question, mention what you compared against — a dashboard, a
+      bike computer or a known distance with a stopwatch — and whether you were on open road or under
+      cover.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      For a feature request, describe the trip rather than the button. “I want to compare two cars on
+      the same stretch” tells us more than “add a log export”, and it usually leads to a better
+      <strong>speedometer digital</strong> tool.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      The questions we get most often are about units and comparison: an
+      <strong>online speedometer mph</strong> reading against a km/h dial, an
+      <strong>online speedometer test</strong> against a <strong>speedometer test online</strong> result
+      from another site, or a <strong>speedometer online train</strong> reading that froze in a tunnel.
+      Include which of those you were doing and we can usually answer in one reply.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Email</h2>
@@ -51,6 +113,33 @@ const translatePath = useTranslatedPath(lang);
         Send message
       </button>
     </form>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Before you send a screenshot</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A screenshot helps most when it shows the unit, the trip time and the max speed together. If you
+      were comparing a <strong>gps speedometer online</strong> reading with a car dial, mention both
+      numbers; if you were on foot, say so, because a
+      <strong>live speedometer</strong> on a walk moves in small increments and looks “stuck” to anyone
+      expecting car speeds.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      People also write in after switching from an app such as <em>zspeed</em>, or after asking
+      “<em>my speed km/h</em>” into a search box and landing here. Either way, the answer is the same
+      <strong>online speedometer free</strong> of install — so if the number looks wrong, tell us the
+      conditions and we will tell you whether it is the tool or the sky.
+    </p>
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Response times</h2>
+    <p class="text-body text-base leading-relaxed mb-4">
+      This is a small project, so replies are not instant. Accuracy reports get priority because they
+      affect every user of the online speedometer; feature ideas are read and logged but may not get a
+      personal reply. Privacy questions about trip data are always answered.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      While you wait, the <a href="/speedometer/blog/" class="text-link hover:underline">speedometer
+      guides</a> cover the common questions about a <strong>gps speedometer</strong> reading, unit
+      switching and trip resets.
+    </p>
   </main>
   <Footer />
 </Layout>

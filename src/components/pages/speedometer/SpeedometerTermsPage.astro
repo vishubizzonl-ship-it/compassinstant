@@ -7,20 +7,43 @@ import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+
+const KWS =
+  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/speedometer/' },
+    { '@type': 'ListItem', position: 3, name: 'Terms', item: 'https://instanten.com/speedometer/terms/' },
+  ],
+};
+
 ---
-<Layout>
+<Layout
+  title="Terms of Use — Free Online Speedometer Tool"
+  description="Terms of use for the online speedometer tool: free use, no warranty on GPS speed readings, acceptable use, intellectual property, and liability limits."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Terms of Use — Free Online Speedometer Tool"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.terms.title')}</h1>
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
     <p class="text-body text-base leading-relaxed mb-6">
-      Please read these Terms and Conditions ("Terms") carefully before using onlinecompass ("the Service"). By accessing or using the Service, you agree to be bound by these Terms.
+      Please read these Terms and Conditions ("Terms") carefully before using the online speedometer
+      ("the Service"). By accessing or using the Service, you agree to be bound by these Terms.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1. Use of the Service</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is provided free of charge for personal and professional use. You may use the Service to measure speed, distance and trip statistics. No registration or payment is required.
+      This <strong>free online speedometer</strong> is provided free of charge for personal and
+      professional use. You may use the Service to measure speed, distance and trip statistics, so a
+      <strong>live speed test</strong> costs nothing and needs no registration or payment.
     </p>
     <p class="text-body text-base leading-relaxed mb-4">You agree not to:</p>
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
@@ -31,7 +54,20 @@ const translatePath = useTranslatedPath(lang);
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Accuracy Disclaimer</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is designed to provide accurate readings when properly calibrated. However, accuracy depends on:
+      The <strong>online speedometer</strong> is designed to give a dependable reading in normal use.
+      However, a <strong>gps speedometer</strong> reading depends on:
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>gps speedometer online</strong> reading is only as good as the satellite fix behind it.
+      Under trees, in tunnels, in multi-storey car parks and inside buildings the position drifts or
+      stalls, and the number shown can lag or freeze. Treat any
+      <strong>online speedometer mph</strong> figure taken in those conditions as indicative, not
+      evidential.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Do not use a <strong>speedometer test online</strong> result as a legal or safety reference. Speed
+      limits must be judged from the vehicle's own instruments and from road signage, and a
+      <strong>live speed test</strong> on a phone is a convenience measurement, not a calibrated one.
     </p>
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
       <li>Correct calibration by the user</li>

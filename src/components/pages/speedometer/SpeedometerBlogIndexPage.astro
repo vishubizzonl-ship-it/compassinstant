@@ -11,14 +11,58 @@ const translatePath = useTranslatedPath(lang);
 const posts = [
   { href: '/speedometer/', title: 'How to Use an Online Speedometer', date: 'October 4, 2026', desc: 'Track real-time speed with GPS. Max, average, altitude, and trip duration.' },
 ];
+
+const KWS =
+  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/speedometer/' },
+    { '@type': 'ListItem', position: 3, name: 'Blog', item: 'https://instanten.com/speedometer/blog/' },
+  ],
+};
+
 ---
-<Layout title="Online Speedometer Blog" description="Guides and tips for tracking speed and trips with the online speedometer.">
+<Layout
+  title="Online Speedometer Blog — Speed Test Guides"
+  description="Guides and tips for tracking speed and trips with the online speedometer: live speed test, GPS accuracy, km/h and mph units, and trip checklists."
+  keywords={KWS}
+  ogImage="/og-image.png"
+  ogImageAlt="Online Speedometer blog"
+  breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
     <a href={translatePath('/speedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">Blog</h1>
-    <p class="text-xs text-mute font-mono mb-4">Last updated: October 2026</p>
-    <p class="text-body text-base leading-relaxed mb-10">Guides and tips for navigating with onlinecompass.</p>
+    <p class="text-xs text-mute font-mono mb-4">Last updated: November 2026</p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      Practical guides for the online speedometer: how a live speed test works, how accurate a phone GPS
+      reading really is, when to use km/h and when to switch to mph, and how to set up a trip so the max
+      and average numbers mean something.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-10">
+      Every guide uses the same free online speedometer tool, so you can read a step and try it in the
+      next tab. Start with the how-to walkthrough below.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-4">
+      A <strong>gps speedometer</strong> is only half the story: what you do with the numbers matters
+      more. These notes cover units, resets, and the difference between a
+      <strong>speedometer digital</strong> readout and the needle on a dash. There is also a walkthrough
+      for a <strong>speedometer test online</strong> you can repeat on the same stretch of road, and an
+      explainer for why an <strong>online speedometer mph</strong> figure and a km/h dial never quite
+      agree.
+    </p>
+    <p class="text-body text-base leading-relaxed mb-10">
+      Looking for something specific? The how-to covers an <strong>online speedometer test</strong> from
+      a standing start, the accuracy notes explain why a phone and a dashboard disagree, and the trip
+      section shows how to keep max and average meaningful. If you searched “<em>speedometer online
+      free</em>”, “<em>live speedometer</em>” or “<em>my speed km/h</em>”, you are in the right place —
+      the tool itself is one tap away on the main page. Every page in
+      <strong>speedometer online</strong> free of charge, with no account and no install.
+    </p>
 
     <ul class="space-y-8">
       {posts.map((post) => (
