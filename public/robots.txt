@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://instanten.com/sitemap-index.xml
-Sitemap: https://instanten.com/compass/sitemap.xml
+Sitemap: https://instanten.com/onlinecompass/sitemap.xml

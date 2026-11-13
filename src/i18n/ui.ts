@@ -10,7 +10,7 @@ export const languages = {
 } as const;
 
 export const defaultLang = "en";
-// English is served from the root (`/`, `/compass/`), so it must never be
+// English is served from the root (`/`, `/onlinecompass/`), so it must never be
 // prefixed with `/en` in generated links.
 export const showDefaultLang = false;
 

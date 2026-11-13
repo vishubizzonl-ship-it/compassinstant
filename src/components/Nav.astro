@@ -20,7 +20,7 @@ const currentPath = stripLocale(url.pathname);
  * route. Without this the site opens on the compass but no nav item is marked
  * as current, which reads as "nothing selected".
  */
-const activePath = currentPath === '/' ? '/compass/' : currentPath;
+const activePath = currentPath === '/' ? '/onlinecompass/' : currentPath;
 const safePath = (routePaths as readonly string[]).includes(currentPath)
   ? currentPath
   : '/';
@@ -34,32 +34,32 @@ const safePath = (routePaths as readonly string[]).includes(currentPath)
  * not part of a tool (the old site-wide /about/, /blog/, …) keep the full
  * navigation. The markup and classes are identical either way.
  */
-const toolSlugs = ['compass', 'bubble-level', 'speedometer', 'qibla-finder'] as const;
+const toolSlugs = ['onlinecompass', 'bubble-level', 'speedometer', 'qibla-finder'] as const;
 type ToolId = (typeof toolSlugs)[number];
 
 const firstSegment = currentPath.split('/').filter(Boolean)[0] ?? '';
 const activeTool: ToolId | null =
   currentPath === '/'
-    ? 'compass'
+    ? 'onlinecompass'
     : (toolSlugs as readonly string[]).includes(firstSegment)
       ? (firstSegment as ToolId)
       : null;
 
 const toolHome: Record<ToolId, string> = {
-  compass: '/compass/',
+  onlinecompass: '/onlinecompass/',
   'bubble-level': '/bubble-level/',
   speedometer: '/speedometer/',
   'qibla-finder': '/qibla-finder/',
 };
 const toolLabelKey: Record<ToolId, Parameters<typeof t>[0]> = {
-  compass: 'nav.compass',
+  onlinecompass: 'nav.compass',
   'bubble-level': 'nav.bubble',
   speedometer: 'nav.speed',
   'qibla-finder': 'nav.qibla',
 };
 
 const toolWordmark: Record<ToolId, string> = {
-  compass: 'onlinecompass',
+  onlinecompass: 'onlinecompass',
   'bubble-level': 'BubbleLevel',
   speedometer: 'Speedometer',
   'qibla-finder': 'Qibla',
@@ -67,7 +67,7 @@ const toolWordmark: Record<ToolId, string> = {
 const wordmark = activeTool ? toolWordmark[activeTool] : 'onlinecompass';
 
 const navItems = [
-  { href: '/compass/', label: t('nav.compass') },
+  { href: '/onlinecompass/', label: t('nav.compass') },
   { href: '/bubble-level/', label: t('nav.bubble') },
   { href: '/speedometer/', label: t('nav.speed') },
   { href: '/qibla-finder/', label: t('nav.qibla') },

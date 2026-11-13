@@ -56,7 +56,7 @@ const ogImageAlt = Astro.props.ogImageAlt ?? title;
  * (basePath is already locale-stripped). Other tools stay untouched.
  */
 const GTM_ID = 'GTM-WBP336FR';
-const isCompassSilo = basePath === '/compass' || basePath.startsWith('/compass/');
+const isCompassSilo = basePath === '/onlinecompass' || basePath.startsWith('/onlinecompass/');
 const gtmId = Astro.props.gtmId ?? (isCompassSilo ? GTM_ID : undefined);
 
 const jsonLd =
@@ -191,7 +191,7 @@ const jsonLd =
     <slot />
     <script is:inline>
       (function () {
-        var tools = ['compass', 'bubble-level', 'speedometer', 'qibla-finder'];
+        var tools = ['onlinecompass', 'bubble-level', 'speedometer', 'qibla-finder'];
         var path = window.location.pathname;
         // detect locale prefix
         var segments = path.split('/').filter(Boolean);

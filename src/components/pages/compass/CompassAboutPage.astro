@@ -11,7 +11,7 @@ const translatePath = useTranslatedPath(lang);
 <Layout>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/compass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Compass</a>
+    <a href={translatePath('/onlinecompass/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Compass</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.about.title')}</h1>
     <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
 
@@ -40,12 +40,12 @@ const translatePath = useTranslatedPath(lang);
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/compass/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
+      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/onlinecompass/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
     </p>
 
     <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Contact</h2>
     <p class="text-body text-base leading-relaxed">
-      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/compass/contact/')} class="text-link hover:underline">Contact us here</a>.
+      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/onlinecompass/contact/')} class="text-link hover:underline">Contact us here</a>.
     </p>
   </main>
   <Footer />

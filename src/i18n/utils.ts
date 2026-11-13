@@ -8,7 +8,7 @@ export const SITE_URL = "https://instanten.com";
 /** All routes that exist in every locale. Used for hreflang + sitemap-safe links. */
 export const routePaths = [
   "/",
-  "/compass/",
+  "/onlinecompass/",
   "/bubble-level/",
   "/speedometer/",
   "/qibla-finder/",
@@ -45,7 +45,7 @@ export function getLangFromPath(pathname: string): LangCode {
 
 /**
  * Remove the locale prefix from a pathname.
- * `/es/compass/` -> `/compass/`, `/ja/` -> `/`, `/` -> `/`.
+ * `/es/compass/` -> `/onlinecompass/`, `/ja/` -> `/`, `/` -> `/`.
  */
 export function stripLocale(pathname: string): string {
   const p = stripBase(pathname);
@@ -54,7 +54,7 @@ export function stripLocale(pathname: string): string {
   return parts.length === 0 ? "/" : `/${parts.join("/")}/`;
 }
 
-/** Ensure a path starts and ends with a slash, e.g. `compass` -> `/compass/`. */
+/** Ensure a path starts and ends with a slash, e.g. `compass` -> `/onlinecompass/`. */
 export function normalizePath(path: string): string {
   const clean = path.split("/").filter(Boolean).join("/");
   return clean.length === 0 ? "/" : `/${clean}/`;
@@ -62,7 +62,7 @@ export function normalizePath(path: string): string {
 
 /**
  * Build the path for a route in a given locale.
- * English (the default) is not prefixed: `getLocalizedPath('en', '/compass/')` -> `/compass/`.
+ * English (the default) is not prefixed: `getLocalizedPath('en', '/onlinecompass/')` -> `/onlinecompass/`.
  */
 export function getLocalizedPath(lang: LangCode, path: string): string {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
@@ -133,7 +133,7 @@ const routeMetaKeys: Record<
   { title: TranslationKey; description: TranslationKey; brandSuffix: boolean }
 > = {
   "/": { title: "meta.title", description: "meta.desc", brandSuffix: false },
-  "/compass/": {
+  "/onlinecompass/": {
     title: "page.compass.title",
     description: "page.compass.desc",
     brandSuffix: true,
