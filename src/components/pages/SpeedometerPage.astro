@@ -76,7 +76,7 @@ const appLd = {
             </div>
           </div>
 
-          <div class="text-center py-4 mb-4">
+          <div id="speed-main" class="text-center py-4 mb-4">
             <p class="text-5xl lg:text-6xl font-semibold tracking-tighter text-ink tabular-nums transition-transform duration-200 origin-center" id="speed-display">0</p>
             <div class="flex items-center justify-center gap-3 mt-2">
               <p class="text-sm text-mute font-mono" id="speed-unit">KM/H</p>
@@ -95,7 +95,7 @@ const appLd = {
             </div>
           </div>
 
-          <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+          <div id="speed-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-2">
             <div class="p-2 rounded-sm bg-canvas border border-hairline">
               <p class="text-[10px] text-mute font-mono uppercase tracking-wide">{t('speed.ui.max')}</p>
               <p id="max-speed" class="text-lg font-semibold tabular-nums text-ink">0.0</p>
@@ -116,6 +116,18 @@ const appLd = {
               <p id="duration" class="text-lg font-semibold tabular-nums text-ink">00:00</p>
               <p class="text-[10px] text-faint">m:s</p>
             </div>
+          </div>
+
+          <!-- Same records list, but inside the card: fullscreen only shows the
+               card, so this is where the list can appear while the speed readout
+               stays exactly where it already is. Hidden outside fullscreen. -->
+          <div id="records-in-card" class="records-in-card">
+            <div class="flex items-center justify-between gap-3 mb-1">
+              <p class="text-[10px] text-mute font-mono uppercase tracking-wide">{t('speed.records.title')}</p>
+              <button type="button" onclick="clearRecords()" id="records-clear-card" class="text-[10px] text-mute hover:text-ink underline underline-offset-2 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm">{t('speed.records.clear')}</button>
+            </div>
+            <p id="records-empty-card" class="text-xs text-mute leading-relaxed">{t('speed.records.empty')}</p>
+            <ul id="records-list-card" class="hidden divide-y divide-hairline" data-remove-label={t('speed.records.remove')}></ul>
           </div>
         </div>
       </div>
@@ -315,10 +327,68 @@ const appLd = {
   <Footer />
 </Layout>
 
+<style>
+  /* Hidden everywhere except fullscreen. */
+  .records-in-card {
+    display: none;
+  }
+
+  /* In fullscreen the card is the whole screen and records appear underneath the
+     readout. The panel is taken out of the flow and anchored to the bottom, so
+     the speed readout keeps the exact position it already had — nothing above it
+     is restyled or moved. Only space that is free is used: the list is capped at
+     --records-max and scrolls inside itself, letting extra records run off the
+     bottom instead of pushing the speed upwards. */
+  #speed-card:fullscreen .records-in-card,
+  #speed-card:-webkit-full-screen .records-in-card {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: var(--records-bottom, 7.5rem);
+    max-height: var(--records-max, 26vh);
+    overflow: hidden;
+    padding: 0.5rem 1rem 0;
+    background: var(--color-canvas-elevated, #fff);
+    border-top: 1px solid var(--color-hairline, #ebebeb);
+  }
+  #speed-card:fullscreen #records-list-card,
+  #speed-card:-webkit-full-screen #records-list-card {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+</style>
 <script>
   (function () {
     const card = document.getElementById('speed-card');
     const fsBtn = document.getElementById('speed-fullscreen-btn');
+    const mainEl = document.getElementById('speed-main');
+
+    /**
+     * Fullscreen only: measure the free space under the readout and hand exactly
+     * that to the recorded list. Nothing above is touched — the readout keeps its
+     * position — and the list scrolls inside this height, so a long list runs off
+     * the bottom instead of moving the speed.
+     */
+    function fitRecordsPanel() {
+      if (!card) return;
+      const isFullscreen =
+        document.fullscreenElement === card || (document as any).webkitFullscreenElement === card;
+      if (!isFullscreen) return;
+      const cardRect = card.getBoundingClientRect();
+      const statsH = statsEl ? statsEl.offsetHeight : 0;
+      const readoutBottom = mainEl ? mainEl.getBoundingClientRect().bottom - cardRect.top : 0;
+      const bottom = statsH + 16;
+      const available = cardRect.height - bottom - readoutBottom - 8;
+      card.style.setProperty('--records-bottom', bottom + 'px');
+      card.style.setProperty(
+        '--records-max',
+        Math.max(48, Math.min(available, cardRect.height * 0.45)) + 'px',
+      );
+    }
     function syncFsIcon() {
       if (!fsBtn) return;
       const entering = !document.fullscreenElement;
@@ -330,7 +400,12 @@ const appLd = {
         if (document.fullscreenElement) document.exitFullscreen();
         else if (card && card.requestFullscreen) card.requestFullscreen();
       });
-      document.addEventListener('fullscreenchange', syncFsIcon);
+      document.addEventListener('fullscreenchange', () => {
+        syncFsIcon();
+        renderRecords();
+        fitRecordsPanel();
+      });
+      window.addEventListener('resize', fitRecordsPanel);
       syncFsIcon();
     }
     let maxSp = 0;
@@ -365,6 +440,11 @@ const appLd = {
     const recordsList = document.getElementById('records-list');
     const recordsEmpty = document.getElementById('records-empty');
     const recordsClear = document.getElementById('records-clear');
+    // The copy inside the card, which is what fullscreen can show.
+    const recordsListCard = document.getElementById('records-list-card');
+    const recordsEmptyCard = document.getElementById('records-empty-card');
+    const recordsClearCard = document.getElementById('records-clear-card');
+    const statsEl = document.getElementById('speed-stats');
 
     function label() { return units[unitIndex].label; }
     function factor() { return units[unitIndex].factor; }
@@ -508,50 +588,60 @@ const appLd = {
       }
     }
 
-    function renderRecords() {
-      if (!recordsList || !recordsEmpty) return;
+    function makeRow(rec: Rec, index: number, removeLabel: string) {
+      const li = document.createElement('li');
+      li.className = 'flex items-center justify-between gap-3 py-2.5';
+
+      const left = document.createElement('div');
+      left.className = 'flex items-baseline gap-1.5 min-w-0';
+
+      const value = document.createElement('span');
+      value.className = 'text-lg font-semibold tabular-nums text-ink';
+      value.textContent = fmt(rec.kmh);
+
+      const unit = document.createElement('span');
+      unit.className = 'text-[11px] text-mute font-mono';
+      unit.textContent = label();
+
+      left.append(value, unit);
+
+      const right = document.createElement('div');
+      right.className = 'flex items-center gap-3 shrink-0';
+
+      const when = document.createElement('span');
+      when.className = 'text-xs text-mute font-mono';
+      when.textContent = recordTime(rec.t);
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className =
+        'text-mute hover:text-ink transition-colors leading-none px-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm';
+      del.setAttribute('aria-label', removeLabel);
+      del.textContent = '\u00d7';
+      del.addEventListener('click', () => removeRecord(index));
+
+      right.append(when, del);
+      li.append(left, right);
+      return li;
+    }
+
+    function paint(listEl: HTMLElement | null, emptyEl: HTMLElement | null) {
+      if (!listEl || !emptyEl) return;
       const has = records.length > 0;
-      recordsEmpty.classList.toggle('hidden', has);
-      recordsList.classList.toggle('hidden', !has);
-      if (recordsClear) recordsClear.classList.toggle('hidden', !has);
-      recordsList.textContent = '';
+      emptyEl.classList.toggle('hidden', has);
+      listEl.classList.toggle('hidden', !has);
+      listEl.textContent = '';
+      const removeLabel = listEl.dataset.removeLabel || 'Remove';
+      records.forEach((rec, i) => listEl.append(makeRow(rec, i, removeLabel)));
+    }
 
-      records.forEach((rec, i) => {
-        const li = document.createElement('li');
-        li.className = 'flex items-center justify-between gap-3 py-2.5';
-
-        const left = document.createElement('div');
-        left.className = 'flex items-baseline gap-1.5 min-w-0';
-
-        const value = document.createElement('span');
-        value.className = 'text-lg font-semibold tabular-nums text-ink';
-        value.textContent = fmt(rec.kmh);
-
-        const unit = document.createElement('span');
-        unit.className = 'text-[11px] text-mute font-mono';
-        unit.textContent = label();
-
-        left.append(value, unit);
-
-        const right = document.createElement('div');
-        right.className = 'flex items-center gap-3 shrink-0';
-
-        const when = document.createElement('span');
-        when.className = 'text-xs text-mute font-mono';
-        when.textContent = recordTime(rec.t);
-
-        const del = document.createElement('button');
-        del.type = 'button';
-        del.className =
-          'text-mute hover:text-ink transition-colors leading-none px-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm';
-        del.setAttribute('aria-label', recordsList.dataset.removeLabel || 'Remove');
-        del.textContent = '\u00d7';
-        del.addEventListener('click', () => removeRecord(i));
-
-        right.append(when, del);
-        li.append(left, right);
-        recordsList.append(li);
-      });
+    function renderRecords() {
+      // Both copies are painted together, so a recording appears in the page and
+      // in fullscreen at the same instant.
+      paint(recordsList, recordsEmpty);
+      paint(recordsListCard, recordsEmptyCard);
+      if (recordsClear) recordsClear.classList.toggle('hidden', records.length === 0);
+      if (recordsClearCard) recordsClearCard.classList.toggle('hidden', records.length === 0);
     }
 
     function removeRecord(index: number) {

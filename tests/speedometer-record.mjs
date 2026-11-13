@@ -66,6 +66,7 @@ const check = (n, got, want) => {
 };
 
 const list = registry.get('records-list');
+const cardList = registry.get('records-list-card');
 const empty = registry.get('records-empty');
 const clear = registry.get('records-clear');
 const rows = () => list.children;
@@ -88,6 +89,8 @@ check('row shows the speed and unit', rowText(rows()[0]), '4.0 KM/H');
 check('empty text hidden now', empty.classList.contains('hidden'), true);
 check('clear button shown now', clear.classList.contains('hidden'), false);
 check('saved to localStorage', JSON.parse(store.get('speedometer-records')).length, 1);
+check('the fullscreen copy shows the same row instantly', cardList.children.length, 1);
+check('the fullscreen copy shows the same reading', rowText(cardList.children[0]), '4.0 KM/H');
 
 // second recording of a different speed goes on top
 geoOk(fix(25.6000, (t += 1000)));
@@ -107,6 +110,7 @@ win.selectUnit(0);
 // clear all
 win.clearRecords();
 check('clear all empties the list', rows().length, 0);
+check('clear all empties the fullscreen copy too', cardList.children.length, 0);
 check('empty text back', empty.classList.contains('hidden'), false);
 check('localStorage cleared', store.get('speedometer-records'), '[]');
 
@@ -115,6 +119,28 @@ win.recordSpeed();
 const saved = store.get('speedometer-records');
 console.log('    stored:', saved);
 check('record survives a reload (persisted shape)', Array.isArray(JSON.parse(saved)), true);
+
+console.log('--- fullscreen panel, without touching the speedometer');
+check('card only shows the panel in fullscreen', /\.records-in-card\[[^\]]*\]\{display:none\}/.test(html), true);
+check(
+  'panel is anchored to the bottom, out of the flow',
+  /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*position:\s*absolute/.test(html) &&
+    /#speed-card\[[^\]]*\]:fullscreen\s+\.records-in-card\[[^\]]*\]\{[^}]*bottom:\s*var\(--records-bottom/.test(html),
+  true,
+);
+check(
+  'panel height is the measured free space',
+  /max-height:\s*var\(--records-max/.test(html),
+  true,
+);
+check(
+  'a long list scrolls inside the panel',
+  /#speed-card\[[^\]]*\]:fullscreen\s+#records-list-card\[[^\]]*\]\{[^}]*overflow-y:\s*auto/.test(html),
+  true,
+);
+check('the readout is never re-positioned in fullscreen', /#speed-main\[[^\]]*\]/.test(html.replace(/id="speed-main"[^>]*/g, '')) === false, true);
+check('free space is measured from the real readout position', /getBoundingClientRect/.test(code), true);
+check('measured again on resize', /addEventListener\(.resize./.test(code), true);
 
 console.log(`\n===== ${pass} passed, ${fail} failed =====`);
 process.exit(fail ? 1 : 0);
