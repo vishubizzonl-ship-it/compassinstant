@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
+import BubbleLevelFaq from '../../../components/pages/bubble-level/BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslatedPath } from '../../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -141,6 +142,7 @@ const breadcrumbLd = {
     <p class="text-body text-base leading-relaxed mb-4">A spirit level wins on long spans and never runs out of battery; a phone bubble level wins on speed, portable plumb checks and dark corners. Own both if you do regular work, and reach for the phone when the question is "is this straight?" and for the bar when the question is "is one metre straight?". Open the <strong>online bubble level</strong> for the fast answer — an <strong>online bubble level free</strong> check before you drill beats a trip to the toolbox, and a <strong>bubble level check</strong> afterwards tells you whether you were right.
     </p>
 
+  <BubbleLevelFaq heading="Frequently asked questions about the online bubble level" />
   </main>
   <Footer />
 </Layout>

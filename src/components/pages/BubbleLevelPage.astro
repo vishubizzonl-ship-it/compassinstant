@@ -3,7 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import ToolBlog from '../ToolBlog.astro';
+import BubbleLevelFaq from './bubble-level/BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { getToolBlog } from '../../i18n/blogs';
+
+const toolBlogFaq = getToolBlog('bubble-level', 'en')?.faq ?? [];
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -247,7 +251,7 @@ const appLd = {
       </div>
     </section>
 
-  <ToolBlog tool="bubble-level" />
+  <ToolBlog tool="bubble-level" faqLd={false} />
 
   <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="bubble-guides-title">
     <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
@@ -285,6 +289,7 @@ const appLd = {
       </p>
     </div>
   </section>
+  <BubbleLevelFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online bubble level" />
   </main>
   <Footer />
 </Layout>

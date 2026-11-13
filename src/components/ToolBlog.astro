@@ -4,9 +4,11 @@ import { getToolBlog } from '../i18n/blogs';
 
 interface Props {
   tool: string;
+  /** Emit the FAQPage JSON-LD. Set false when the page emits its own. */
+  faqLd?: boolean;
 }
 
-const { tool } = Astro.props;
+const { tool, faqLd = true } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const blog = getToolBlog(tool, lang);
@@ -114,6 +116,6 @@ const blogDesc = blog?.intro?.[0] ?? (toolKey ? t(`page.${toolKey}.desc` as any)
     </div>
   </section>
 )}
-{faqJsonLd && (
+{faqLd && faqJsonLd && (
   <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 )}

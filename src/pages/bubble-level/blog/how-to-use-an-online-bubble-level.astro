@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
+import BubbleLevelFaq from '../../../components/pages/bubble-level/BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslatedPath } from '../../../i18n/utils';
 import { getToolBlog } from '../../../i18n/blogs';
 
@@ -125,10 +126,9 @@ const faqJsonLd =
     {blog?.outro && (
       <p class="text-body text-base leading-relaxed mt-10 italic">{blog.outro}</p>
     )}
+  <BubbleLevelFaq extraQuestions={blog?.faq ?? []} heading="Frequently asked questions about the online bubble level" />
   </main>
   <Footer />
 </Layout>
 
-{faqJsonLd && (
-  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
-)}
+

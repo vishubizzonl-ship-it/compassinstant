@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../../components/Nav.astro';
 import Footer from '../../../components/Footer.astro';
+import BubbleLevelFaq from '../../../components/pages/bubble-level/BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslatedPath } from '../../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -157,6 +158,7 @@ const breadcrumbLd = {
     <p class="text-body text-base leading-relaxed mb-4">Check the surface before you blame the furniture, fix the low end rather than the high end, and confirm with a second reading rotated 180°. A <strong>free online level</strong> you have calibrated handles shelves, tables, chairs and washing machines; on long spans let a real level make the final call. A calibrated phone gets you within half a degree, which is enough for shelves, tables and washing machines. Open the <strong>online bubble level</strong>, take two readings, and the job takes ten minutes instead of an afternoon — a <strong>bubble level check</strong> is cheaper than re-hanging the same shelf twice.
     </p>
 
+  <BubbleLevelFaq heading="Frequently asked questions about the online bubble level" />
   </main>
   <Footer />
 </Layout>
