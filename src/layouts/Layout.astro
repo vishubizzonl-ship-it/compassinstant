@@ -62,16 +62,35 @@ const isCompassSilo = basePath === '/onlinecompass' || basePath.startsWith('/onl
 const gtmId = Astro.props.gtmId ?? (isCompassSilo ? GTM_ID : undefined);
 
 /**
- * Google Analytics 4 — bubble level silo only.
- * Covers /onlinebubblelevel/, its blog / about / contact / privacy / terms, the
- * blog posts, the bubble level error pages and every localized
- * /es/onlinebubblelevel/ style page (basePath is already locale-stripped).
- * Every other route stays untracked.
+ * Google Analytics 4 — one property for the whole site, one content group per
+ * tool, so each tool reports separately inside the same account.
+ *
+ *   /onlinecompass/…        → content_group = compass
+ *   /onlinebubblelevel/…    → content_group = bubble-level
+ *   /speedometer/…          → content_group = speedometer
+ *   /qibla-finder/…         → content_group = qibla-finder
+ *   /                       → content_group = home
+ *   everything else         → content_group = site
+ *
+ * Locale prefixes (/es/, /fr/, …) are already stripped from basePath, so a
+ * localized tool page reports under the same group as its English original.
  */
 const GA4_ID = 'G-N3YD3ZXYKZ';
-const isBubbleLevelSilo =
-  basePath === '/onlinebubblelevel' || basePath.startsWith('/onlinebubblelevel/');
-const gaId = Astro.props.gaId ?? (isBubbleLevelSilo ? GA4_ID : undefined);
+const gaId = Astro.props.gaId ?? GA4_ID;
+
+const toolSegment = basePath.split('/').filter(Boolean)[0] ?? '';
+const gaContentGroup =
+  toolSegment === 'onlinecompass'
+    ? 'compass'
+    : toolSegment === 'onlinebubblelevel'
+      ? 'bubble-level'
+      : toolSegment === 'speedometer'
+        ? 'speedometer'
+        : toolSegment === 'qibla-finder'
+          ? 'qibla-finder'
+          : toolSegment === ''
+            ? 'home'
+            : 'site';
 
 const jsonLd =
   basePath === '/'
@@ -193,13 +212,13 @@ const jsonLd =
       <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
     )}
     {gaId && (
-      <script is:inline define:vars={{ gaId }}>
+      <script is:inline define:vars={{ gaId, gaContentGroup }}>
         window.dataLayer = window.dataLayer || [];
         function gtag() {
           window.dataLayer.push(arguments);
         }
         gtag('js', new Date());
-        gtag('config', gaId, { anonymize_ip: true });
+        gtag('config', gaId, { anonymize_ip: true, content_group: gaContentGroup });
       </script>
     )}
   </head>
