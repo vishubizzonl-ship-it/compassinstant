@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
+import SpeedometerFaq from './SpeedometerFaq.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -125,6 +126,7 @@ const breadcrumbLd = {
     <p class="text-body text-base leading-relaxed">
       Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/speedometer/contact/')} class="text-link hover:underline">Contact us here</a>.
     </p>
+  <SpeedometerFaq heading="Frequently asked questions about the online speedometer" />
   </main>
   <Footer />
 </Layout>

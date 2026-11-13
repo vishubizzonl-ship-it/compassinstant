@@ -3,6 +3,10 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../Nav.astro';
 import Footer from '../Footer.astro';
 import ToolBlog from '../ToolBlog.astro';
+import SpeedometerFaq from './speedometer/SpeedometerFaq.astro';
+import { getToolBlog } from '../../i18n/blogs';
+
+const toolBlogFaq = getToolBlog('speedometer', 'en')?.faq ?? [];
 import { getLangFromUrl, useTranslations } from '../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -259,7 +263,8 @@ const appLd = {
       </div>
     </section>
 
-  <ToolBlog tool="speedometer" />
+  <ToolBlog tool="speedometer" faqLd={false} />
+  <SpeedometerFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online speedometer" />
   </main>
   <Footer />
 </Layout>

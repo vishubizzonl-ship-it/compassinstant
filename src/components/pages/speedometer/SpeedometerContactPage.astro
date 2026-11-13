@@ -2,6 +2,7 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
+import SpeedometerFaq from './SpeedometerFaq.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -140,6 +141,7 @@ const breadcrumbLd = {
       guides</a> cover the common questions about a <strong>gps speedometer</strong> reading, unit
       switching and trip resets.
     </p>
+  <SpeedometerFaq heading="Frequently asked questions about the online speedometer" />
   </main>
   <Footer />
 </Layout>
