@@ -72,6 +72,7 @@ const appLd = {
             <div class="flex gap-2 justify-center mt-3">
               <button onclick="startTrip()" id="start-btn" data-start={t('speed.ui.start')} data-stop={t('speed.ui.stop')} class="inline-flex rounded-sm bg-ink text-canvas-elevated text-sm font-medium px-4 py-2 hover:bg-ink/90 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none active:scale-95">{t('speed.ui.start')}</button>
               <button onclick="resetTrip()" class="inline-flex rounded-sm bg-ink text-canvas-elevated text-sm font-medium px-4 py-2 hover:bg-ink/90 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none active:scale-95">{t('speed.ui.reset')}</button>
+              <button onclick="recordSpeed()" id="record-btn" class="inline-flex rounded-sm bg-canvas-elevated border border-hairline text-ink text-sm font-medium px-4 py-2 hover:border-ink/20 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none active:scale-95">{t('speed.ui.record')}</button>
             </div>
           </div>
 
@@ -116,6 +117,18 @@ const appLd = {
               <p class="text-[10px] text-faint">m:s</p>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+    <section class="pb-8" aria-labelledby="speed-records-title">
+      <div class="mx-auto max-w-5xl px-6 lg:px-8">
+        <div class="bg-canvas-elevated border border-hairline rounded-md p-4 lg:p-6">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <h2 id="speed-records-title" class="font-sans text-base font-semibold tracking-tight text-ink">{t('speed.records.title')}</h2>
+            <button type="button" onclick="clearRecords()" id="records-clear" class="hidden text-xs text-mute hover:text-ink underline underline-offset-2 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm">{t('speed.records.clear')}</button>
+          </div>
+          <p id="records-empty" class="text-sm text-mute leading-relaxed">{t('speed.records.empty')}</p>
+          <ul id="records-list" class="hidden divide-y divide-hairline" aria-live="polite" data-remove-label={t('speed.records.remove')}></ul>
         </div>
       </div>
     </section>
@@ -349,6 +362,9 @@ const appLd = {
     const unitLabel = document.getElementById('unit-label');
     const unitMenu = document.getElementById('unit-menu');
     const unitWrapper = document.getElementById('unit-dropdown-wrapper');
+    const recordsList = document.getElementById('records-list');
+    const recordsEmpty = document.getElementById('records-empty');
+    const recordsClear = document.getElementById('records-clear');
 
     function label() { return units[unitIndex].label; }
     function factor() { return units[unitIndex].factor; }
@@ -380,6 +396,7 @@ const appLd = {
       if (unitBtn) unitBtn.setAttribute('aria-expanded', 'false');
       renderUnits();
       renderSpeeds();
+      renderRecords();
     };
 
     document.addEventListener('click', function (e) {
@@ -442,6 +459,119 @@ const appLd = {
       if (altEl) altEl.textContent = '—';
       if (durEl) durEl.textContent = '00:00';
       animateSpeed();
+    };
+
+    // --- recorded speeds -----------------------------------------------------
+    // "Record" saves whatever the big display shows right now, so a speed can be
+    // shown to someone later instead of being read off a screen that has moved
+    // on. The list lives in localStorage, so it survives a reload or a closed
+    // tab, and every entry can be removed one by one or all at once.
+    const REC_KEY = 'speedometer-records';
+    const REC_LIMIT = 100;
+
+    type Rec = { kmh: number; t: number };
+
+    function readRecords(): Rec[] {
+      try {
+        const raw = localStorage.getItem(REC_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed
+          .filter((r: any) => r && typeof r.kmh === 'number' && Number.isFinite(r.kmh) && typeof r.t === 'number')
+          .slice(0, REC_LIMIT);
+      } catch {
+        return [];
+      }
+    }
+
+    let records: Rec[] = readRecords();
+
+    function saveRecords() {
+      try {
+        localStorage.setItem(REC_KEY, JSON.stringify(records));
+      } catch {
+        // Private mode with storage disabled: the list still works for this visit.
+      }
+    }
+
+    function recordTime(t: number) {
+      try {
+        return new Date(t).toLocaleString(undefined, {
+          day: '2-digit',
+          month: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      } catch {
+        return new Date(t).toLocaleTimeString();
+      }
+    }
+
+    function renderRecords() {
+      if (!recordsList || !recordsEmpty) return;
+      const has = records.length > 0;
+      recordsEmpty.classList.toggle('hidden', has);
+      recordsList.classList.toggle('hidden', !has);
+      if (recordsClear) recordsClear.classList.toggle('hidden', !has);
+      recordsList.textContent = '';
+
+      records.forEach((rec, i) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between gap-3 py-2.5';
+
+        const left = document.createElement('div');
+        left.className = 'flex items-baseline gap-1.5 min-w-0';
+
+        const value = document.createElement('span');
+        value.className = 'text-lg font-semibold tabular-nums text-ink';
+        value.textContent = fmt(rec.kmh);
+
+        const unit = document.createElement('span');
+        unit.className = 'text-[11px] text-mute font-mono';
+        unit.textContent = label();
+
+        left.append(value, unit);
+
+        const right = document.createElement('div');
+        right.className = 'flex items-center gap-3 shrink-0';
+
+        const when = document.createElement('span');
+        when.className = 'text-xs text-mute font-mono';
+        when.textContent = recordTime(rec.t);
+
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className =
+          'text-mute hover:text-ink transition-colors leading-none px-1 focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none rounded-sm';
+        del.setAttribute('aria-label', recordsList.dataset.removeLabel || 'Remove');
+        del.textContent = '\u00d7';
+        del.addEventListener('click', () => removeRecord(i));
+
+        right.append(when, del);
+        li.append(left, right);
+        recordsList.append(li);
+      });
+    }
+
+    function removeRecord(index: number) {
+      records.splice(index, 1);
+      saveRecords();
+      renderRecords();
+    }
+
+    (window as any).recordSpeed = function () {
+      records.unshift({ kmh: currentSpeedKmh, t: Date.now() });
+      if (records.length > REC_LIMIT) records.length = REC_LIMIT;
+      saveRecords();
+      renderRecords();
+      animateSpeed();
+    };
+
+    (window as any).clearRecords = function () {
+      records = [];
+      saveRecords();
+      renderRecords();
     };
 
     // --- live speed ----------------------------------------------------------
@@ -595,5 +725,6 @@ const appLd = {
 
     renderUnits();
     renderSpeeds();
+    renderRecords();
   })();
 </script>
