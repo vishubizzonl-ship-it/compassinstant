@@ -1,5 +1,6 @@
 ---
 import Logo from "./Logo.astro";
+import { getToolTagline } from '../i18n/footerTaglines';
 import {
   getLangFromUrl,
   getLocalizedPath,
@@ -54,16 +55,9 @@ const toolWordmark: Record<FooterTool, string> = {
 };
 const wordmark = activeTool ? toolWordmark[activeTool] : 'onlinecompass';
 
-const toolTaglines: Record<FooterTool, string> = {
-  onlinecompass:
-    'A live compass in your browser — find north, read your heading, and measure bearing in degrees. Built with modern web sensors, no download and no account.',
-  'onlinebubblelevel':
-    'A bubble level in your browser — check level and plumb, read tilt in degrees. Built with modern web sensors, no download and no account.',
-  onlinespeedometer:
-    'A speedometer in your browser — GPS speed with max, average, altitude and trip time. Built with modern web sensors, no download and no account.',
-  'onlineqibla':
-    'A Qibla finder in your browser — the bearing to the Kaaba from your own location. Built with modern web sensors, no download and no account.',
-};
+// Taglines live in src/i18n/footerTaglines.ts so every locale reads in its own
+// language instead of showing one English paragraph in the footer.
+const tagline = getToolTagline(lang, (activeTool ?? 'onlinecompass') as Parameters<typeof getToolTagline>[1]);
 
 const toolLinks = activeTool
   ? []
@@ -84,7 +78,7 @@ const toolLinks = activeTool
           <span class="font-sans text-sm font-semibold tracking-tight text-ink">{wordmark}</span>
         </a>
         <p class="mt-4 text-sm text-body max-w-[24rem] leading-relaxed">
-          {activeTool ? toolTaglines[activeTool] : t('footer.tagline')}
+          {tagline}
         </p>
       </div>
 
