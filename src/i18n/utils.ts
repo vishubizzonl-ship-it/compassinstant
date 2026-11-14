@@ -46,13 +46,26 @@ export const bubbleSiloPaths = [
   "/onlinebubblelevel/terms/",
 ] as const;
 
+/**
+ * The speedometer silo pages are translated in every locale as well, rendered
+ * from src/i18n/speedometerSupport.ts and speedometerLegal.ts.
+ */
+export const speedometerSiloPaths = [
+  "/onlinespeedometer/about/",
+  "/onlinespeedometer/blog/",
+  "/onlinespeedometer/contact/",
+  "/onlinespeedometer/privacy/",
+  "/onlinespeedometer/terms/",
+] as const;
+
 /** True when `basePath` (locale-stripped) exists in every language. */
 export function hasLocaleVersion(basePath: string): boolean {
   const normalized = normalizePath(basePath);
   return (
     (routePaths as readonly string[]).includes(normalized) ||
     (compassSiloPaths as readonly string[]).includes(normalized) ||
-    (bubbleSiloPaths as readonly string[]).includes(normalized)
+    (bubbleSiloPaths as readonly string[]).includes(normalized) ||
+    (speedometerSiloPaths as readonly string[]).includes(normalized)
   );
 }
 

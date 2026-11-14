@@ -13,11 +13,18 @@ interface Props {
   /** Emit the FAQPage JSON-LD. Set false when another block already covers it. */
   ld?: boolean;
   heading?: string;
+  /** Localised questions; falls back to the English base list when omitted. */
+  questions?: { q: string; a: string }[];
 }
 
-const { extraQuestions = [], ld = true, heading = 'Frequently asked questions' } = Astro.props;
+const {
+  extraQuestions = [],
+  ld = true,
+  heading = 'Frequently asked questions',
+  questions,
+} = Astro.props;
 
-const baseQuestions: { q: string; a: string }[] = [
+const englishQuestions: { q: string; a: string }[] = [
   {
     q: 'Online speedometer — how fast am I going right now?',
     a: 'The large number on the page is your current speed in the unit you selected, usually km/h or mph. Allow location access, press Start, and the figure updates once a second from GPS. If the number sits at 0 while you are moving, the location permission was blocked or the phone has no satellite fix yet.',
@@ -48,7 +55,8 @@ const baseQuestions: { q: string; a: string }[] = [
   },
 ];
 
-// Rendered visible: the seven questions above.
+// Rendered visible: the localised list when one is supplied, else English.
+const baseQuestions: { q: string; a: string }[] = questions?.length ? questions : englishQuestions;
 const items = baseQuestions;
 
 // In the JSON-LD we also fold in questions that the page already shows

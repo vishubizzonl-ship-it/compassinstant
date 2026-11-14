@@ -1,0 +1,34 @@
+---
+/**
+ * Localised copies of the speedometer silo pages: /es/onlinespeedometer/about/,
+ * /ja/onlinespeedometer/privacy/, … English keeps its unprefixed URLs.
+ *
+ * The five page components read the locale from Astro.url, so the same markup
+ * renders in all eight languages; the copy comes from
+ * src/i18n/speedometerSupport.ts, speedometerLegal.ts and supportCopy.ts.
+ */
+import SpeedometerAboutPage from '../../../components/pages/onlinespeedometer/SpeedometerAboutPage.astro';
+import SpeedometerBlogIndexPage from '../../../components/pages/onlinespeedometer/SpeedometerBlogIndexPage.astro';
+import SpeedometerContactPage from '../../../components/pages/onlinespeedometer/SpeedometerContactPage.astro';
+import SpeedometerPrivacyPage from '../../../components/pages/onlinespeedometer/SpeedometerPrivacyPage.astro';
+import SpeedometerTermsPage from '../../../components/pages/onlinespeedometer/SpeedometerTermsPage.astro';
+
+export function getStaticPaths() {
+  const locales = ['es', 'ja', 'fr', 'de', 'pt', 'ko', 'it'];
+  const pages = ['about', 'blog', 'contact', 'privacy', 'terms'];
+  return locales.flatMap((lang) => pages.map((page) => ({ params: { lang, page } })));
+}
+
+const components = {
+  about: SpeedometerAboutPage,
+  blog: SpeedometerBlogIndexPage,
+  contact: SpeedometerContactPage,
+  privacy: SpeedometerPrivacyPage,
+  terms: SpeedometerTermsPage,
+} as const;
+
+const { page } = Astro.params as { page: keyof typeof components };
+const Page = components[page];
+---
+
+<Page />

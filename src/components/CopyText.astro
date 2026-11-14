@@ -3,6 +3,7 @@
  * Renders one localised paragraph, turning the two markup conventions used in
  * src/i18n/supportCopy.ts into real markup:
  *   **bold**     → <strong>
+ *   *italic*     → <em>
  *   {contact}    → link to the contact page, labelled with `contactLabel`
  *   {contactCta} → link to the contact page, labelled with `contactCta`
  *   {email}      → mailto link to hello@instanten.com
@@ -13,9 +14,9 @@
 interface Props {
   text: string;
   class?: string;
-  contactHref: string;
-  contactLabel: string;
-  contactCta: string;
+  contactHref?: string;
+  contactLabel?: string;
+  contactCta?: string;
   /** Optional link used by the {accuracyGuide} token. */
   guideHref?: string;
   guideLabel?: string;
@@ -26,9 +27,9 @@ interface Props {
 const {
   text,
   class: className = 'text-body text-base leading-relaxed mb-4',
-  contactHref,
-  contactLabel,
-  contactCta,
+  contactHref = '',
+  contactLabel = '',
+  contactCta = '',
   guideHref,
   guideLabel,
   toolLabel,
@@ -42,6 +43,7 @@ const link = (label: string) =>
 const mail = esc('hello@instanten.com');
 const html = esc(text)
   .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\*([^*]+?)\*/g, '<em>$1</em>')
   .replace(/\{contact\}/g, link(contactLabel))
   .replace(/\{contactCta\}/g, link(contactCta))
   .replace(/\{tool\}/g, esc(toolLabel ?? ''))

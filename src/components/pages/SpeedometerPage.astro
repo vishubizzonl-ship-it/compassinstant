@@ -7,62 +7,65 @@ import SpeedometerFaq from './onlinespeedometer/SpeedometerFaq.astro';
 import { getToolBlog } from '../../i18n/blogs';
 
 const toolBlogFaq = getToolBlog('onlinespeedometer', 'en')?.faq ?? [];
+import CopyText from '../CopyText.astro';
 import { getLangFromUrl, useTranslations, SITE_URL } from '../../i18n/utils';
+import { speedometerProse } from '../../i18n/speedometerProse';
+import { speedometerSupport } from '../../i18n/speedometerSupport';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+// Long-form copy and SEO strings, with English as the fallback everywhere.
+const copy = speedometerProse[lang] ?? speedometerProse.en;
+const seo = speedometerSupport[lang] ?? speedometerSupport.en;
 
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 // Real production domain — breadcrumb and app schema must never point at a
 // placeholder host, or Google drops the structured data.
 const siteUrl = SITE_URL;
 
-const KWS =
-  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
-
 const breadcrumbLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
-    { '@type': 'ListItem', position: 2, name: 'Speedometer', item: `${siteUrl}${baseUrl}/onlinespeedometer/` },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: t('page.speed.title'),
+      item: `${siteUrl}${baseUrl}/onlinespeedometer/`,
+    },
   ],
 };
 
 const appLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Online Speedometer',
+  name: t('page.speed.title'),
   applicationCategory: 'UtilitiesApplication',
   operatingSystem: 'Any',
   url: `${siteUrl}${baseUrl}/onlinespeedometer/`,
-  description:
-    'Free online speedometer: a GPS speedometer online that shows your live speed in km/h or mph, plus max speed, average speed, altitude and trip time in the browser. No install, no sign-up.',
+  description: seo.toolDesc,
+  inLanguage: lang,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  featureList: [
-    'Live speedometer in km/h, mph, m/s and knots',
-    'Online speedometer test with max and average speed',
-    'GPS speedometer online on mobile and desktop browsers',
-    'No install and no account',
-  ],
+  featureList: copy.faq.slice(0, 4).map((item) => item.q),
 };
 
 ---
 <Layout
-  title={lang === 'en' ? 'Online Speedometer — Free GPS Speed Test in km/h & mph' : undefined}
-  description={lang === 'en' ? 'Free online speedometer: measure your live speed in km/h or mph with GPS, plus max speed, average speed, altitude and trip time. No install, no sign-up.' : undefined}
-  keywords={lang === 'en' ? KWS : undefined}
+  title={seo.toolTitle}
+  description={seo.toolDesc}
+  keywords={seo.keywords}
   breadcrumbLd={breadcrumbLd}
   appLd={appLd}
   ogImage="/og-image.png"
-  ogImageAlt={lang === 'en' ? 'Online speedometer — free GPS speed test showing live speed in km/h and mph in the browser' : undefined}
+  ogImageAlt={seo.ogAlt}
 >
   <Nav />
   <main>
     <section class="py-2 lg:py-4 pt-2 lg:pt-4" aria-label={t('page.speed.title')}>
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
         <div id="speed-card" class="bg-canvas-elevated border border-hairline rounded-md p-4 lg:p-6 shadow-[0px_1px_2px_rgba(0,0,0,0.03)] relative">
-          <button type="button" id="speed-fullscreen-btn" aria-label="Fullscreen" class="absolute top-3 right-3 z-30 inline-flex items-center justify-center w-8 h-8 rounded-sm bg-canvas border border-hairline text-ink hover:bg-canvas-elevated transition-colors">
+          <button type="button" id="speed-fullscreen-btn" aria-label={t('speed.ui.fullscreen')} class="absolute top-3 right-3 z-30 inline-flex items-center justify-center w-8 h-8 rounded-sm bg-canvas border border-hairline text-ink hover:bg-canvas-elevated transition-colors">
             <svg class="icon-enter" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             <svg class="icon-exit hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
           </button>
@@ -81,7 +84,7 @@ const appLd = {
             <div class="flex items-center justify-center gap-3 mt-2">
               <p class="text-sm text-mute font-mono" id="speed-unit">KM/H</p>
               <div class="relative" id="unit-dropdown-wrapper">
-                <button onclick="toggleUnitMenu()" id="unit-btn" class="inline-flex items-center gap-1.5 rounded-sm bg-canvas-elevated border border-hairline text-ink text-xs font-medium px-3 py-1.5 hover:border-ink/20 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label="Change unit" aria-expanded="false" aria-haspopup="true">
+                <button onclick="toggleUnitMenu()" id="unit-btn" class="inline-flex items-center gap-1.5 rounded-sm bg-canvas-elevated border border-hairline text-ink text-xs font-medium px-3 py-1.5 hover:border-ink/20 transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none" aria-label={t('speed.ui.changeUnit')} aria-expanded="false" aria-haspopup="true">
                   <span id="unit-label">KM/H</span>
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="2 4 6 8 10 4"/></svg>
                 </button>
@@ -167,126 +170,31 @@ const appLd = {
     <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="about-online-speedometer">
       <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
         <h2 id="about-online-speedometer" class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-0 mb-4">
-          The free online speedometer that reads your real speed
+          {copy.aboutH}
         </h2>
-        <p class="text-body text-base leading-relaxed mb-4">
-          This <strong>online speedometer</strong> turns the phone in your hand into a working speed
-          readout in one tap. There is nothing to install, no account to create and no download
-          waiting time — you open the page, allow location once, and the number on screen is your
-          speed right now. It is a <strong>free online speedometer</strong> built for one job: telling
-          you how fast you are actually moving, on a bike, in a car, on a train, or on foot.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          If you have ever searched for “<em>speedometer online</em>”, “<em>live speedometer</em>” or
-          “<em>gps speedometer</em>”, you already know the problem. Your car dashboard is optimistic by
-          a few percent, your bike computer needs mounting, and you just want an answer. A
-          <strong>live speed test</strong> removes the guesswork in two seconds, with a number instead
-          of a needle you have to squint at.
-        </p>
+        {copy.intro.map((paragraph) => (
+          <CopyText text={paragraph} />
+        ))}
 
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          What this speedometer online actually shows you
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          The <strong>speedometer digital</strong> readout is the headline: one large number that
-          updates as you move. Under it you get the trip figures that make the tool genuinely useful —
-          your maximum speed, your average speed, the distance covered, the altitude you are at and
-          how long the trip has been running. The unit button switches between km/h, mph, m/s and
-          knots, so the same page answers “<em>my speed km/h</em>” on a road in India and mph on a
-          motorway abroad without a second tool.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Everything comes from the GPS chip your phone already has. The page reads your position
-          once a second, works out how far you moved, and converts that into speed. That is why a
-          <strong>GPS speedometer online</strong> can be more honest than a dashboard: it measures
-          your movement over the ground rather than counting wheel rotations against an assumed tyre
-          size.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          How to run a speedometer test online
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Open the page outdoors with a clear view of the sky — GPS needs to see satellites, and a
-          reading taken indoors or in a tunnel will stall or jump. Allow location when the browser
-          asks, then press Start and begin moving. The first few seconds are the sensor settling; after
-          that the number tracks smoothly.
-        </p>
-        <ul class="list-disc pl-6 mb-4 space-y-2 text-body text-base leading-relaxed">
-          <li>Take the phone out of a metal case and keep it near a window or on a dash mount.</li>
-          <li>Press Reset before a run so max and average belong to that trip only.</li>
-          <li>Switch the unit first — km/h for road use, mph for UK and US speed limits.</li>
-          <li>Keep the screen awake; a locked phone can pause GPS updates on some browsers.</li>
-          <li>Compare the reading with a fixed distance and a stopwatch if you want to check accuracy.</li>
-        </ul>
-        <p class="text-body text-base leading-relaxed mb-4">
-          That is the whole <strong>online speedometer test</strong>: no cables, no OBD reader, no
-          subscription. A <strong>speedometer test online</strong> also gives you a second opinion when
-          a dashboard looks wrong after a wheel or tyre change, because the number comes from movement
-          rather than from a calibrated instrument.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          Speedometer online, offline and everything between
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          The tool is <strong>online speedometer free</strong> of charge, but once the page has loaded
-          it keeps working without a data connection — the GPS receiver does the work, not a server. If
-          what you want is a <strong>speedometer online train</strong> check on a route with patchy
-          signal, that matters: the page stays open and keeps counting while the signal drops.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          On a train, a bus or a long drive it is also the only speed readout you get as a passenger.
-          Look for a straight stretch, note the number, and compare it with the route timetable if you
-          are curious. Anything searched as <em>zspeed</em> or similar brand names does the same thing;
-          this page simply does it without an app, which is why people keep it in a tab.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          Accuracy you can expect from a phone speedometer
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          A phone GPS reads speed to within roughly 1–2 km/h in open sky, which is tighter than most
-          car dashes. Dashes are deliberately optimistic — manufacturers allow a few percent, and tyre
-          wear or a different wheel size adds more. So if the numbers disagree, run a
-          <strong>online speedometer mph</strong> reading on the same stretch and trust the one that
-          repeats itself.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Expect two limits. Tall buildings, trees and tunnels cause dropouts, and the reading holds
-          for a few seconds before it drops back to zero until the fix returns. And rapid acceleration can lag by a second,
-          because the chip averages positions. Neither matters for normal use, but do not treat any
-          <strong>HardSpeedometer test</strong> at high speed as a precision measurement — for that a
-          calibrated unit still wins.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          Who the free speedometer is for
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Cyclists use it to confirm a bike computer. Drivers use it to check a dashboard after changing
-          wheels. Passengers use it out of curiosity on a highway or a train. Runners and walkers use
-          the average speed figure as a pace check. And anyone comparing a car with a hire car, a
-          parent's car or a new purchase gets a neutral number without installing anything.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Because the tool is browser based, it works the same on Android, iPhone, tablet or laptop
-          (laptops rarely have GPS, so a phone is the practical choice). Your location is used to
-          calculate speed and is never uploaded, so a <strong>speedometer digital</strong> check on a
-          borrowed phone leaves nothing behind.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          The short version
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Open the page, allow location, press Start, and read your speed in km/h or mph. Reset between
-          trips so max and average stay honest, keep the phone outdoors for a clean signal, and expect
-          a phone GPS to be slightly more accurate than a car dash. Whether you came here from a
-          <em>speedometer online</em> search, a <em>live speed test</em> query or a
-          <strong>speedometer test online</strong> on a resale car, the answer is the same page — free,
-          private, and no install.
-        </p>
+        {copy.sections.map((section) => (
+          <>
+            <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+              {section.h}
+            </h3>
+            {section.paras.map((paragraph, index) => (
+              <>
+                <CopyText text={paragraph} />
+                {section.list && index === (section.listAt ?? section.paras.length - 1) && (
+                  <ul class="list-disc pl-6 mb-4 space-y-2 text-body text-base leading-relaxed">
+                    {section.list.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </>
+            ))}
+          </>
+        ))}
       </div>
     </section>
 
@@ -295,34 +203,24 @@ const appLd = {
   <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="speed-guides-title">
     <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
       <h2 id="speed-guides-title" class="font-sans text-2xl sm:text-3xl font-semibold tracking-tight text-ink mb-6">
-        Latest guides from the Speedometer blog
+        {copy.guidesH}
       </h2>
       <ul class="flex flex-col gap-0 border border-hairline rounded-md overflow-hidden">
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinespeedometer/blog/how-to-use-an-online-speedometer/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">How to Use an Online Speedometer (Step-by-Step)</span>
-            <span class="block text-sm text-body mt-1">Allow location, press Start, choose km/h or mph, and read your live speed.</span>
-          </a>
-        </li>
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinespeedometer/blog/how-accurate-is-a-phone-speedometer/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">How Accurate Is a Phone Speedometer?</span>
-            <span class="block text-sm text-body mt-1">Typical GPS error, how it compares with a dashboard, and three tests to run.</span>
-          </a>
-        </li>
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinespeedometer/blog/speedometer-units-kmh-mph-knots/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">Speedometer Units: km/h, mph, m/s and Knots</span>
-            <span class="block text-sm text-body mt-1">When to use each unit, and how to convert in your head.</span>
-          </a>
-        </li>
+        {copy.guides.map((guide) => (
+          <li class="border-b border-hairline last:border-b-0">
+            <a href={guide.href} class="block px-4 py-4 hover:bg-canvas transition-colors">
+              <span class="block font-sans text-base font-medium text-ink">{guide.title}</span>
+              <span class="block text-sm text-body mt-1">{guide.desc}</span>
+            </a>
+          </li>
+        ))}
       </ul>
       <p class="text-body text-base leading-relaxed mt-6">
-        <a href="/onlinespeedometer/blog/" class="text-link hover:underline">See all Online Speedometer guides →</a>
+        <a href="/onlinespeedometer/blog/" class="text-link hover:underline">{copy.guidesAll}</a>
       </p>
     </div>
   </section>
-  <SpeedometerFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online speedometer" />
+  <SpeedometerFaq extraQuestions={toolBlogFaq} heading={copy.faqH} questions={copy.faq} />
   </main>
   <Footer />
 </Layout>

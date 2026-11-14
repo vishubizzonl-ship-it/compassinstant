@@ -53,7 +53,7 @@ export type SupportCopy = {
    * page can say "sensors as a compass" or "sensors as a bubble level" without
    * duplicating the whole section list.
    */
-  toolPhrase: { compass: string; level: string };
+  toolPhrase: { compass: string; level: string; speed: string };
   privacy: { sections: Section[] };
   terms: { intro: string; sections: Section[] };
 };
@@ -129,7 +129,7 @@ const en: SupportCopy = {
       'We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.',
     email: 'Reach us at {email}. We usually reply within a few business days.',
   },
-  toolPhrase: { compass: "as a compass", level: "as a bubble level" },
+  toolPhrase: { compass: "as a compass", level: "as a bubble level", speed: "as a speedometer" },
   privacy: {
     sections: [
       {
@@ -341,7 +341,7 @@ const ja: SupportCopy = {
       '少人数のチームで、いただいたメッセージはすべて目を通しています。不具合のご報告、機能のご要望、あいさつだけでも構いません。下のフォームからご連絡ください。',
     email: '{email} までご連絡ください。通常は数営業日以内に返信します。',
   },
-  toolPhrase: { compass: "方位磁針として", level: "水準器として" },
+  toolPhrase: { compass: "方位磁針として", level: "水準器として", speed: "スピードメーターとして" },
   privacy: {
     sections: [
       {
@@ -552,7 +552,7 @@ const es: SupportCopy = {
     intro: 'Somos un equipo pequeño y leemos todos los mensajes. Si has encontrado un fallo, tienes una petición de función o solo quieres saludar, escríbenos con el formulario de abajo.',
     email: 'Escribe a {email}. Solemos responder en pocos días laborables.',
   },
-  toolPhrase: { compass: "como brújula", level: "como nivel de burbuja" },
+  toolPhrase: { compass: "como brújula", level: "como nivel de burbuja", speed: "como velocímetro" },
   privacy: {
     sections: [
       {
@@ -763,7 +763,7 @@ const de: SupportCopy = {
     intro: 'Wir sind ein kleines Team und lesen jede Nachricht. Ob Fehlerbericht, Funktionswunsch oder ein kurzes Hallo — schreib uns über das Formular unten.',
     email: 'Erreichbar unter {email}. Wir antworten meist innerhalb weniger Werktage.',
   },
-  toolPhrase: { compass: "als Kompass", level: "als Wasserwaage" },
+  toolPhrase: { compass: "als Kompass", level: "als Wasserwaage", speed: "als Tachometer" },
   privacy: {
     sections: [
       {
@@ -974,7 +974,7 @@ const fr: SupportCopy = {
     intro: 'Nous sommes une petite équipe et nous lisons chaque message. Que vous ayez trouvé un bug, une demande de fonctionnalité ou simplement envie de dire bonjour, écrivez-nous via le formulaire ci-dessous.',
     email: 'Écrivez-nous à {email}. Nous répondons généralement en quelques jours ouvrés.',
   },
-  toolPhrase: { compass: "comme boussole", level: "comme niveau à bulle" },
+  toolPhrase: { compass: "comme boussole", level: "comme niveau à bulle", speed: "comme tachymètre" },
   privacy: {
     sections: [
       {
@@ -1185,7 +1185,7 @@ const pt: SupportCopy = {
     intro: 'Somos uma equipe pequena e lemos todas as mensagens. Se você encontrou um erro, tem um pedido de recurso ou só quer dizer olá, use o formulário abaixo.',
     email: 'Fale com a gente em {email}. Normalmente respondemos em poucos dias úteis.',
   },
-  toolPhrase: { compass: "como bússola", level: "como nível de bolha" },
+  toolPhrase: { compass: "como bússola", level: "como nível de bolha", speed: "como velocímetro" },
   privacy: {
     sections: [
       {
@@ -1396,7 +1396,7 @@ const ko: SupportCopy = {
     intro: '작은 팀이지만 보내 주신 모든 메시지를 읽습니다. 오류 제보, 기능 요청, 간단한 인사 모두 아래 양식으로 보내 주세요.',
     email: '{email} 으로 연락 주세요. 보통 영업일 기준 며칠 안에 답변드립니다.',
   },
-  toolPhrase: { compass: "나침반으로", level: "수평계로" },
+  toolPhrase: { compass: "나침반으로", level: "수평계로", speed: "속도계로" },
   privacy: {
     sections: [
       {
@@ -1607,7 +1607,7 @@ const it: SupportCopy = {
     intro: 'Siamo una squadra piccola e leggiamo ogni messaggio. Se hai trovato un bug, hai una richiesta o vuoi solo salutarci, scrivici con il modulo qui sotto.',
     email: 'Scrivici a {email}. Di solito rispondiamo entro pochi giorni lavorativi.',
   },
-  toolPhrase: { compass: "come bussola", level: "come livella a bolla" },
+  toolPhrase: { compass: "come bussola", level: "come livella a bolla", speed: "come tachimetro" },
   privacy: {
     sections: [
       {

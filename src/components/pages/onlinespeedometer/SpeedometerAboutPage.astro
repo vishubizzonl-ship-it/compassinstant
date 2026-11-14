@@ -3,130 +3,113 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
 import SpeedometerFaq from './SpeedometerFaq.astro';
+import CopyText from '../../CopyText.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { speedometerProse } from '../../../i18n/speedometerProse';
+import { speedometerSupport } from '../../../i18n/speedometerSupport';
+import { supportCopy } from '../../../i18n/supportCopy';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = speedometerSupport[lang] ?? speedometerSupport.en;
+const page = speedometerProse[lang] ?? speedometerProse.en;
+const shared = supportCopy[lang] ?? supportCopy.en;
+const about = copy.about;
 
-const KWS =
-  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+const guideHref = '/onlinespeedometer/blog/how-accurate-is-a-phone-speedometer/';
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/onlinespeedometer/' },
-    { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/onlinespeedometer/about/' },
+    { '@type': 'ListItem', position: 2, name: t('page.speed.title'), item: 'https://instanten.com/onlinespeedometer/' },
+    { '@type': 'ListItem', position: 3, name: t('page.about.title'), item: 'https://instanten.com/onlinespeedometer/about/' },
   ],
 };
-
 ---
 <Layout
-  title="About Online Speedometer — Free GPS Speed Test Tool"
-  description="About the online speedometer: how a phone measures speed with GPS, who the free online speedometer is for, and the accuracy of a live speed test."
-  keywords={KWS}
+  title={copy.aboutTitle}
+  description={copy.aboutDesc}
+  keywords={copy.keywords}
   ogImage="/og-image.png"
-  ogImageAlt="About Online Speedometer — Free GPS Speed Test Tool"
+  ogImageAlt={copy.aboutTitle}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinespeedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
+    <a href={translatePath('/onlinespeedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {copy.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.about.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-xs text-mute font-mono mb-8">{shared.updated}</p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">What is onlinecompass?</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is a free, browser-based speedometer that turns any phone, tablet, or laptop into a GPS speed tracker. Measure current, maximum and average speed, distance, altitude and trip time with no app to install and no account required.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Unlike most online speed tools that estimate from map data, onlinecompass reads your device's GPS directly through standard browser APIs. Once loaded, your route stays on your device and is never uploaded.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">{about.whatH}</h2>
+    {about.what.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={translatePath('/onlinespeedometer/contact/')}
+        contactLabel={shared.contactLink}
+        contactCta={shared.about.contactCta}
+        guideHref={guideHref}
+        guideLabel={copy.guideLabel}
+      />
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How a phone speedometer actually works</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Your phone contains a GPS receiver that reports a position roughly once a second. This
-      <strong>online speedometer</strong> compares each new position with the last, divides the
-      distance by the time, and shows the result as a speed. A <strong>speedometer digital</strong>
-      readout replaces the needle with a number, so you read 62 km/h instead of judging where a pointer
-      sits between two marks.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      That is also why a <strong>GPS speedometer online</strong> can disagree with a car dashboard. The
-      dashboard counts wheel rotations and assumes a tyre size; the phone measures how far you actually
-      moved over the ground. When a car has had a wheel change, or the tyres are worn, the phone is
-      usually the honest one.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The trade-off is that GPS needs sky. Under trees, in tunnels and inside buildings the fix drops
-      and the number holds its last value or freezes. A <strong>live speedometer</strong> in a browser
-      has no better source of truth than the chip, so treat a stall as a signal problem rather than a
-      bug.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.howH}</h2>
+    {about.how.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={translatePath('/onlinespeedometer/contact/')}
+        contactLabel={shared.contactLink}
+        contactCta={shared.about.contactCta}
+        guideHref={guideHref}
+        guideLabel={copy.guideLabel}
+      />
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Our Mission</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Navigation should be instant and free. We built onlinecompass because we kept reaching for a speedometer that wasn't nearby — and the online alternatives were inaccurate, cluttered with ads, or required unnecessary downloads. onlinecompass is fast, private, and accurate by default.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.missionH}</h2>
+    {about.mission.map((paragraph) => (
+      <CopyText text={paragraph} />
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Key Features</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.featuresH}</h2>
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li>Live GPS speed with max, average and trip distance</li>
-      <li>Altitude and elapsed trip time</li>
-      <li>Four precision calibration methods for any device</li>
-      <li>Rulers and tools on any screen edge, fullscreen mode</li>
-      <li>Dark mode that respects your system preference</li>
-      <li>Works on every modern browser — no download, no sign-up</li>
+      {about.features.map((feature) => (
+        <li>{feature}</li>
+      ))}
     </ul>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Who the free speedometer is for</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.whoH}</h2>
+    {about.who.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={translatePath('/onlinespeedometer/contact/')}
+        contactLabel={shared.contactLink}
+        contactCta={shared.about.contactCta}
+      />
+    ))}
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.accuracyH}</h2>
+    {about.accuracy.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={translatePath('/onlinespeedometer/contact/')}
+        contactLabel={shared.contactLink}
+        contactCta={shared.about.contactCta}
+        guideHref={guideHref}
+        guideLabel={copy.guideLabel}
+      />
+    ))}
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{shared.about.privacyH}</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      Most people arrive here for one of four reasons: they want a
-      <strong>live speed test</strong> as a passenger, they want to check a dashboard after a tyre
-      change, they want a <strong>speedometer online train</strong> reading on a route with no seat-back
-      display, or they want an <strong>online speedometer mph</strong> figure for a car whose dial is in
-      km/h.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      It is also a fair <strong>speedometer test online</strong> for a second-hand car: note the reading
-      at a steady 50 km/h, then compare it with the dash. And because it is
-      <strong>online speedometer free</strong> with no account, it is a sensible
-      <strong>online speedometer free</strong> alternative to installing yet another app for a one-off
-      question.
+      {shared.about.privacy} {shared.about.privacyPre}<a href={translatePath('/onlinespeedometer/privacy/')} class="text-link hover:underline">{shared.about.privacyLink}</a>{shared.about.privacyPost}
     </p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Accuracy you can expect</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      In open sky a phone reads speed to within about 1–2 km/h, which is tighter than most dashboards.
-      The number updates once a second, so sharp acceleration lags slightly, and a reading taken in a
-      tunnel is worth nothing until the fix returns. For anything that needs a certified figure, a
-      calibrated instrument still wins over any <strong>speedometer online</strong> page.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      If a reading looks wrong, run the same stretch twice and compare. A number that repeats is a
-      number you can use — the same habit that makes a <strong>speedometer test online</strong> useful
-      rather than decorative, and it is why an <strong>online speedometer test</strong> beats a single
-      glance at a dial.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Search habits tell the same story: people arrive through “<em>free online speedometer</em>”,
-      “<em>my speed km/h</em>”, “<em>zspeed</em>” and “<em>online speedometer mph</em>” and all of them
-      want the same one number. Treat a <strong>HardSpeedometer test</strong> on a track, or a
-      <strong>speedometer online train</strong> check on a commute, as the same question asked in a
-      different place.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/onlinespeedometer/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Contact</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{shared.about.contactH}</h2>
     <p class="text-body text-base leading-relaxed">
-      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/onlinespeedometer/contact/')} class="text-link hover:underline">Contact us here</a>.
+      {shared.about.contact} <a href={translatePath('/onlinespeedometer/contact/')} class="text-link hover:underline">{shared.about.contactCta}</a>
     </p>
-  <SpeedometerFaq heading="Frequently asked questions about the online speedometer" />
+  <SpeedometerFaq heading={page.faqH} questions={page.faq} />
   </main>
   <Footer />
 </Layout>

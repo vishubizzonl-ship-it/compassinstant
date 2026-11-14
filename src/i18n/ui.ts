@@ -810,6 +810,8 @@ const extraUI = {
     "speed.records.empty": "Tap Record to save the speed shown above, then show it to anyone.",
     "speed.records.clear": "Clear all",
     "speed.records.remove": "Remove",
+    "speed.ui.fullscreen": "Fullscreen",
+    "speed.ui.changeUnit": "Change unit",
   },
   es: {
     "nav.language": "Idioma",
@@ -884,6 +886,8 @@ const extraUI = {
     "speed.records.empty": "Pulsa Grabar para guardar la velocidad que se muestra arriba y enseñarla a quien quieras.",
     "speed.records.clear": "Borrar todo",
     "speed.records.remove": "Quitar",
+    "speed.ui.fullscreen": "Pantalla completa",
+    "speed.ui.changeUnit": "Cambiar unidad",
   },
   ja: {
     "nav.language": "言語",
@@ -958,6 +962,8 @@ const extraUI = {
     "speed.records.empty": "「記録」を押すと上の速度が保存され、あとで見せられます。",
     "speed.records.clear": "すべて削除",
     "speed.records.remove": "削除",
+    "speed.ui.fullscreen": "全画面",
+    "speed.ui.changeUnit": "単位を変更",
   },
   fr: {
     "nav.language": "Langue",
@@ -1032,6 +1038,8 @@ const extraUI = {
     "speed.records.empty": "Appuyez sur Enregistrer pour garder la vitesse affichée ci-dessus, puis montrez-la.",
     "speed.records.clear": "Tout effacer",
     "speed.records.remove": "Supprimer",
+    "speed.ui.fullscreen": "Plein écran",
+    "speed.ui.changeUnit": "Changer d’unité",
   },
   de: {
     "nav.language": "Sprache",
@@ -1106,6 +1114,8 @@ const extraUI = {
     "speed.records.empty": "Auf Aufzeichnen tippen, um die oben angezeigte Geschwindigkeit zu speichern und später zu zeigen.",
     "speed.records.clear": "Alle löschen",
     "speed.records.remove": "Entfernen",
+    "speed.ui.fullscreen": "Vollbild",
+    "speed.ui.changeUnit": "Einheit wechseln",
   },
   pt: {
     "nav.language": "Idioma",
@@ -1180,6 +1190,8 @@ const extraUI = {
     "speed.records.empty": "Toque em Registrar para guardar a velocidade mostrada acima e mostrá-la a qualquer pessoa.",
     "speed.records.clear": "Limpar tudo",
     "speed.records.remove": "Remover",
+    "speed.ui.fullscreen": "Tela cheia",
+    "speed.ui.changeUnit": "Trocar unidade",
   },
   ko: {
     "nav.language": "언어",
@@ -1254,6 +1266,8 @@ const extraUI = {
     "speed.records.empty": "기록을 누르면 위에 표시된 속도가 저장되어 나중에 보여줄 수 있습니다.",
     "speed.records.clear": "모두 지우기",
     "speed.records.remove": "삭제",
+    "speed.ui.fullscreen": "전체 화면",
+    "speed.ui.changeUnit": "단위 변경",
   },
   it: {
     "nav.language": "Lingua",
@@ -1328,6 +1342,8 @@ const extraUI = {
     "speed.records.empty": "Tocca Registra per salvare la velocità mostrata sopra e mostrarla a chi vuoi.",
     "speed.records.clear": "Cancella tutto",
     "speed.records.remove": "Rimuovi",
+    "speed.ui.fullscreen": "Schermo intero",
+    "speed.ui.changeUnit": "Cambia unità",
   },
 } as const;
 

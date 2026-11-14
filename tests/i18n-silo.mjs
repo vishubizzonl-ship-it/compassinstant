@@ -70,7 +70,7 @@ function looksEnglish(text) {
   return hits >= 2 && hits / Math.max(1, words.size) > 0.2;
 }
 
-const TOOLS = ['onlinecompass', 'onlinebubblelevel'];
+const TOOLS = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer'];
 
 // --- 1. every translated page exists, is canonical to itself, has localized HTML
 for (const tool of TOOLS)
@@ -188,7 +188,7 @@ check(
 // translated at all (brand, language names, technical values). Kept per locale,
 // because "Blog" is correct Spanish but wrong Japanese.
 const NEUTRAL_GLOBAL = new Set([
-  'onlinecompass', 'onlinebubblelevel', 'Twitter', 'GitHub', 'Qibla',
+  'onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'zspeed', 'Twitter', 'GitHub', 'Qibla',
   'English', 'Español', 'Français', 'Deutsch', 'Português', '日本語', '한국어', 'Italiano',
   'hello@instanten.com',
   // technical values that are never translated
@@ -206,7 +206,27 @@ const NEUTRAL_BY_LANG = {
   fr: ['Blog', 'Contact', 'Message', 'Direction', '8. Contact', '2. Cookies'],
   de: ['Blog', 'Name', 'West', '2. Cookies'],
   pt: ['Blog', '2. Cookies'],
-  it: ['Blog', 'Privacy', 'Email', 'onlinecompass — Home', 'onlinebubblelevel — Home'],
+  it: [
+    'Blog',
+    'Privacy',
+    'Email',
+    'onlinecompass — Home',
+    'onlinebubblelevel — Home',
+    'onlinespeedometer — Home',
+  ],
+};
+
+// Unit symbols, conversion lines and words that are genuinely identical in a
+// given language. Kept separate from NEUTRAL_BY_LANG so the compass and bubble
+// checks stay as strict as they were.
+const SPEED_EXTRA_BY_LANG = {
+  es: ['Altitude', 'Max', 'Stat', 'Symbol', 'Start', 'Conversion', 'Name', 'Direction'],
+  fr: ['Altitude', 'Max', 'Stat', 'Symbol', 'Start', 'Conversion', 'Name', 'Direction'],
+  de: ['Altitude', 'Max', 'Stat', 'Symbol', 'Start', 'Conversion', 'Name', 'Direction'],
+  pt: ['Altitude', 'Max', 'Stat', 'Symbol', 'Start', 'Conversion', 'Name', 'Direction'],
+  it: ['Altitude', 'Max', 'Stat', 'Symbol', 'Start', 'Conversion', 'Name', 'Direction'],
+  ja: [],
+  ko: [],
 };
 
 function visibleChunks(file) {
@@ -227,7 +247,16 @@ function visibleChunks(file) {
   return new Set([...nodes, ...attrs]);
 }
 
-const NEUTRAL_PATTERNS = [/^[NSEW]{1,3}$/, /^[\d.,°%:/ +—·-]+$/];
+const NEUTRAL_PATTERNS = [
+  /^[NSEW]{1,3}$/,
+  /^[\d.,°%:/ +—·-]+$/,
+  // unit symbols and conversion lines ("1 km/h = 0.621 mph") are the same in
+  // every language, so they are never a sign of an untranslated page
+  /^(?:km\/h|mph|m\/s|kn|KM\/H|MPH|M\/S|KN)$/,
+  // the duration column header ("minutes:seconds") on the trip stats
+  /^m:s$/,
+  /^\d+(?:[.,]\d+)?\s*(?:km\/h|mph|m\/s|kn)\s*=\s*\d/,
+];
 
 /** Compare every locale copy of a tool page with its English original. */
 function noEnglishLeft(tool, label, extraNeutral = {}) {
@@ -270,6 +299,10 @@ noEnglishLeft('onlinebubblelevel', 'bubble', {
   de: ['Horizontal'],
 });
 
+// The speedometer silo comes from src/i18n/speedometerSupport.ts plus the
+// tool-specific legal clauses in speedometerLegal.ts.
+noEnglishLeft('onlinespeedometer', 'speed', SPEED_EXTRA_BY_LANG);
+
 // --- 6b. the bubble level silo behaves the same way
 for (const lang of LOCALES) {
   const blog = readFileSync(fileFor(lang, 'blog', 'onlinebubblelevel'), 'utf8');
@@ -310,6 +343,50 @@ for (const lang of ['ja', 'ko']) {
   check(`${lang} bubble reset label is localized`, !/>Reset</.test(html));
   check(`${lang} bubble fullscreen label is localized`, !/aria-label="Fullscreen"/.test(html));
 }
+
+// --- 6c. the speedometer silo behaves the same way
+for (const lang of LOCALES) {
+  const blog = readFileSync(fileFor(lang, 'blog', 'onlinespeedometer'), 'utf8');
+  const start = blog.indexOf('<ul class="space-y-8">');
+  const list = blog.slice(start, blog.indexOf('</ul>', start));
+  const hrefs = [...list.matchAll(/<a href="([^"]+)"/g)].map((m) => m[1]);
+  const cards = hrefs.filter(
+    (href) => href.startsWith('/onlinespeedometer/blog/') && !href.endsWith('/blog/'),
+  );
+  check(`${lang}/speed blog cards open real articles`, cards.length >= 3, String(cards.length));
+  check(
+    `${lang}/speed blog cards are not locale-prefixed`,
+    !hrefs.some((href) => href.startsWith(`/${lang}/`)),
+  );
+
+  const contact = readFileSync(fileFor(lang, 'contact', 'onlinespeedometer'), 'utf8');
+  check(
+    `${lang}/speed contact form carries copy`,
+    contact.includes('data-error=') && contact.includes('data-status='),
+  );
+
+  // the trip widget's buttons, labels and messages come from ui.ts
+  const tool = readFileSync(fileFor(lang, '', 'onlinespeedometer'), 'utf8');
+  // "Start" is the German word for start, so German is allowed to keep it.
+  if (lang !== 'de') {
+    check(`${lang}/speed Start button is localized`, !/>Start</.test(tool), 'Start');
+  }
+  check(`${lang}/speed Reset button is localized`, !/>Reset</.test(tool), 'Reset');
+  check(`${lang}/speed fullscreen label is localized`, !/aria-label="Fullscreen"/.test(tool));
+  check(`${lang}/speed unit label is localized`, !/aria-label="Change unit"/.test(tool));
+}
+
+const jaSpeed = readFileSync('dist/ja/onlinespeedometer/index.html', 'utf8');
+check('ja speed page prose is Japanese', jaSpeed.includes('オンラインスピードメーター'));
+check('ja speed FAQ is Japanese', jaSpeed.includes('よくある質問'));
+check('ja speed contact labels are Japanese', /お名前/.test(readFileSync('dist/ja/onlinespeedometer/contact/index.html', 'utf8')));
+
+// The English pages must keep their original content, not fall back to a stub.
+const enSpeed = readFileSync('dist/onlinespeedometer/index.html', 'utf8');
+check('en speed page keeps the long form copy', enSpeed.includes('The free online speedometer that reads your real speed'));
+check('en speed page keeps all seven FAQs', (enSpeed.match(/<summary/g) ?? []).length >= 7);
+check('en speed privacy keeps the GPS clause', readFileSync('dist/onlinespeedometer/privacy/index.html', 'utf8').includes('What the tool does with GPS'));
+check('en speed terms keeps the GPS caveat', readFileSync('dist/onlinespeedometer/terms/index.html', 'utf8').includes('only as good as the satellite fix'));
 
 // --- 7. the compass widget's runtime messages come from the page, not the JS
 for (const lang of ['ja', 'ko']) {

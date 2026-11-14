@@ -2,130 +2,60 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
-import SpeedometerFaq from './SpeedometerFaq.astro';
+import LegalSections from '../../LegalSections.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { supportCopy } from '../../../i18n/supportCopy';
+import { speedometerSupport } from '../../../i18n/speedometerSupport';
+import { speedometerLegal } from '../../../i18n/speedometerLegal';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = supportCopy[lang] ?? supportCopy.en;
+const seo = speedometerSupport[lang] ?? speedometerSupport.en;
+const legal = speedometerLegal[lang] ?? speedometerLegal.en;
 
-const KWS =
-  'online speedometer, free online speedometer, online speedometer free, online speedometer test, online speedometer mph, hardspeedometer test, speedometer online train, speedometer test online, speedometer digital, gps speedometer online, my speed km/h, speedometer online, live speed test, live speedometer, zspeed, gps speedometer';
+/**
+ * The shared policy, with the speedometer's own GPS clause spliced in straight
+ * after "1. Information We Collect" under a "1a" heading, so the numbering of
+ * every other section stays exactly as it is on the rest of the site.
+ */
+const sections = [
+  ...copy.privacy.sections.slice(0, 2),
+  { h: legal.privacyExtraH, paras: legal.privacyExtra },
+  ...copy.privacy.sections.slice(2),
+];
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Speedometer', item: 'https://instanten.com/onlinespeedometer/' },
-    { '@type': 'ListItem', position: 3, name: 'Privacy', item: 'https://instanten.com/onlinespeedometer/privacy/' },
+    { '@type': 'ListItem', position: 2, name: t('page.speed.title'), item: 'https://instanten.com/onlinespeedometer/' },
+    { '@type': 'ListItem', position: 3, name: t('page.privacy.title'), item: 'https://instanten.com/onlinespeedometer/privacy/' },
   ],
 };
-
 ---
 <Layout
-  title="Privacy Policy — Online Speedometer Tool"
-  description="Privacy policy for the online speedometer: GPS and trip readings stay on your device, what is stored locally, and which analytics and cookies run."
-  keywords={KWS}
+  title={`${t('page.privacy.title')} — ${t('page.speed.title')}`}
+  description={seo.aboutDesc}
+  keywords={seo.keywords}
   ogImage="/og-image.png"
-  ogImageAlt="Privacy Policy — Online Speedometer Tool"
+  ogImageAlt={t('page.privacy.title')}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinespeedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Speedometer</a>
+    <a href={translatePath('/onlinespeedometer/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {seo.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.privacy.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-xs text-mute font-mono mb-8">{copy.updated}</p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">Overview</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass ("we", "our", "the service") is committed to protecting your privacy. This policy explains what information we collect, how we use it, and your rights. The short version: we collect almost nothing and we do not sell or share your data.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1. Information We Collect</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      <strong>We do not require you to create an account or provide any personal information to use onlinecompass.</strong>
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      This <strong>online speedometer</strong> runs entirely in your browser, and your route never leaves the page. GPS positions are read by the browser to calculate the number on screen, and they are never uploaded. Any preferences you set (units, theme) are stored only in your browser's localStorage and never transmitted to our servers.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      That is what makes the <strong>free online speedometer</strong> useful on a borrowed phone: start a
-      <strong>live speed test</strong>, close the tab, and nothing about the trip remains on our side.
-      There is no account, no trip history and no server copy of your route.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We may collect the following non-personal, aggregated data through standard server logs and analytics:
-    </p>
-    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li>Pages visited and approximate session duration</li>
-      <li>Browser type and operating system (aggregated)</li>
-      <li>Referring website or search engine</li>
-      <li>Country-level geographic region (not precise location)</li>
-    </ul>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1a. What the tool does with GPS</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      A <strong>gps speedometer</strong> needs your position, and that is the one sensitive input this
-      page asks for. The browser hands your coordinates to the page, the page turns movement between two
-      fixes into a speed, and the coordinate is then discarded. Nothing is written to a database, no
-      trip log is created, and there is no way for us to see a <strong>live speedometer</strong> session
-      after you close the tab.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The same applies to the trip figures. Max speed, average speed, distance and altitude are
-      calculated in the tab and reset when you press Reset or reload. An
-      <strong>online speedometer free</strong> of accounts means there is no profile to attach them to,
-      and a <strong>speedometer digital</strong> reading is never linked to an identity.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Cookies</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The <strong>speedometer online</strong> tool does not use advertising cookies. We do use one
-      third-party analytics service to count page views, with IP anonymisation switched on and no
-      advertising or cross-site tracking features enabled; it sets its own analytics cookies. We also
-      use localStorage (not cookies) to remember your chosen units and theme preference between visits.
-      That data never leaves your device, and clearing site data removes it.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      You can clear this data at any time by clearing your browser's site data for onlinecompass.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">3. Third-Party Services</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We load the Geist typeface from a third-party font delivery network. When your browser downloads these fonts, that provider may log your IP address as part of standard font delivery. Please refer to that provider's privacy policy for details.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We do not embed social media widgets, advertising networks or advertising trackers. The only third-party script on the page is the analytics tag described above.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">4. Data Retention</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We do not store personal data on our servers. Server access logs, if retained, are kept for no longer than 90 days and are used solely to diagnose technical issues.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">5. Children's Privacy</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is a general-purpose tool suitable for all ages. We do not knowingly collect any personal information from children under 13. Since we collect no personal information from any user, this service complies with COPPA by design.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">6. Your Rights</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Because we do not collect identifiable personal data, there is typically nothing for us to retrieve, correct, or delete on your behalf. If you have concerns, please <a href={translatePath('/contact/')} class="text-link hover:underline">contact us</a> and we will respond promptly.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      If you are located in the European Economic Area, you have the right to access, rectify, or erase any personal data we hold, and to lodge a complaint with your local supervisory authority.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">7. Changes to This Policy</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We may update this Privacy Policy from time to time. The "Last updated" date at the top of this page reflects the most recent revision. Continued use of the service after changes are posted constitutes acceptance of the revised policy.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">8. Contact</h2>
-    <p class="text-body text-base leading-relaxed">
-      Questions about this Privacy Policy? <a href={translatePath('/contact/')} class="text-link hover:underline">Contact us here</a>.
-    </p>
-  <SpeedometerFaq heading="Frequently asked questions about the online speedometer" />
+    <LegalSections
+      sections={sections}
+      contactHref={translatePath('/onlinespeedometer/contact/')}
+      contactLabel={copy.contactLink}
+      contactCta={copy.about.contactCta}
+      toolLabel={copy.toolPhrase.speed}
+    />
   </main>
   <Footer />
 </Layout>
