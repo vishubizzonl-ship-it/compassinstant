@@ -48,6 +48,12 @@ export type SupportCopy = {
   };
   blog: { title: string; desc: string; intro: string; posts: { href: string; title: string; desc: string }[] };
   contact: { emailH: string; sendH: string; intro: string; email: string };
+  /**
+   * The phrase substituted for the {tool} token in the legal copy, so the terms
+   * page can say "sensors as a compass" or "sensors as a bubble level" without
+   * duplicating the whole section list.
+   */
+  toolPhrase: { compass: string; level: string };
   privacy: { sections: Section[] };
   terms: { intro: string; sections: Section[] };
 };
@@ -123,6 +129,7 @@ const en: SupportCopy = {
       'We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.',
     email: 'Reach us at {email}. We usually reply within a few business days.',
   },
+  toolPhrase: { compass: "as a compass", level: "as a bubble level" },
   privacy: {
     sections: [
       {
@@ -226,7 +233,7 @@ const en: SupportCopy = {
       {
         h: "3. Intellectual Property",
         paras: [
-          "The design, code, text, and visual assets of onlinecompass are owned by us and protected by copyright law. You may not reproduce or redistribute them without prior written permission. The measurement functionality of the Service — using a device's sensors as a compass — is not claimed as proprietary; only our specific implementation is protected.",
+          "The design, code, text, and visual assets of onlinecompass are owned by us and protected by copyright law. You may not reproduce or redistribute them without prior written permission. The measurement functionality of the Service — using a device's sensors {tool} — is not claimed as proprietary; only our specific implementation is protected.",
         ],
       },
       {
@@ -334,6 +341,7 @@ const ja: SupportCopy = {
       '少人数のチームで、いただいたメッセージはすべて目を通しています。不具合のご報告、機能のご要望、あいさつだけでも構いません。下のフォームからご連絡ください。',
     email: '{email} までご連絡ください。通常は数営業日以内に返信します。',
   },
+  toolPhrase: { compass: "方位磁針として", level: "水準器として" },
   privacy: {
     sections: [
       {
@@ -437,7 +445,7 @@ const ja: SupportCopy = {
       {
         h: "3. 知的財産",
         paras: [
-          "onlinecompass のデザイン、コード、文章、画像は当社に帰属し、著作権法で保護されています。事前の書面による許可なく複製・再配布することはできません。端末のセンサーを方位磁針として使うという機能そのものを独占するものではなく、当社の具体的な実装のみが保護の対象です。",
+          "onlinecompass のデザイン、コード、文章、画像は当社に帰属し、著作権法で保護されています。事前の書面による許可なく複製・再配布することはできません。端末のセンサーを{tool}使うという機能そのものを独占するものではなく、当社の具体的な実装のみが保護の対象です。",
         ],
       },
       {
@@ -544,6 +552,7 @@ const es: SupportCopy = {
     intro: 'Somos un equipo pequeño y leemos todos los mensajes. Si has encontrado un fallo, tienes una petición de función o solo quieres saludar, escríbenos con el formulario de abajo.',
     email: 'Escribe a {email}. Solemos responder en pocos días laborables.',
   },
+  toolPhrase: { compass: "como brújula", level: "como nivel de burbuja" },
   privacy: {
     sections: [
       {
@@ -647,7 +656,7 @@ const es: SupportCopy = {
       {
         h: "3. Propiedad intelectual",
         paras: [
-          "El diseño, el código, los textos y los recursos visuales de onlinecompass son nuestros y están protegidos por la ley de derechos de autor. No puedes reproducirlos ni redistribuirlos sin permiso previo por escrito. La funcionalidad de medición —usar los sensores como brújula— no se reclama como propia; solo nuestra implementación concreta está protegida.",
+          "El diseño, el código, los textos y los recursos visuales de onlinecompass son nuestros y están protegidos por la ley de derechos de autor. No puedes reproducirlos ni redistribuirlos sin permiso previo por escrito. La funcionalidad de medición —usar los sensores {tool}— no se reclama como propia; solo nuestra implementación concreta está protegida.",
         ],
       },
       {
@@ -754,6 +763,7 @@ const de: SupportCopy = {
     intro: 'Wir sind ein kleines Team und lesen jede Nachricht. Ob Fehlerbericht, Funktionswunsch oder ein kurzes Hallo — schreib uns über das Formular unten.',
     email: 'Erreichbar unter {email}. Wir antworten meist innerhalb weniger Werktage.',
   },
+  toolPhrase: { compass: "als Kompass", level: "als Wasserwaage" },
   privacy: {
     sections: [
       {
@@ -857,7 +867,7 @@ const de: SupportCopy = {
       {
         h: "3. Geistiges Eigentum",
         paras: [
-          "Design, Code, Texte und Bildmaterial von onlinecompass gehören uns und sind urheberrechtlich geschützt. Ohne vorherige schriftliche Erlaubnis dürfen sie nicht vervielfältigt oder weiterverbreitet werden. Die Messfunktion selbst — Sensoren als Kompass zu nutzen — wird nicht als eigen beansprucht; geschützt ist nur unsere konkrete Umsetzung.",
+          "Design, Code, Texte und Bildmaterial von onlinecompass gehören uns und sind urheberrechtlich geschützt. Ohne vorherige schriftliche Erlaubnis dürfen sie nicht vervielfältigt oder weiterverbreitet werden. Die Messfunktion selbst — Sensoren {tool} zu nutzen — wird nicht als eigen beansprucht; geschützt ist nur unsere konkrete Umsetzung.",
         ],
       },
       {
@@ -964,6 +974,7 @@ const fr: SupportCopy = {
     intro: 'Nous sommes une petite équipe et nous lisons chaque message. Que vous ayez trouvé un bug, une demande de fonctionnalité ou simplement envie de dire bonjour, écrivez-nous via le formulaire ci-dessous.',
     email: 'Écrivez-nous à {email}. Nous répondons généralement en quelques jours ouvrés.',
   },
+  toolPhrase: { compass: "comme boussole", level: "comme niveau à bulle" },
   privacy: {
     sections: [
       {
@@ -1067,7 +1078,7 @@ const fr: SupportCopy = {
       {
         h: "3. Propriété intellectuelle",
         paras: [
-          "Le design, le code, les textes et les visuels d’onlinecompass nous appartiennent et sont protégés par le droit d’auteur. Toute reproduction ou redistribution sans autorisation écrite préalable est interdite. La fonction de mesure elle-même — utiliser les capteurs comme boussole — n’est pas revendiquée comme exclusive ; seule notre implémentation concrète est protégée.",
+          "Le design, le code, les textes et les visuels d’onlinecompass nous appartiennent et sont protégés par le droit d’auteur. Toute reproduction ou redistribution sans autorisation écrite préalable est interdite. La fonction de mesure elle-même — utiliser les capteurs {tool} — n’est pas revendiquée comme exclusive ; seule notre implémentation concrète est protégée.",
         ],
       },
       {
@@ -1174,6 +1185,7 @@ const pt: SupportCopy = {
     intro: 'Somos uma equipe pequena e lemos todas as mensagens. Se você encontrou um erro, tem um pedido de recurso ou só quer dizer olá, use o formulário abaixo.',
     email: 'Fale com a gente em {email}. Normalmente respondemos em poucos dias úteis.',
   },
+  toolPhrase: { compass: "como bússola", level: "como nível de bolha" },
   privacy: {
     sections: [
       {
@@ -1277,7 +1289,7 @@ const pt: SupportCopy = {
       {
         h: "3. Propriedade intelectual",
         paras: [
-          "O design, o código, os textos e os recursos visuais do onlinecompass são nossos e protegidos por direitos autorais. Não é permitido reproduzir ou redistribuir sem autorização escrita prévia. A funcionalidade de medição — usar sensores como bússola — não é reivindicada como exclusiva; apenas nossa implementação concreta é protegida.",
+          "O design, o código, os textos e os recursos visuais do onlinecompass são nossos e protegidos por direitos autorais. Não é permitido reproduzir ou redistribuir sem autorização escrita prévia. A funcionalidade de medição — usar sensores {tool} — não é reivindicada como exclusiva; apenas nossa implementação concreta é protegida.",
         ],
       },
       {
@@ -1384,6 +1396,7 @@ const ko: SupportCopy = {
     intro: '작은 팀이지만 보내 주신 모든 메시지를 읽습니다. 오류 제보, 기능 요청, 간단한 인사 모두 아래 양식으로 보내 주세요.',
     email: '{email} 으로 연락 주세요. 보통 영업일 기준 며칠 안에 답변드립니다.',
   },
+  toolPhrase: { compass: "나침반으로", level: "수평계로" },
   privacy: {
     sections: [
       {
@@ -1487,7 +1500,7 @@ const ko: SupportCopy = {
       {
         h: "3. 지적 재산권",
         paras: [
-          "onlinecompass의 디자인, 코드, 문구, 이미지는 당사 소유이며 저작권법으로 보호됩니다. 사전 서면 허가 없이 복제하거나 재배포할 수 없습니다. 센서를 나침반으로 쓰는 기능 자체를 독점 주장하지 않으며, 당사의 구체적 구현만 보호됩니다.",
+          "onlinecompass의 디자인, 코드, 문구, 이미지는 당사 소유이며 저작권법으로 보호됩니다. 사전 서면 허가 없이 복제하거나 재배포할 수 없습니다. 센서를 {tool} 쓰는 기능 자체를 독점 주장하지 않으며, 당사의 구체적 구현만 보호됩니다.",
         ],
       },
       {
@@ -1594,6 +1607,7 @@ const it: SupportCopy = {
     intro: 'Siamo una squadra piccola e leggiamo ogni messaggio. Se hai trovato un bug, hai una richiesta o vuoi solo salutarci, scrivici con il modulo qui sotto.',
     email: 'Scrivici a {email}. Di solito rispondiamo entro pochi giorni lavorativi.',
   },
+  toolPhrase: { compass: "come bussola", level: "come livella a bolla" },
   privacy: {
     sections: [
       {
@@ -1697,7 +1711,7 @@ const it: SupportCopy = {
       {
         h: "3. Proprietà intellettuale",
         paras: [
-          "Design, codice, testi e risorse visive di onlinecompass sono nostri e protetti dal diritto d’autore. Non puoi riprodurli o ridistribuirli senza autorizzazione scritta preventiva. La funzionalità di misura — usare i sensori come bussola — non è rivendicata come esclusiva; è protetta solo la nostra implementazione concreta.",
+          "Design, codice, testi e risorse visive di onlinecompass sono nostri e protetti dal diritto d’autore. Non puoi riprodurli o ridistribuirli senza autorizzazione scritta preventiva. La funzionalità di misura — usare i sensori {tool} — non è rivendicata come esclusiva; è protetta solo la nostra implementazione concreta.",
         ],
       },
       {

@@ -7,6 +7,7 @@
  *   {contactCta} → link to the contact page, labelled with `contactCta`
  *   {email}      → mailto link to hello@instanten.com
  *   {accuracyGuide} → link to the accuracy article, labelled with `guideLabel`
+ *   {tool}       → the phrase that names the sensor use, e.g. "as a bubble level"
  * Everything else is HTML-escaped, so no translation can inject markup.
  */
 interface Props {
@@ -18,6 +19,8 @@ interface Props {
   /** Optional link used by the {accuracyGuide} token. */
   guideHref?: string;
   guideLabel?: string;
+  /** Phrase substituted for the {tool} token, e.g. "as a compass". */
+  toolLabel?: string;
 }
 
 const {
@@ -28,6 +31,7 @@ const {
   contactCta,
   guideHref,
   guideLabel,
+  toolLabel,
 } = Astro.props;
 
 const esc = (value: string) =>
@@ -40,6 +44,7 @@ const html = esc(text)
   .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
   .replace(/\{contact\}/g, link(contactLabel))
   .replace(/\{contactCta\}/g, link(contactCta))
+  .replace(/\{tool\}/g, esc(toolLabel ?? ''))
   .replace(/\{email\}/g, `<a href="mailto:${mail}" class="text-link hover:underline">${mail}</a>`)
   .replace(
     /\{accuracyGuide\}/g,

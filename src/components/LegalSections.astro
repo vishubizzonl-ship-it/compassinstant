@@ -12,9 +12,11 @@ interface Props {
   contactHref: string;
   contactLabel: string;
   contactCta: string;
+  /** Phrase substituted for the {tool} token, e.g. "as a bubble level". */
+  toolLabel?: string;
 }
 
-const { sections, contactHref, contactLabel, contactCta } = Astro.props;
+const { sections, contactHref, contactLabel, contactCta, toolLabel } = Astro.props;
 
 type Block = { type: 'p'; text: string } | { type: 'ul'; items: string[] };
 
@@ -45,6 +47,7 @@ const plan: { h: string; blocks: Block[]; first: boolean }[] = sections.map((sec
           contactHref={contactHref}
           contactLabel={contactLabel}
           contactCta={contactCta}
+          toolLabel={toolLabel}
         />
       )
     )}
