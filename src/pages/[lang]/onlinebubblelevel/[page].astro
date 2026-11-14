@@ -1,0 +1,34 @@
+---
+/**
+ * Localised copies of the bubble level silo pages: /es/onlinebubblelevel/about/,
+ * /ja/onlinebubblelevel/privacy/, … English keeps its unprefixed URLs.
+ *
+ * The five page components read the locale from Astro.url, so the same markup
+ * renders in all eight languages; the copy comes from src/i18n/bubbleSupport.ts
+ * and src/i18n/supportCopy.ts.
+ */
+import BubbleLevelAboutPage from '../../../components/pages/onlinebubblelevel/BubbleLevelAboutPage.astro';
+import BubbleLevelBlogIndexPage from '../../../components/pages/onlinebubblelevel/BubbleLevelBlogIndexPage.astro';
+import BubbleLevelContactPage from '../../../components/pages/onlinebubblelevel/BubbleLevelContactPage.astro';
+import BubbleLevelPrivacyPage from '../../../components/pages/onlinebubblelevel/BubbleLevelPrivacyPage.astro';
+import BubbleLevelTermsPage from '../../../components/pages/onlinebubblelevel/BubbleLevelTermsPage.astro';
+
+export function getStaticPaths() {
+  const locales = ['es', 'ja', 'fr', 'de', 'pt', 'ko', 'it'];
+  const pages = ['about', 'blog', 'contact', 'privacy', 'terms'];
+  return locales.flatMap((lang) => pages.map((page) => ({ params: { lang, page } })));
+}
+
+const components = {
+  about: BubbleLevelAboutPage,
+  blog: BubbleLevelBlogIndexPage,
+  contact: BubbleLevelContactPage,
+  privacy: BubbleLevelPrivacyPage,
+  terms: BubbleLevelTermsPage,
+} as const;
+
+const { page } = Astro.params as { page: keyof typeof components };
+const Page = components[page];
+---
+
+<Page />

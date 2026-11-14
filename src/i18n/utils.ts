@@ -33,12 +33,26 @@ export const compassSiloPaths = [
   "/onlinecompass/terms/",
 ] as const;
 
+/**
+ * The bubble level silo pages are translated in every locale too
+ * (/es/onlinebubblelevel/about/, /ja/onlinebubblelevel/blog/, …), rendered from
+ * src/i18n/bubbleSupport.ts.
+ */
+export const bubbleSiloPaths = [
+  "/onlinebubblelevel/about/",
+  "/onlinebubblelevel/blog/",
+  "/onlinebubblelevel/contact/",
+  "/onlinebubblelevel/privacy/",
+  "/onlinebubblelevel/terms/",
+] as const;
+
 /** True when `basePath` (locale-stripped) exists in every language. */
 export function hasLocaleVersion(basePath: string): boolean {
   const normalized = normalizePath(basePath);
   return (
     (routePaths as readonly string[]).includes(normalized) ||
-    (compassSiloPaths as readonly string[]).includes(normalized)
+    (compassSiloPaths as readonly string[]).includes(normalized) ||
+    (bubbleSiloPaths as readonly string[]).includes(normalized)
   );
 }
 

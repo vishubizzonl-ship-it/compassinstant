@@ -6,11 +6,23 @@ import ToolBlog from '../ToolBlog.astro';
 import BubbleLevelFaq from './onlinebubblelevel/BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslations, SITE_URL } from '../../i18n/utils';
 import { getToolBlog } from '../../i18n/blogs';
+import CopyText from '../CopyText.astro';
+import { bubbleProse } from '../../i18n/bubbleProse';
+import { bubbleSupport } from '../../i18n/bubbleSupport';
 
 const toolBlogFaq = getToolBlog('onlinebubblelevel', 'en')?.faq ?? [];
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const copy = bubbleProse[lang] ?? bubbleProse.en;
+// SEO strings (title, description, keywords, og:image:alt) live with the silo copy.
+const seo = bubbleSupport[lang] ?? bubbleSupport.en;
+// The contact-link tokens CopyText understands; the bubble prose only uses **bold**.
+const copyLinks = {
+  contactHref: `${import.meta.env.BASE_URL || '/'}onlinebubblelevel/contact/`.replace(/\/+/g, '/'),
+  contactLabel: lang,
+  contactCta: lang,
+};
 const baseUrl = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
 // Real production domain — breadcrumb and app schema must never point at a
 // placeholder host, or Google drops the structured data.
@@ -43,20 +55,21 @@ const appLd = {
 ---
 
 <Layout
-  title={lang === 'en' ? 'Online Bubble Level — Free Spirit Level & Level Checker' : undefined}
-  keywords={lang === 'en' ? 'online bubble level, bubble level, free bubble level, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online bubble level free, bubble level check' : undefined}
+  title={seo.toolTitle}
+  description={seo.toolDesc}
+  keywords={seo.keywords}
   breadcrumbLd={breadcrumbLd}
   appLd={appLd}
   ogImage="/og-bubble-level.png"
-  ogImageAlt={lang === 'en' ? 'Online bubble level — free spirit level and level checker tool to check any surface in your browser' : undefined}
+  ogImageAlt={seo.ogAlt}
 >
 
   <Nav />
   <main>
     <section class="py-4 lg:py-8 pt-2 lg:pt-4" aria-label={t('page.bubble.title')}>
       <div class="mx-auto max-w-5xl px-6 lg:px-8">
-        <div id="bubble-card" class="bg-canvas-elevated border border-hairline rounded-md p-6 lg:p-8 shadow-[0px_1px_2px_rgba(0,0,0,0.03)] relative">
-          <button type="button" id="bubble-fullscreen-btn" aria-label="Fullscreen" class="absolute top-3 right-3 z-30 inline-flex items-center justify-center w-8 h-8 rounded-sm bg-canvas border border-hairline text-ink hover:bg-canvas-elevated transition-colors">
+        <div id="bubble-card" data-msg-level={t('bubble.page.level')} data-msg-tilt={t('bubble.page.tilt')} data-msg-stopped={t('bubble.page.stopped')} data-msg-https={t('bubble.page.https')} data-msg-unsupported={t('bubble.page.unsupported')} data-msg-denied={t('bubble.page.denied')} data-msg-retry={t('bubble.page.retry')} class="bg-canvas-elevated border border-hairline rounded-md p-6 lg:p-8 shadow-[0px_1px_2px_rgba(0,0,0,0.03)] relative">
+          <button type="button" id="bubble-fullscreen-btn" aria-label={t('bubble.page.fullscreen')} class="absolute top-3 right-3 z-30 inline-flex items-center justify-center w-8 h-8 rounded-sm bg-canvas border border-hairline text-ink hover:bg-canvas-elevated transition-colors">
             <svg class="icon-enter" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
             <svg class="icon-exit hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/></svg>
           </button>
@@ -77,13 +90,13 @@ const appLd = {
                 {t('bubble.ui.calibrate')}
               </button>
               <button type="button" id="bubble-reset-btn" class="inline-flex items-center rounded-full bg-transparent border border-hairline text-body text-xs font-medium px-3 py-1.5 hover:text-ink transition-colors focus-visible:ring-2 focus-visible:ring-link-soft focus-visible:outline-none">
-                Reset
+                {t('bubble.page.reset')}
               </button>
             </div>
             <div
               id="bubble-area"
               class="relative w-full max-w-[300px] aspect-square bg-canvas-elevated border border-hairline shadow-[inset_0_3px_10px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.04)] overflow-hidden bubble-area"
-              aria-label="Spirit level"
+              aria-label={t('bubble.page.spirit')}
             >
               <div class="absolute left-1/2 top-0 bottom-0 w-[2px] crosshair -translate-x-1/2"></div>
               <div class="absolute top-1/2 left-0 right-0 h-[2px] crosshair -translate-y-1/2"></div>
@@ -147,119 +160,28 @@ const appLd = {
     <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="about-online-bubble-level">
       <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
         <h2 id="about-online-bubble-level" class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-0 mb-4">
-          The free online bubble level that checks any surface
+          {copy.aboutH}
         </h2>
-        <p class="text-body text-base leading-relaxed mb-4">
-          This <strong>online bubble level</strong> turns the phone in your hand into a working
-          <strong>level checker tool</strong> in one tap. There is nothing to install, no account to
-          create and no download waiting time — you open the page, place the device on the surface and
-          the bubble tells you instantly whether that surface is flat, tilted or plumb. It is a
-          <strong>free bubble level</strong> built for one job: telling you the truth about a surface
-          before you hang a shelf, fix a frame or level a table.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          If you have ever searched for “<em>bubble level online</em>”, “<em>spirit level online</em>”
-          or “<em>level checker tool online</em>”, you already know the problem. You are holding a
-          picture frame that looks straight, a washing machine that wobbles, or a desk that seems to
-          slope — and your eyes are not a measuring instrument. A <strong>bubble level check online</strong>
-          removes the guesswork in two seconds, with a number in degrees instead of a hunch.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          What this bubble level tool actually shows you
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          The <strong>online bubble level</strong> reads the accelerometer inside your device and draws
-          the same information a physical spirit level shows, only with more detail. You get a
-          horizontal vial for flat surfaces, a <strong>vertical level tool online</strong> for plumb
-          walls and door frames, and a bullseye view that shows tilt in every direction at once — left
-          to right and front to back. Instead of judging where a bubble sits between two lines, you
-          read a degrees figure, so “almost level” becomes an exact number you can act on.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Because the reading is digital, this <strong>leveler tool</strong> can do things a wooden
-          level cannot. It updates as you tilt the surface, so you can watch the number fall toward
-          zero while you slide a shim under a leg. It keeps working in dark corners where you cannot
-          see a bubble clearly. And it never loses its calibration fluid, because there is no fluid —
-          the sensor is solid state and the zero point is set in software.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          How to check a surface with the online bubble level
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Open the page, allow the sensor prompt once, then place the device flat on the surface you
-          want to test. Hold it still for a second so the reading settles. The degrees value is your
-          answer: a number near 0.0° means the surface is level, and the direction of the offset tells
-          you which side needs lifting. For a plumb check, stand the device against the wall on its
-          long edge and use the vertical vial in the same way.
-        </p>
-        <ul class="list-disc pl-6 mb-4 space-y-2 text-body text-base leading-relaxed">
-          <li>Take the phone out of its magnetic case and away from metal tools, screws and pipes.</li>
-          <li>Check the same surface in two directions, at 90° to each other, before you drill.</li>
-          <li>If the reading drifts, put the device on a known flat surface and recalibrate there.</li>
-          <li>Keep the device on the surface itself — holding it in your hand adds your own tilt.</li>
-        </ul>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          Bubble level vs a physical spirit level
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          A traditional <strong>bubble level ruler</strong> is a sealed tube with a bubble in it, and it
-          is excellent at what it does — but you only get it when you remember to carry it. A
-          <strong>bubble level online</strong> is already in your pocket, which matters when a shelf
-          looks off and you are standing on a chair. The trade-off is precision: a good 60 cm spirit
-          level can detect a slope a phone sensor will round away. For hanging, furniture, appliances
-          and quick checks the digital reading is more than enough; for tiling a floor or fitting a
-          worktop, a long physical level still wins.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Many people search for a <strong>water level tool online</strong> expecting a hose-and-water
-          levelling trick. This page does the same job electronically: no water, no hose, no mess, and
-          it works at any distance from the surface. Likewise, if a <strong>bubble level online</strong>
-          search brought you here, the tool below is the interactive answer — not a diagram of one.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          Who uses a free online level
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Anyone who hangs, builds, mounts or installs. Homeowners use the <strong>free online level</strong>
-          to hang picture frames, shelves and mirrors straight the first time. Renters use the
-          <strong>online level bubble level</strong> to check whether a wardrobe or a fridge is sitting
-          level before blaming the door. DIY and carpentry work uses the vertical vial for door frames,
-          studs and posts. Photographers and videographers check that a tripod head is flat.
-          <strong>Online level check</strong> use also spikes around furniture assembly —
-          flat-pack instructions assume a level floor, and a phone is the only tool within reach.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Beyond the workshop, the same <strong>online bubble level free</strong> reading helps in
-          small everyday ways. Check whether a table rocks because the floor slopes or because one leg
-          is short. Confirm a washing machine is level so it stops walking across the floor. Level a
-          camper van, a caravan or a rooftop tent before you sleep in it. Set up a pool table, a
-          ping-pong table or a dartboard. Test a new phone case or a desk stand for wobble. None of
-          these jobs need a toolbox — they need one honest number.
-        </p>
-
-        <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
-          Accuracy, privacy and what to expect
-        </h3>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Accuracy depends on the sensor in your device, not on the page. Phone accelerometers are
-          typically good to about one degree, which is plenty for hanging and furniture work, and the
-          reading gets more stable the longer the device sits still. Nothing is uploaded: the sensor
-          data is read in your browser and never leaves the device, no account is needed and there is
-          no tracking of your readings. Once the page has loaded, this
-          <strong>bubble level check</strong> keeps working even without a network connection, which is
-          useful in a basement, a garage or a building site.
-        </p>
-        <p class="text-body text-base leading-relaxed mb-4">
-          Use it as a fast <strong>level checker tool</strong> before you commit to a hole in the wall,
-          and keep a physical level for the jobs where millimetres matter. That combination — a phone
-          for the quick answer, a spirit level for the final fix — is how most people actually work.
-          If the bubble looks wrong, check the surface, the calibration and nearby metal before you
-          blame the tool, and recalibrate on a surface you trust.
-        </p>
+        {copy.intro.map((paragraph) => (
+          <CopyText text={paragraph} contactHref={copyLinks.contactHref} contactLabel={copyLinks.contactLabel} contactCta={copyLinks.contactCta} />
+        ))}
+        {copy.sections.map((section) => (
+          <>
+            <h3 class="font-sans text-base sm:text-lg font-semibold tracking-tight text-ink mt-10 mb-3">
+              {section.h}
+            </h3>
+            {section.paras.map((paragraph) => (
+              <CopyText text={paragraph} contactHref={copyLinks.contactHref} contactLabel={copyLinks.contactLabel} contactCta={copyLinks.contactCta} />
+            ))}
+            {section.list && (
+              <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
+                {section.list.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            )}
+          </>
+        ))}
       </div>
     </section>
 
@@ -268,40 +190,24 @@ const appLd = {
   <section class="py-16 lg:py-24 border-t border-hairline" aria-labelledby="bubble-guides-title">
     <div class="mx-auto max-w-[48rem] px-6 lg:px-8">
       <h2 id="bubble-guides-title" class="font-sans text-2xl sm:text-3xl font-semibold tracking-tight text-ink mb-6">
-        Latest guides from the Bubble Level blog
+        {copy.guidesH}
       </h2>
       <ul class="flex flex-col gap-0 border border-hairline rounded-md overflow-hidden">
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinebubblelevel/blog/how-to-use-an-online-bubble-level/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">How to Use an Online Bubble Level (Step-by-Step)</span>
-            <span class="block text-sm text-body mt-1">Open the page, place the phone flat, calibrate, and read the tilt in degrees.</span>
-          </a>
-        </li>
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">How Accurate Is a Phone Bubble Level?</span>
-            <span class="block text-sm text-body mt-1">Typical error, what ruins a reading, and how to calibrate for a reliable check.</span>
-          </a>
-        </li>
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinebubblelevel/blog/level-furniture-shelves-appliances/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">How to Level Furniture, Shelves and Appliances</span>
-            <span class="block text-sm text-body mt-1">Step-by-step checks for a rocking table, a leaning bookcase and a walking washing machine.</span>
-          </a>
-        </li>
-        <li class="border-b border-hairline last:border-b-0">
-          <a href="/onlinebubblelevel/blog/bubble-level-vs-spirit-level/" class="block px-4 py-4 hover:bg-canvas transition-colors">
-            <span class="block font-sans text-base font-medium text-ink">Bubble Level vs Spirit Level</span>
-            <span class="block text-sm text-body mt-1">Accuracy, cost and speed compared, and when to reach for a real level.</span>
-          </a>
-        </li>
+        {copy.guides.map((guide) => (
+          <li class="border-b border-hairline last:border-b-0">
+            <a href={guide.href} class="block px-4 py-4 hover:bg-canvas transition-colors">
+              <span class="block font-sans text-base font-medium text-ink">{guide.title}</span>
+              <span class="block text-sm text-body mt-1">{guide.desc}</span>
+            </a>
+          </li>
+        ))}
       </ul>
       <p class="text-body text-base leading-relaxed mt-6">
-        <a href="/onlinebubblelevel/blog/" class="text-link hover:underline">See all Online Bubble Level guides →</a>
+        <a href="/onlinebubblelevel/blog/" class="text-link hover:underline">{copy.guidesAll}</a>
       </p>
     </div>
   </section>
-  <BubbleLevelFaq extraQuestions={toolBlogFaq} heading="Frequently asked questions about the online bubble level" />
+  <BubbleLevelFaq extraQuestions={toolBlogFaq} heading={copy.faqH} questions={copy.faq} />
   </main>
   <Footer />
 </Layout>
@@ -310,6 +216,18 @@ const appLd = {
   (function () {
     const area = document.getElementById('bubble-area');
     const card = document.getElementById('bubble-card');
+
+    // Every runtime sentence comes from the page, so the widget speaks the
+    // same language as the copy around it.
+    const msg = {
+      level: card?.dataset.msgLevel || 'Level',
+      tilt: card?.dataset.msgTilt || 'Tilt to level',
+      stopped: card?.dataset.msgStopped || 'Stopped',
+      https: card?.dataset.msgHttps || 'Sensor access requires HTTPS or localhost.',
+      unsupported: card?.dataset.msgUnsupported || 'Device orientation sensor is not supported on this device.',
+      denied: card?.dataset.msgDenied || 'Permission denied. Enable motion sensors in browser settings.',
+      retry: card?.dataset.msgRetry || 'Permission request failed. Tap again to retry.',
+    };
     const fsBtn = document.getElementById('bubble-fullscreen-btn');
     function syncFsIcon() {
       if (!fsBtn) return;
@@ -428,36 +346,36 @@ const appLd = {
       if (yEl) yEl.textContent = tiltY.toFixed(1) + '°';
 
       if (Math.abs(tiltX) <= LEVEL_TOL && Math.abs(tiltY) <= LEVEL_TOL) {
-        setStatus('Level');
+        setStatus(msg.level);
       } else if (running) {
-        setStatus('Tilt to level');
+        setStatus(msg.tilt);
       }
     }
 
     async function start() {
       if (running) return;
       if (!window.isSecureContext) {
-        setMessage('Sensor access requires HTTPS or localhost.');
+        setMessage(msg.https);
         return;
       }
       if (!window.DeviceOrientationEvent) {
-        setMessage('Device orientation sensor is not supported on this device.');
+        setMessage(msg.unsupported);
         return;
       }
       if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
         try {
           const res = await (DeviceOrientationEvent as any).requestPermission();
           if (res !== 'granted') {
-            setMessage('Permission denied. Enable motion sensors in browser settings.');
+            setMessage(msg.denied);
             return;
           }
         } catch {
-          setMessage('Permission request failed. Tap again to retry.');
+          setMessage(msg.retry);
           return;
         }
       }
       running = true;
-      setStatus('Tilt to level');
+      setStatus(msg.tilt);
       setMessage('');
       window.addEventListener('deviceorientation', handleOrientation);
       if (rafId === null) rafId = requestAnimationFrame(updateDot);
@@ -468,7 +386,7 @@ const appLd = {
       window.removeEventListener('deviceorientation', handleOrientation);
       targetX = 0;
       targetY = 0;
-      setStatus('Stopped');
+      setStatus(msg.stopped);
     }
 
     const calibrateBtn = document.getElementById('bubble-calibrate-btn') as HTMLButtonElement | null;

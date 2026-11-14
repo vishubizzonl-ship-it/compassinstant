@@ -5,12 +5,20 @@ import Footer from '../../Footer.astro';
 import ContactForm from '../../ContactForm.astro';
 import BubbleLevelFaq from './BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { bubbleProse } from '../../../i18n/bubbleProse';
+import { bubbleSupport } from '../../../i18n/bubbleSupport';
+import { supportCopy } from '../../../i18n/supportCopy';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
-const KWS =
-  'online bubble level, bubble level, free bubble level, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online bubble level free, bubble level check';
+const copy = bubbleSupport[lang] ?? bubbleSupport.en;
+const page = bubbleProse[lang] ?? bubbleProse.en;
+const shared = supportCopy[lang] ?? supportCopy.en;
+const contact = copy.contact;
+
+const guideHowTo = '/onlinebubblelevel/blog/how-to-use-an-online-bubble-level/';
+const guideFurniture = '/onlinebubblelevel/blog/level-furniture-shelves-appliances/';
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
@@ -21,79 +29,60 @@ const breadcrumbLd = {
     { '@type': 'ListItem', position: 3, name: 'Contact', item: 'https://instanten.com/onlinebubblelevel/contact/' },
   ],
 };
-
 ---
 <Layout
-  title="Contact Online Bubble Level — Feedback & Bug Reports"
-  description="Contact the online bubble level team. Report a calibration or accuracy problem with the free bubble level, suggest a feature, or ask a privacy question."
-  keywords={KWS}
+  title={contact.contactTitle}
+  description={contact.contactDesc}
+  keywords={copy.keywords}
   ogImage="/og-bubble-level.png"
-  ogImageAlt="Contact Online Bubble Level — Feedback & Bug Reports"
+  ogImageAlt={contact.contactTitle}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
+    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {copy.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.contact.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-xs text-mute font-mono mb-8">{shared.updated}</p>
     <p class="text-body text-base leading-relaxed mb-6">
-      We are a small team and we read every message. Whether you have found a bug, have a feature request, or just want to say hello — reach out using the form below.
+      {contact.contactIntro}
     </p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How the check works</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Before you write, it helps to know what the tool is doing. The online bubble level reads your device's
-      accelerometer through the browser and shows tilt in degrees on two axes. Nothing is uploaded: the reading
-      is calculated on your own phone, which is why the level checker tool online keeps working offline once the
-      page has loaded.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      That design also explains most support questions. The bubble only moves if the browser is allowed to read
-      motion sensors, and calibration is stored per device, so a new phone or a cleared browser cache starts from
-      zero again.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{contact.howH}</h2>
+    {contact.how.map((paragraph) => (
+      <p class="text-body text-base leading-relaxed mb-4">{paragraph}</p>
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Quick fixes before you write</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{contact.fixesH}</h2>
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li><strong>Bubble frozen at 0.0°:</strong> allow motion access when the browser asks, then reload the page.</li>
-      <li><strong>Reading looks off by a degree or two:</strong> recalibrate on a surface you trust, away from magnets and metal.</li>
-      <li><strong>Tool shows nothing at all:</strong> some desktop browsers have no accelerometer — use a phone or tablet.</li>
-      <li><strong>Vertical view feels noisy:</strong> hold the phone against the surface instead of judging it by eye.</li>
+      {contact.fixes.map((fix) => (
+        <li><strong>{fix.h}:</strong> {fix.p}</li>
+      ))}
     </ul>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">What to tell us</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{contact.tellH}</h2>
+    {contact.tell.map((paragraph) => (
+      <p class="text-body text-base leading-relaxed mb-4">{paragraph}</p>
+    ))}
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{contact.emailH}</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      For a bug report, tell us the device, the browser version, and what the number said when the bubble was
-      centred. For an accuracy complaint, mention whether the free bubble level was calibrated first and what you
-      compared it against — a spirit level, a second phone, or a surface you assumed was flat.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      For a feature request, describe the job rather than the button. "I want to hang a heavy mirror on a plaster
-      wall" tells us more than "add a save button", and it usually leads to a better guide as well as a better
-      tool.
+      {contact.emailPre}<a href="mailto:hello@instanten.com" class="text-link hover:underline">hello@instanten.com</a>{contact.emailPost}
     </p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Email</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Reach us at <a href="mailto:hello@instanten.com" class="text-link hover:underline">hello@instanten.com</a>. We usually reply within a few business days.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Send a message</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{contact.sendH}</h2>
     <ContactForm />
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Response times</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{contact.responseH}</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      This is a small project, so replies are not instant. Accuracy and calibration reports get priority because
-      they affect every user of the online bubble level; feature ideas are read and logged but may not get a
-      personal reply. Privacy questions are always answered.
+      {contact.response[0]}
     </p>
     <p class="text-body text-base leading-relaxed mb-4">
-      While you wait, the guides are worth a look: the
-      <a href="/onlinebubblelevel/blog/how-to-use-an-online-bubble-level/" class="text-link hover:underline">step-by-step walkthrough</a>
-      and the
-      <a href="/onlinebubblelevel/blog/level-furniture-shelves-appliances/" class="text-link hover:underline">furniture and appliance guide</a>
-      answer most level-check questions already.
+      {contact.response[1]}
+      <a href={guideHowTo} class="text-link hover:underline">{contact.guideA}</a>
+      {' '}{contact.guideMid}{' '}
+      <a href={guideFurniture} class="text-link hover:underline">{contact.guideB}</a>
+      {' '}{contact.guidePost}
     </p>
-  <BubbleLevelFaq heading="Frequently asked questions about the online bubble level" />
+  <BubbleLevelFaq heading={page.faqH} questions={page.faq} />
   </main>
   <Footer />
 </Layout>

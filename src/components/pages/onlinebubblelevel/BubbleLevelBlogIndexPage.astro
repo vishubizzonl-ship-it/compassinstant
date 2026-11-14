@@ -4,20 +4,18 @@ import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
 import BubbleLevelFaq from './BubbleLevelFaq.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { bubbleProse } from '../../../i18n/bubbleProse';
+import { bubbleSupport } from '../../../i18n/bubbleSupport';
+import { supportCopy } from '../../../i18n/supportCopy';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = bubbleSupport[lang] ?? bubbleSupport.en;
+const page = bubbleProse[lang] ?? bubbleProse.en;
+const shared = supportCopy[lang] ?? supportCopy.en;
 
-const KWS =
-  'online bubble level, bubble level, free bubble level, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online bubble level free, bubble level check';
-
-const posts = [
-  { href: '/onlinebubblelevel/blog/how-to-use-an-online-bubble-level', title: 'How to Use an Online Bubble Level (Step-by-Step)', date: 'October 4, 2026', desc: 'Open the page, place the phone flat, calibrate, and read the tilt in degrees to check any surface.' },
-  { href: '/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level', title: 'How Accurate Is a Phone Bubble Level? (And How to Fix It)', date: 'November 7, 2026', desc: 'How accurate is a phone bubble level? Typical error, what ruins a reading, and how to calibrate for a reliable check.' },
-  { href: '/onlinebubblelevel/blog/level-furniture-shelves-appliances', title: 'How to Level Furniture, Shelves and Appliances with a Phone', date: 'November 7, 2026', desc: 'Level furniture, shelves and appliances with a phone in minutes, plus fixes for a wobble and a sloped floor.' },
-  { href: '/onlinebubblelevel/blog/bubble-level-vs-spirit-level', title: 'Bubble Level vs Spirit Level: Which One Do You Need?', date: 'November 7, 2026', desc: 'Bubble level vs spirit level: accuracy, cost, speed and when each wins, plus where an online bubble level fits in.' },
-];
+const posts = copy.posts;
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
@@ -28,29 +26,24 @@ const breadcrumbLd = {
     { '@type': 'ListItem', position: 3, name: 'Blog', item: 'https://instanten.com/onlinebubblelevel/blog/' },
   ],
 };
-
 ---
 <Layout
-  title="Online Bubble Level Blog — Guides & Level Checks"
-  description="Guides and tips for checking level and plumb with the online bubble level: accuracy, calibrating, and leveling furniture, shelves and appliances."
-  keywords={KWS}
+  title={copy.blogTitle}
+  description={copy.blogDesc}
+  keywords={copy.keywords}
   ogImage="/og-bubble-level.png"
-  ogImageAlt="Online Bubble Level blog"
+  ogImageAlt={copy.blogTitle}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
-    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">Blog</h1>
-    <p class="text-xs text-mute font-mono mb-4">Last updated: November 2026</p>
+    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {copy.back}</a>
+    <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.blog.title')}</h1>
+    <p class="text-xs text-mute font-mono mb-4">{shared.updated}</p>
     <p class="text-body text-base leading-relaxed mb-4">
-      Practical guides for the online bubble level: how accurate a phone sensor really is, how to calibrate one,
-      and how to level furniture, shelves and appliances without a spirit level in the room. Every guide uses the
-      same free bubble level tool, with step-by-step checks, worked examples and a troubleshooting table.
+      {copy.blogIntro}
     </p>
     <p class="text-body text-base leading-relaxed mb-10">
-      Start with the how-to if you are new to the tool, or jump to the accuracy guide if a level check has already
-      given you a number you do not trust. If you are deciding whether to buy a spirit level at all, the comparison
-      guide covers accuracy, cost and when a phone is genuinely enough.
+      {copy.blogIntro2}
     </p>
 
     <ul class="space-y-8">
@@ -58,13 +51,13 @@ const breadcrumbLd = {
         <li class="border-b border-hairline pb-6">
           <p class="text-xs text-mute font-mono mb-2">{post.date}</p>
           <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mb-2">
-            <a href={translatePath(post.href)} class="hover:text-link transition-colors">{post.title}</a>
+            <a href={post.href} class="hover:text-link transition-colors">{post.title}</a>
           </h2>
           <p class="text-body text-base leading-relaxed">{post.desc}</p>
         </li>
       ))}
     </ul>
-  <BubbleLevelFaq heading="Frequently asked questions about the online bubble level" />
+  <BubbleLevelFaq heading={page.faqH} questions={page.faq} />
   </main>
   <Footer />
 </Layout>

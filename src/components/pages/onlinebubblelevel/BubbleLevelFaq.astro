@@ -13,11 +13,13 @@ interface Props {
   /** Emit the FAQPage JSON-LD. Set false when another block already covers it. */
   ld?: boolean;
   heading?: string;
+  /** Localised questions; falls back to the English base list when omitted. */
+  questions?: { q: string; a: string }[];
 }
 
-const { extraQuestions = [], ld = true, heading = 'Frequently asked questions' } = Astro.props;
+const { extraQuestions = [], ld = true, heading = 'Frequently asked questions', questions } = Astro.props;
 
-const baseQuestions: { q: string; a: string }[] = [
+const englishQuestions: { q: string; a: string }[] = [
   {
     q: 'How to read an online level bubble?',
     a: 'Place the phone flat on the surface and let the bubble settle. The bubble drifting to the left or right shows which end is high: the bubble always floats to the highest point, so the side it moves towards is the high side. The number beside it is the tilt in degrees, and 0.0° means the surface is level.',
@@ -51,6 +53,8 @@ const baseQuestions: { q: string; a: string }[] = [
     a: "A spirit level uses a long curved vial to show tilt along one axis, and a bull's-eye level uses a circular vial that shows tilt in every direction at once. This vertical level tool online shows both axes plus a bull's-eye view, so you can check a shelf and a table without changing tools.",
   },
 ];
+const baseQuestions: { q: string; a: string }[] = questions && questions.length ? questions : englishQuestions;
+
 
 // Rendered visible: the eight questions above.
 const items = baseQuestions;

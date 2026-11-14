@@ -3,13 +3,25 @@ import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
 import BubbleLevelFaq from './BubbleLevelFaq.astro';
+import CopyText from '../../CopyText.astro';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { bubbleProse } from '../../../i18n/bubbleProse';
+import { bubbleSupport } from '../../../i18n/bubbleSupport';
+import { supportCopy } from '../../../i18n/supportCopy';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
-const KWS =
-  'online bubble level, bubble level, free bubble level, bubble level ruler, bubble level online, spirit level online, vertical level tool online, level checker tool online, leveler tool, bubble level check online, water level tool online, online level bubble level, free online level, online bubble level free, bubble level check';
+const copy = bubbleSupport[lang] ?? bubbleSupport.en;
+const shared = supportCopy[lang] ?? supportCopy.en;
+const page = bubbleProse[lang] ?? bubbleProse.en;
+const about = copy.about;
+
+const copyLinks = {
+  contactHref: translatePath('/onlinebubblelevel/contact/'),
+  contactLabel: shared.contactLink,
+  contactCta: shared.about.contactCta,
+};
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
@@ -20,98 +32,97 @@ const breadcrumbLd = {
     { '@type': 'ListItem', position: 3, name: 'About', item: 'https://instanten.com/onlinebubblelevel/about/' },
   ],
 };
-
 ---
 <Layout
-  title="About Online Bubble Level — Free Level Checker Tool"
-  description="About the online bubble level: how a phone measures tilt, who the free bubble level is for, and the accuracy you can expect from a level checker tool."
-  keywords={KWS}
+  title={copy.aboutTitle}
+  description={copy.aboutDesc}
+  keywords={copy.keywords}
   ogImage="/og-bubble-level.png"
-  ogImageAlt="About Online Bubble Level — Free Level Checker Tool"
+  ogImageAlt={copy.aboutTitle}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Bubble Level</a>
+    <a href={translatePath('/onlinebubblelevel/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {copy.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.about.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-xs text-mute font-mono mb-8">{shared.updated}</p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">What is onlinecompass?</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is a free, browser-based bubble level that turns any phone, tablet, or laptop into a precision spirit level. Check level and plumb, read tilt in degrees, and square up a surface at real-world accuracy, with no app to install and no account required.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Unlike most online level tools that guess a surface, onlinecompass reads your device's accelerometer and orientation sensors directly through standard browser APIs. Once loaded, it works offline and keeps your sensor data on your device.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">{about.whatH}</h2>
+    {about.what.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={copyLinks.contactHref}
+        contactLabel={copyLinks.contactLabel}
+        contactCta={copyLinks.contactCta}
+        guideHref="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/"
+        guideLabel={copy.guideLabel}
+      />
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">How a phone bubble level actually works</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Your phone contains an accelerometer, a tiny sensor that measures gravity. The browser reads it through
-      standard device-motion APIs, and this <strong>level checker tool online</strong> turns that reading into two
-      numbers: tilt along the long edge and tilt along the short edge. A centred bubble means both are close to
-      zero, which is what a spirit level vial shows with its air bubble.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      That is also why the tool needs a moment to settle. Put a phone down and the sensor output wobbles for a
-      fraction of a second before the filter smooths it. If you have ever used a <strong>bubble level online</strong> page where the bubble jitters, the sensor is fine — the page is simply showing raw values
-      instead of a filtered reading.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      For a <strong>vertical level tool online</strong> the maths changes. Held upright, the phone measures the
-      lean of its back face rather than the tilt of a table, so plumb readings are naturally a little noisier. We
-      show both axes at once so you can check a wall and a shelf without changing the view.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.howH}</h2>
+    {about.how.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={copyLinks.contactHref}
+        contactLabel={copyLinks.contactLabel}
+        contactCta={copyLinks.contactCta}
+        guideHref="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/"
+        guideLabel={copy.guideLabel}
+      />
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Our Mission</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Navigation should be instant and free. We built onlinecompass because we kept reaching for a level that wasn't nearby — and the online alternatives were inaccurate, cluttered with ads, or required unnecessary downloads. onlinecompass is fast, private, and accurate by default.
-    </p>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.missionH}</h2>
+    {about.mission.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={copyLinks.contactHref}
+        contactLabel={copyLinks.contactLabel}
+        contactCta={copyLinks.contactCta}
+        guideHref="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/"
+        guideLabel={copy.guideLabel}
+      />
+    ))}
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Key Features</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.featuresH}</h2>
     <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li>Level and plumb measurement in one view</li>
-      <li>Tilt readout in degrees for both axes</li>
-      <li>Four precision calibration methods for any device</li>
-      <li>Rulers and tools on any screen edge, fullscreen mode</li>
-      <li>Dark mode that respects your system preference</li>
-      <li>Works on every modern browser — no download, no sign-up</li>
+      {about.features.map((feature) => (
+        <li>{feature}</li>
+      ))}
     </ul>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Who the free bubble level is for</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.whoH}</h2>
+    {about.who.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={copyLinks.contactHref}
+        contactLabel={copyLinks.contactLabel}
+        contactCta={copyLinks.contactCta}
+        guideHref="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/"
+        guideLabel={copy.guideLabel}
+      />
+    ))}
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{about.accuracyH}</h2>
+    {about.accuracy.map((paragraph) => (
+      <CopyText
+        text={paragraph}
+        contactHref={copyLinks.contactHref}
+        contactLabel={copyLinks.contactLabel}
+        contactCta={copyLinks.contactCta}
+        guideHref="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/"
+        guideLabel={copy.guideLabel}
+      />
+    ))}
+
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{shared.about.privacyH}</h2>
     <p class="text-body text-base leading-relaxed mb-4">
-      Most people arrive here with one job: something in the house looks crooked and they want a number before
-      they drill. This <strong>free bubble level</strong> is built for that moment — hanging a picture, checking a
-      shelf, seeing whether a table rocks, or confirming a washing machine before it walks across the floor.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      It is also a sensible second opinion for people who own a real level and cannot find it, and a quick
-      <strong>leveler tool</strong> for renters who would rather not buy a 60 cm bar for four holes in a wall.
-      The <strong>water level tool online</strong> trick still has a place for long spans, but for the everyday
-      "is this straight?" question the phone in your hand wins on speed.
+      {shared.about.privacy} {shared.about.privacyPre}<a href={translatePath('/onlinebubblelevel/privacy/')} class="text-link hover:underline">{shared.about.privacyLink}</a>{shared.about.privacyPost}
     </p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Accuracy you can expect</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      A calibrated phone reads within about 0.5° on a flat surface, which is close to a small spirit level and
-      good enough for furniture, shelves and pictures. It is not a substitute for a long level when you are
-      building a wall or laying a floor, because a short base cannot see a slope spread over three metres.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      If a reading looks wrong, calibrate on a surface you trust, then run a <strong>bubble level check</strong>
-      a second time before you cut or drill. Our
-      <a href="/onlinebubblelevel/blog/how-accurate-is-a-phone-bubble-level/" class="text-link hover:underline">accuracy guide</a>
-      explains the four common causes in detail.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Privacy First</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Your sensor data stays on your device. We do not collect, store, or transmit your heading, location, or orientation. Your calibration settings are stored locally on your own device. Read our <a href={translatePath('/onlinebubblelevel/privacy/')} class="text-link hover:underline">Privacy Policy</a> for full details.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">Contact</h2>
+    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">{shared.about.contactH}</h2>
     <p class="text-body text-base leading-relaxed">
-      Have a question, found a bug, or want to suggest a feature? We would love to hear from you. <a href={translatePath('/onlinebubblelevel/contact/')} class="text-link hover:underline">Contact us here</a>.
+      {shared.about.contact} <a href={translatePath('/onlinebubblelevel/contact/')} class="text-link hover:underline">{shared.about.contactCta}</a>
     </p>
-  <BubbleLevelFaq heading="Frequently asked questions about the online bubble level" />
+  <BubbleLevelFaq heading={page.faqH} questions={page.faq} />
   </main>
   <Footer />
 </Layout>

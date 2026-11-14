@@ -30,12 +30,12 @@ if (!existsSync('dist') || !existsSync('dist/index.html')) {
   process.exit(0);
 }
 
-const urlFor = (lang, page) =>
-  lang === 'en' ? `${SITE}/onlinecompass/${page}/` : `${SITE}/${lang}/onlinecompass/${page}/`;
-const fileFor = (lang, page) =>
+const urlFor = (lang, page, tool = 'onlinecompass') =>
+  lang === 'en' ? `${SITE}/${tool}/${page}/` : `${SITE}/${lang}/${tool}/${page}/`;
+const fileFor = (lang, page, tool = 'onlinecompass') =>
   lang === 'en'
-    ? `dist/onlinecompass/${page}/index.html`
-    : `dist/${lang}/onlinecompass/${page}/index.html`;
+    ? `dist/${tool}/${page}/index.html`
+    : `dist/${lang}/${tool}/${page}/index.html`;
 
 const textOf = (html) => {
   const body = html
@@ -70,15 +70,21 @@ function looksEnglish(text) {
   return hits >= 2 && hits / Math.max(1, words.size) > 0.2;
 }
 
+const TOOLS = ['onlinecompass', 'onlinebubblelevel'];
+
 // --- 1. every translated page exists, is canonical to itself, has localized HTML
+for (const tool of TOOLS)
 for (const lang of LOCALES) {
   for (const page of PAGES) {
-    const file = fileFor(lang, page);
+    const file = fileFor(lang, page, tool);
     check(`${lang}/${page} page exists`, existsSync(file), file);
     if (!existsSync(file)) continue;
     const html = readFileSync(file, 'utf8');
     check(`${lang}/${page} <html lang>`, html.includes(`<html lang="${lang}"`));
-    check(`${lang}/${page} canonical is itself`, html.includes(`rel="canonical" href="${urlFor(lang, page)}"`));
+    check(
+      `${lang}/${tool}/${page} canonical is itself`,
+      html.includes(`rel="canonical" href="${urlFor(lang, page, tool)}"`),
+    );
     check(
       `${lang}/${page} has no English prose`,
       textOf(html).every((chunk) => !looksEnglish(chunk)),
@@ -88,9 +94,10 @@ for (const lang of LOCALES) {
 }
 
 // --- 2. reciprocal hreflang across all eight languages, for every silo page
+for (const tool of TOOLS)
 for (const page of PAGES) {
   for (const lang of ALL) {
-    const file = fileFor(lang, page);
+    const file = fileFor(lang, page, tool);
     if (!existsSync(file)) {
       check(`${lang}/${page} page exists`, false, file);
       continue;
@@ -100,21 +107,21 @@ for (const page of PAGES) {
     const byLang = new Map(alternates.map((m) => [m[1], m[2]]));
 
     for (const target of ALL) {
-      check(`${lang}/${page} hreflang ${target}`, byLang.get(target) === urlFor(target, page), `${byLang.get(target)}`);
+      check(`${lang}/${page} hreflang ${target}`, byLang.get(target) === urlFor(target, page, tool), `${byLang.get(target)}`);
     }
-    check(`${lang}/${page} hreflang x-default → English`, byLang.get('x-default') === urlFor('en', page));
+    check(`${lang}/${page} hreflang x-default → English`, byLang.get('x-default') === urlFor('en', page, tool));
     check(`${lang}/${page} hreflang count`, alternates.length === ALL.length + 1, String(alternates.length));
 
     // reciprocity: the page each alternate points at must link back here
     const other = byLang.get('ja') && lang !== 'ja' ? 'ja' : 'es';
     const otherUrl = byLang.get(other);
     if (otherUrl && lang !== other) {
-      const otherFile = fileFor(other, page);
+      const otherFile = fileFor(other, page, tool);
       if (existsSync(otherFile)) {
         const otherHtml = readFileSync(otherFile, 'utf8');
         check(
           `${other}/${page} links back to ${lang}`,
-          otherHtml.includes(`href="${urlFor(lang, page)}"`),
+          otherHtml.includes(`href="${urlFor(lang, page, tool)}"`),
         );
       }
     }
@@ -122,12 +129,13 @@ for (const page of PAGES) {
 }
 
 // --- 3. English pages keep their URLs and gain the translated alternates
+for (const tool of TOOLS)
 for (const page of PAGES) {
-  const file = fileFor('en', page);
+  const file = fileFor('en', page, tool);
   const html = readFileSync(file, 'utf8');
-  check(`en/${page} canonical`, html.includes(`rel="canonical" href="${SITE}/onlinecompass/${page}/"`));
+  check(`en/${page} canonical`, html.includes(`rel="canonical" href="${SITE}/${tool}/${page}/"`));
   for (const lang of LOCALES) {
-    check(`en/${page} advertises ${lang}`, html.includes(`hreflang="${lang}" href="${urlFor(lang, page)}"`));
+    check(`en/${page} advertises ${lang}`, html.includes(`hreflang="${lang}" href="${urlFor(lang, page, tool)}"`));
   }
 }
 
@@ -135,9 +143,10 @@ for (const page of PAGES) {
 const sitemapFile = existsSync('dist/sitemap-0.xml') ? 'dist/sitemap-0.xml' : null;
 if (sitemapFile) {
   const sitemap = readFileSync(sitemapFile, 'utf8');
+  for (const tool of TOOLS)
   for (const lang of LOCALES) {
     for (const page of PAGES) {
-      check(`sitemap has ${lang}/${page}`, sitemap.includes(`<loc>${urlFor(lang, page)}</loc>`));
+      check(`sitemap has ${lang}/${tool}/${page}`, sitemap.includes(`<loc>${urlFor(lang, page, tool)}</loc>`));
     }
   }
   for (const lang of LOCALES) {
@@ -179,7 +188,7 @@ check(
 // translated at all (brand, language names, technical values). Kept per locale,
 // because "Blog" is correct Spanish but wrong Japanese.
 const NEUTRAL_GLOBAL = new Set([
-  'onlinecompass', 'Twitter', 'GitHub', 'Qibla',
+  'onlinecompass', 'onlinebubblelevel', 'Twitter', 'GitHub', 'Qibla',
   'English', 'Español', 'Français', 'Deutsch', 'Português', '日本語', '한국어', 'Italiano',
   'hello@instanten.com',
   // technical values that are never translated
@@ -197,7 +206,7 @@ const NEUTRAL_BY_LANG = {
   fr: ['Blog', 'Contact', 'Message', 'Direction', '8. Contact', '2. Cookies'],
   de: ['Blog', 'Name', 'West', '2. Cookies'],
   pt: ['Blog', '2. Cookies'],
-  it: ['Blog', 'Privacy', 'Email', 'onlinecompass — Home'],
+  it: ['Blog', 'Privacy', 'Email', 'onlinecompass — Home', 'onlinebubblelevel — Home'],
 };
 
 function visibleChunks(file) {
@@ -220,28 +229,86 @@ function visibleChunks(file) {
 
 const NEUTRAL_PATTERNS = [/^[NSEW]{1,3}$/, /^[\d.,°%:/ +—·-]+$/];
 
-for (const page of ['', ...PAGES]) {
-  const enFile = `dist/onlinecompass/${page ? `${page}/` : ''}index.html`;
-  if (!existsSync(enFile)) continue;
-  const english = visibleChunks(enFile);
+/** Compare every locale copy of a tool page with its English original. */
+function noEnglishLeft(tool, label, extraNeutral = {}) {
+  for (const page of ['', ...PAGES]) {
+    const enFile = `dist/${tool}/${page ? `${page}/` : ''}index.html`;
+    if (!existsSync(enFile)) continue;
+    const english = visibleChunks(enFile);
 
-  for (const lang of LOCALES) {
-    const file = `dist/${lang}/onlinecompass/${page ? `${page}/` : ''}index.html`;
-    if (!existsSync(file)) continue;
-    const leaked = [...visibleChunks(file)].filter(
-      (chunk) =>
-        english.has(chunk) &&
-        !NEUTRAL_GLOBAL.has(chunk) &&
-        !(NEUTRAL_BY_LANG[lang] ?? []).includes(chunk) &&
-        chunk.replace(/[^A-Za-z]/g, '').length > 1 &&
-        !NEUTRAL_PATTERNS.some((re) => re.test(chunk)),
-    );
+    for (const lang of LOCALES) {
+      const file = `dist/${lang}/${tool}/${page ? `${page}/` : ''}index.html`;
+      if (!existsSync(file)) continue;
+      const leaked = [...visibleChunks(file)].filter(
+        (chunk) =>
+          english.has(chunk) &&
+          !NEUTRAL_GLOBAL.has(chunk) &&
+          !(NEUTRAL_BY_LANG[lang] ?? []).includes(chunk) &&
+          !(extraNeutral[lang] ?? []).includes(chunk) &&
+          chunk.replace(/[^A-Za-z]/g, '').length > 1 &&
+          !NEUTRAL_PATTERNS.some((re) => re.test(chunk)),
+      );
+      check(
+        `${lang}/${tool}${page ? `/${page}` : ''} (${label}) has no untranslated English`,
+        leaked.length === 0,
+        leaked.slice(0, 6).join(' | '),
+      );
+    }
+  }
+}
+
+noEnglishLeft('onlinecompass', 'compass');
+
+// The bubble level silo is translated from src/i18n/bubbleSupport.ts. "Horizontal",
+// "Vertical" and "Mode" are the same word in Spanish, French and Portuguese, and
+// "Email" is Italian for email — they are correct, not leftovers.
+noEnglishLeft('onlinebubblelevel', 'bubble', {
+  es: ['Horizontal', 'Vertical', 'Mode'],
+  fr: ['Horizontal', 'Vertical', 'Mode'],
+  pt: ['Horizontal', 'Vertical', 'Mode'],
+  it: ['Horizontal', 'Vertical'],
+  de: ['Horizontal'],
+});
+
+// --- 6b. the bubble level silo behaves the same way
+for (const lang of LOCALES) {
+  const blog = readFileSync(fileFor(lang, 'blog', 'onlinebubblelevel'), 'utf8');
+  const start = blog.indexOf('<ul class="space-y-8">');
+  const list = blog.slice(start, blog.indexOf('</ul>', start));
+  const hrefs = [...list.matchAll(/<a href="([^"]+)"/g)].map((m) => m[1]);
+  const cards = hrefs.filter((href) => href.startsWith('/onlinebubblelevel/blog/') && !href.endsWith('/blog/'));
+  check(`${lang}/bubble blog cards open real articles`, cards.length >= 3, String(cards.length));
+  check(
+    `${lang}/bubble blog cards are not locale-prefixed`,
+    !hrefs.some((href) => href.startsWith(`/${lang}/`)),
+  );
+
+  const contact = readFileSync(fileFor(lang, 'contact', 'onlinebubblelevel'), 'utf8');
+  check(
+    `${lang}/bubble contact form carries copy`,
+    contact.includes('data-error=') && contact.includes('data-status='),
+  );
+}
+
+const jaBubbleContact = readFileSync('dist/ja/onlinebubblelevel/contact/index.html', 'utf8');
+check(
+  'ja bubble contact labels are Japanese',
+  jaBubbleContact.includes('お名前') && jaBubbleContact.includes('メッセージ'),
+);
+
+// The bubble widget's runtime sentences must travel with the page, not the JS.
+for (const lang of ['ja', 'ko']) {
+  const html = readFileSync(`dist/${lang}/onlinebubblelevel/index.html`, 'utf8');
+  for (const attr of ['data-msg-level', 'data-msg-tilt', 'data-msg-stopped', 'data-msg-denied', 'data-msg-unsupported']) {
+    const value = html.match(new RegExp(`${attr}="([^"]*)"`))?.[1] ?? '';
     check(
-      `${lang}/${page || 'compass'} has no untranslated English`,
-      leaked.length === 0,
-      leaked.slice(0, 6).join(' | '),
+      `${lang} bubble ${attr} is localized`,
+      /[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]/.test(value),
+      value,
     );
   }
+  check(`${lang} bubble reset label is localized`, !/>Reset</.test(html));
+  check(`${lang} bubble fullscreen label is localized`, !/aria-label="Fullscreen"/.test(html));
 }
 
 // --- 7. the compass widget's runtime messages come from the page, not the JS
