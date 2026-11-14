@@ -13,9 +13,16 @@ interface Props {
   /** Emit the FAQPage JSON-LD. Set false when another block already covers it. */
   ld?: boolean;
   heading?: string;
+  /** Localised questions; falls back to the English base list when omitted. */
+  questions?: { q: string; a: string }[];
 }
 
-const { extraQuestions = [], ld = true, heading = 'Frequently asked questions' } = Astro.props;
+const {
+  extraQuestions = [],
+  ld = true,
+  heading = 'Frequently asked questions',
+  questions,
+} = Astro.props;
 
 const baseQuestions: { q: string; a: string }[] = [
   {
@@ -48,13 +55,15 @@ const baseQuestions: { q: string; a: string }[] = [
   },
 ];
 
-// Rendered visible: the seven questions above.
-const items = baseQuestions;
+// Rendered visible: the localised questions when supplied, otherwise the
+// English base list.
+const visible = questions && questions.length ? questions : baseQuestions;
+const items = visible;
 
 // In the JSON-LD we also fold in questions that the page already shows
 // elsewhere (the tool blog FAQ), so the block stays a single complete FAQPage.
 const seen = new Set<string>();
-const ldQuestions = [...baseQuestions, ...extraQuestions].filter((item) => {
+const ldQuestions = [...visible, ...extraQuestions].filter((item) => {
   const key = item.q.trim().toLowerCase();
   if (seen.has(key)) return false;
   seen.add(key);

@@ -2,168 +2,70 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
+import LegalSections from '../../LegalSections.astro';
 import QiblaFinderFaq from './QiblaFinderFaq.astro';
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath, SITE_URL } from '../../../i18n/utils';
+import { supportCopy } from '../../../i18n/supportCopy';
+import { qiblaProse } from '../../../i18n/qiblaProse';
+import { qiblaSupport } from '../../../i18n/qiblaSupport';
+import { qiblaLegal } from '../../../i18n/qiblaLegal';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = supportCopy[lang] ?? supportCopy.en;
+const page = qiblaProse[lang] ?? qiblaProse.en;
+const seo = qiblaSupport[lang] ?? qiblaSupport.en;
+const legal = qiblaLegal[lang] ?? qiblaLegal.en;
 
-const KWS =
-  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+/**
+ * The shared policy, with the Qibla finder's own location clauses spliced in:
+ * "1a" and "1b" straight after "1. Information We Collect", and "2a" straight
+ * after "2. Cookies". The numbering of every other section stays exactly as it is on
+ * the rest of the site.
+ */
+const sections = [
+  ...copy.privacy.sections.slice(0, 2),
+  { h: legal.privacy1aH, paras: legal.privacy1a },
+  { h: legal.privacy1bH, paras: legal.privacy1b },
+  ...copy.privacy.sections.slice(2, 3),
+  { h: legal.privacy2aH, paras: legal.privacy2a },
+  ...copy.privacy.sections.slice(3),
+];
+
+const siteUrl = SITE_URL;
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/onlineqibla/' },
-    { '@type': 'ListItem', position: 3, name: 'Privacy', item: 'https://instanten.com/onlineqibla/privacy/' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: t('page.qibla.title'), item: `${siteUrl}/onlineqibla/` },
+    { '@type': 'ListItem', position: 3, name: t('page.privacy.title'), item: `${siteUrl}/onlineqibla/privacy/` },
   ],
 };
-
 ---
 <Layout
-  title="Privacy Policy — Online Qibla Tool"
-  description="Privacy policy for the online Qibla finder: your location is used only to calculate the bearing, nothing is stored, and here is which analytics run."
-  keywords={KWS}
+  title={`${t('page.privacy.title')} — ${t('page.qibla.title')}`}
+  description={seo.aboutDesc}
+  keywords={seo.keywords}
   ogImage="/og-image.png"
-  ogImageAlt="Privacy Policy — Online Qibla Tool"
+  ogImageAlt={t('page.privacy.title')}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
+    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {seo.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.privacy.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
+    <p class="text-xs text-mute font-mono mb-8">{copy.updated}</p>
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-8 mb-4">Overview</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass ("we", "our", "the service") is committed to protecting your privacy. This policy explains what information we collect, how we use it, and your rights. The short version: we collect almost nothing and we do not sell or share your data.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1. Information We Collect</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      <strong>We do not require you to create an account or provide any personal information to use onlinecompass.</strong>
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The Qibla finder runs entirely in your browser. Any calibration data (your sensor readings, chosen calibration method, theme preference) is stored only in your browser's localStorage and never transmitted to our servers.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We may collect the following non-personal, aggregated data through standard server logs and analytics:
-    </p>
-    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li>Pages visited and approximate session duration</li>
-      <li>Browser type and operating system (aggregated)</li>
-      <li>Referring website or search engine</li>
-      <li>Country-level geographic region (not precise location)</li>
-    </ul>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1a. What the tool does with your location</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      A <strong>Qibla finder</strong> cannot work without knowing roughly where you are, and that is the
-      one sensitive input this page asks for. The browser hands your coordinates to the page, the page
-      computes the bearing to the Kaaba, and the coordinate is then discarded. No location history is
-      written, no coordinate is stored in a database, and there is no way for us to see where you
-      prayed.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The compass heading is treated the same way. Your phone's magnetometer feeds the
-      <strong>Qibla direction arrow</strong> inside the tab, and nothing about your heading leaves the
-      device. Because there is no account, an <strong>online Qibla location</strong> check cannot be tied
-      back to you even in principle.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1b. The location prompt and the IP fallback</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Opening the Qibla finder triggers the browser's own location prompt. If you allow it, your
-      coordinates are read inside the tab, the bearing is computed locally, and nothing is sent
-      anywhere. If you decline, or your device cannot get a fix, the page requests a city-level
-      location from a third-party IP lookup service so it can still show a <strong>Qibla
-      direction</strong> instead of an empty dial. In that single case your IP address is sent to that
-      service for the request; the result is used once, in the tab, and is not logged or stored by us.
-      The fallback is skipped completely when location access is granted.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The fallback is deliberately labelled on screen as approximate, because an IP lookup resolves to
-      a city rather than a street. If the <strong>online Qibla compass</strong> says "approximate", the
-      number can be a degree or two out — allow location access and reload for an exact
-      <strong>online Qibla location</strong>.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Cookies</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass does not use advertising cookies. We do use one third-party analytics service to count page views, with IP anonymisation switched on and no advertising or cross-site tracking features enabled; it sets its own analytics cookies. One further third-party request is made only if you block location access — the IP lookup described in 1b above. We also use localStorage (not cookies) to remember your calibration and theme preference between visits, and that data never leaves your device.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      You can clear this data at any time by clearing your browser's site data for onlinecompass.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2a. What is never collected</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      There is no location history, no saved prayer direction and no account that could hold either —
-      whether you used it to <strong>find Qibla direction</strong> once or every day. A
-      <strong>compass qibla</strong> reading is computed once per page load and forgotten. If you close
-      the tab, the <strong>qibla direction compass</strong> value is gone, and reopening the page means a
-      fresh fix rather than a stored answer.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The same applies to a <strong>quick Qibla direction</strong> check made on a shared phone: nothing
-      on the device records that you used it, apart from your browser's ordinary cache. If you would
-      rather not leave even that, use a private window — the <strong>online Qibla direction</strong>
-      still works, because the calculation runs on your own device.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We cannot see a <strong>qibla direction arrow</strong> you were shown, a
-      <strong>qibla direction compass degrees</strong> figure you read, or the fact that you searched
-      for <em>where is qibla direction</em> at all. Only aggregate page views reach our analytics, and
-      those carry a page path, not a coordinate. Anyone can verify the same behaviour with a
-      <strong>live gibla direction online</strong> check in a private window and a network inspector.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      One practical consequence: because there is no stored last location, this
-      <strong>online Qibla finder</strong> always asks the browser for a fresh fix (or, if you decline,
-      for a fresh IP-based estimate). That is deliberately
-      less convenient than an app and considerably more private — the
-      <strong>online Qibla compass</strong> has no memory to leak if the phone changes hands.
-    </p>
-
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">3. Third-Party Services</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We load the Geist typeface from a third-party font delivery network. When your browser downloads these fonts, that provider may log your IP address as part of standard font delivery. Please refer to that provider's privacy policy for details.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We do not embed social media widgets, advertising networks or advertising trackers. The only third-party script on the page is the analytics tag described above.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">4. Data Retention</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We do not store personal data on our servers. Server access logs, if retained, are kept for no longer than 90 days and are used solely to diagnose technical issues.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">5. Children's Privacy</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is a general-purpose tool suitable for all ages. We do not knowingly collect any personal information from children under 13. Since we collect no personal information from any user, this service complies with COPPA by design.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">6. Your Rights</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Because we do not collect identifiable personal data, there is typically nothing for us to retrieve, correct, or delete on your behalf. If you have concerns, please <a href={translatePath('/contact/')} class="text-link hover:underline">contact us</a> and we will respond promptly.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      If you are located in the European Economic Area, you have the right to access, rectify, or erase any personal data we hold, and to lodge a complaint with your local supervisory authority.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">7. Changes to This Policy</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We may update this Privacy Policy from time to time. The "Last updated" date at the top of this page reflects the most recent revision. Continued use of the service after changes are posted constitutes acceptance of the revised policy.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">8. Contact</h2>
-    <p class="text-body text-base leading-relaxed">
-      Questions about this Privacy Policy? <a href={translatePath('/contact/')} class="text-link hover:underline">Contact us here</a>.
-    </p>
-  <QiblaFinderFaq heading="Frequently asked questions about the online Qibla" />
+    <LegalSections
+      sections={sections}
+      contactHref={translatePath('/onlineqibla/contact/')}
+      contactLabel={copy.contactLink}
+      contactCta={copy.about.contactCta}
+      toolLabel={copy.toolPhrase.qibla}
+    />
+  <QiblaFinderFaq heading={page.faqH} questions={page.faq} />
   </main>
   <Footer />
 </Layout>

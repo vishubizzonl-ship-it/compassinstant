@@ -70,7 +70,7 @@ function looksEnglish(text) {
   return hits >= 2 && hits / Math.max(1, words.size) > 0.2;
 }
 
-const TOOLS = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer'];
+const TOOLS = ['onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'onlineqibla'];
 
 // --- 1. every translated page exists, is canonical to itself, has localized HTML
 for (const tool of TOOLS)
@@ -188,7 +188,7 @@ check(
 // translated at all (brand, language names, technical values). Kept per locale,
 // because "Blog" is correct Spanish but wrong Japanese.
 const NEUTRAL_GLOBAL = new Set([
-  'onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'zspeed', 'Twitter', 'GitHub', 'Qibla',
+  'onlinecompass', 'onlinebubblelevel', 'onlinespeedometer', 'onlineqibla', 'zspeed', 'Twitter', 'GitHub', 'Qibla',
   'English', 'Español', 'Français', 'Deutsch', 'Português', '日本語', '한국어', 'Italiano',
   'hello@instanten.com',
   // technical values that are never translated
@@ -303,6 +303,24 @@ noEnglishLeft('onlinebubblelevel', 'bubble', {
 // tool-specific legal clauses in speedometerLegal.ts.
 noEnglishLeft('onlinespeedometer', 'speed', SPEED_EXTRA_BY_LANG);
 
+// The Qibla silo comes from src/i18n/qiblaSupport.ts plus the location clauses
+// in qiblaLegal.ts. Words that are genuinely identical per language are listed
+// separately so the compass, bubble and speed checks stay as strict as before.
+// "Source", "Destination", "Latitude" and "Longitude" are the correct French
+// words; "Magnetometer" and "Latitude"/"Longitude" are correct German and
+// Portuguese — these are real translations, not leftovers.
+const QIBLA_EXTRA_BY_LANG = {
+  es: ['Blog'],
+  fr: ['Blog', 'Contact', 'Source', 'Latitude', 'Longitude', 'Destination'],
+  de: ['Blog', 'Magnetometer'],
+  pt: ['Blog', 'Latitude', 'Longitude'],
+  it: ['Blog', 'Email', 'Privacy', 'onlineqibla — Home'],
+  ja: [],
+  ko: [],
+};
+
+noEnglishLeft('onlineqibla', 'qibla', QIBLA_EXTRA_BY_LANG);
+
 // --- 6b. the bubble level silo behaves the same way
 for (const lang of LOCALES) {
   const blog = readFileSync(fileFor(lang, 'blog', 'onlinebubblelevel'), 'utf8');
@@ -387,6 +405,93 @@ check('en speed page keeps the long form copy', enSpeed.includes('The free onlin
 check('en speed page keeps all seven FAQs', (enSpeed.match(/<summary/g) ?? []).length >= 7);
 check('en speed privacy keeps the GPS clause', readFileSync('dist/onlinespeedometer/privacy/index.html', 'utf8').includes('What the tool does with GPS'));
 check('en speed terms keeps the GPS caveat', readFileSync('dist/onlinespeedometer/terms/index.html', 'utf8').includes('only as good as the satellite fix'));
+
+// --- 6d. the Qibla silo behaves the same way
+for (const lang of LOCALES) {
+  const blog = readFileSync(fileFor(lang, 'blog', 'onlineqibla'), 'utf8');
+  const start = blog.indexOf('<ul class="space-y-8');
+  const list = blog.slice(start, blog.indexOf('</ul>', start));
+  const hrefs = [...list.matchAll(/<a href="([^"]+)"/g)].map((m) => m[1]);
+  const cards = hrefs.filter((href) => href.startsWith('/onlineqibla/blog/') && !href.endsWith('/blog/'));
+  check(`${lang}/qibla blog cards open real articles`, cards.length >= 3, String(cards.length));
+  check(
+    `${lang}/qibla blog cards are not locale-prefixed`,
+    !hrefs.some((href) => href.startsWith(`/${lang}/`)),
+  );
+
+  const contact = readFileSync(fileFor(lang, 'contact', 'onlineqibla'), 'utf8');
+  check(
+    `${lang}/qibla contact form carries copy`,
+    contact.includes('data-error=') && contact.includes('data-status='),
+  );
+  check(
+    `${lang}/qibla contact links to the localized blog`,
+    contact.includes(`href="/${lang}/onlineqibla/blog/"`),
+  );
+
+  // the widget's status, bearing and GPS labels come from ui.ts
+  const tool = readFileSync(fileFor(lang, '', 'onlineqibla'), 'utf8');
+  check(`${lang}/qibla fullscreen label is localized`, !/aria-label="Fullscreen"/.test(tool));
+  check(`${lang}/qibla status never renders in English`, !/>Locating…</.test(tool), 'Locating…');
+  check(
+    `${lang}/qibla privacy splices the location clause`,
+    /1a\./.test(readFileSync(fileFor(lang, 'privacy', 'onlineqibla'), 'utf8')),
+  );
+}
+
+for (const lang of ['ja', 'ko']) {
+  const html = readFileSync(`dist/${lang}/onlineqibla/index.html`, 'utf8');
+  for (const attr of [
+    'data-t-ready',
+    'data-t-bearing-prefix',
+    'data-t-gps',
+    'data-t-blocked',
+    'data-t-ip-approx',
+    'data-t-could-not',
+    'data-t-calibrating',
+    'data-t-tap-to-enable',
+    'data-t-https',
+  ]) {
+    const value = html.match(new RegExp(`${attr}="([^"]*)"`))?.[1] ?? '';
+    check(
+      `${lang} qibla ${attr} is localized`,
+      /[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]/.test(value),
+      value,
+    );
+  }
+}
+
+const jaQibla = readFileSync('dist/ja/onlineqibla/index.html', 'utf8');
+check('ja qibla page prose is Japanese', jaQibla.includes('キブラ'));
+check('ja qibla page title is Japanese', /<title>[^<]*キブラ/.test(jaQibla));
+check('ja qibla FAQ is Japanese', jaQibla.includes('よくある質問'));
+check(
+  'ja qibla about page is Japanese',
+  readFileSync('dist/ja/onlineqibla/about/index.html', 'utf8').includes('キブラ'),
+);
+check(
+  'ja qibla terms keeps the accuracy caveat',
+  readFileSync('dist/ja/onlineqibla/terms/index.html', 'utf8').includes('測量'),
+);
+
+// The English pages must keep their original content, not fall back to a stub.
+const enQibla = readFileSync('dist/onlineqibla/index.html', 'utf8');
+check(
+  'en qibla page keeps the long form copy',
+  enQibla.includes('The online Qibla finder that works from where you stand'),
+);
+check('en qibla page keeps its keywords', enQibla.includes('qibla direction compass degrees'));
+check('en qibla page keeps all seven FAQs', (enQibla.match(/<summary/g) ?? []).length >= 7);
+check(
+  'en qibla privacy keeps the location clause',
+  readFileSync('dist/onlineqibla/privacy/index.html', 'utf8').includes(
+    'What the tool does with your location',
+  ),
+);
+check(
+  'en qibla terms keeps the accuracy caveat',
+  readFileSync('dist/onlineqibla/terms/index.html', 'utf8').includes('not a surveyed bearing'),
+);
 
 // --- 7. the compass widget's runtime messages come from the page, not the JS
 for (const lang of ['ja', 'ko']) {

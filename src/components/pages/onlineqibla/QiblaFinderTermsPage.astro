@@ -2,134 +2,83 @@
 import Layout from '../../../layouts/Layout.astro';
 import Nav from '../../Nav.astro';
 import Footer from '../../Footer.astro';
+import LegalSections from '../../LegalSections.astro';
+import CopyText from '../../CopyText.astro';
 import QiblaFinderFaq from './QiblaFinderFaq.astro';
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '../../../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath, SITE_URL } from '../../../i18n/utils';
+import { supportCopy } from '../../../i18n/supportCopy';
+import { qiblaProse } from '../../../i18n/qiblaProse';
+import { qiblaSupport } from '../../../i18n/qiblaSupport';
+import { qiblaLegal } from '../../../i18n/qiblaLegal';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const translatePath = useTranslatedPath(lang);
+const copy = supportCopy[lang] ?? supportCopy.en;
+const page = qiblaProse[lang] ?? qiblaProse.en;
+const seo = qiblaSupport[lang] ?? qiblaSupport.en;
+const legal = qiblaLegal[lang] ?? qiblaLegal.en;
 
-const KWS =
-  'online qibla, qibla direction, qibla direction arrow, live gibla direction online, compass qibla, find qibla direction, quick qibla direction, where is qibla direction, qibla direction compass degrees, qibla finder, qibla direction compass, online qibla direction, online qibla finder, online qibla compass, online qibla location';
+/**
+ * The shared terms, adjusted for a Qibla finder: the intro and "1. Use of the
+ * Service" name this tool, and the accuracy caveats sit inside "2. Accuracy
+ * Disclaimer" straight after the bullet list, exactly where the English page
+ * always had them.
+ */
+const sections = copy.terms.sections.map((section, index) => {
+  if (index === 0) {
+    return { ...section, paras: [legal.termsUse, ...section.paras.slice(1)] };
+  }
+  if (index === 1) {
+    return {
+      ...section,
+      paras: [section.paras[0], ...legal.termsAccuracy, ...section.paras.slice(1)],
+    };
+  }
+  return section;
+});
+
+const siteUrl = SITE_URL;
 
 const breadcrumbLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://instanten.com/' },
-    { '@type': 'ListItem', position: 2, name: 'Online Qibla', item: 'https://instanten.com/onlineqibla/' },
-    { '@type': 'ListItem', position: 3, name: 'Terms', item: 'https://instanten.com/onlineqibla/terms/' },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: t('page.qibla.title'), item: `${siteUrl}/onlineqibla/` },
+    { '@type': 'ListItem', position: 3, name: t('page.terms.title'), item: `${siteUrl}/onlineqibla/terms/` },
   ],
 };
-
 ---
 <Layout
-  title="Terms of Use — Free Online Qibla Finder"
-  description="Terms of use for the online Qibla tool: free use, no warranty that a compass bearing is exact, acceptable use, intellectual property, and liability limits."
-  keywords={KWS}
+  title={`${t('page.terms.title')} — ${t('page.qibla.title')}`}
+  description={seo.aboutDesc}
+  keywords={seo.keywords}
   ogImage="/og-image.png"
-  ogImageAlt="Terms of Use — Free Online Qibla Finder"
+  ogImageAlt={t('page.terms.title')}
   breadcrumbLd={breadcrumbLd}>
   <Nav />
   <main class="mx-auto max-w-[48rem] px-6 lg:px-8 py-16 lg:py-24">
-    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← Back to Qibla Finder</a>
+    <a href={translatePath('/onlineqibla/')} class="inline-flex items-center gap-1 text-sm text-body hover:text-ink transition-colors mb-8">← {seo.back}</a>
     <h1 class="font-sans text-3xl sm:text-4xl font-semibold tracking-tight text-ink mb-2">{t('page.terms.title')}</h1>
-    <p class="text-xs text-mute font-mono mb-8">Last updated: October 2026</p>
-    <p class="text-body text-base leading-relaxed mb-6">
-      Please read these Terms and Conditions ("Terms") carefully before using onlinecompass ("the Service"). By accessing or using the Service, you agree to be bound by these Terms.
-    </p>
+    <p class="text-xs text-mute font-mono mb-8">{copy.updated}</p>
+    <CopyText
+      text={legal.termsIntro}
+      class="text-body text-base leading-relaxed mb-6"
+      contactHref={translatePath('/onlineqibla/contact/')}
+      contactLabel={copy.contactLink}
+      contactCta={copy.about.contactCta}
+      toolLabel={copy.toolPhrase.qibla}
+    />
 
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">1. Use of the Service</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      This <strong>online Qibla finder</strong> is provided free of charge for personal use. You may use
-      the Service to calculate the <strong>Qibla direction</strong> for your location, so a
-      <strong>quick Qibla direction</strong> check before prayer costs nothing and needs no registration.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">You agree not to:</p>
-    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li>Use the Service for any unlawful purpose</li>
-      <li>Attempt to reverse-engineer, scrape, or copy the Service for redistribution without permission</li>
-      <li>Interfere with or disrupt the servers or networks that host the Service</li>
-    </ul>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">2. Accuracy Disclaimer</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      onlinecompass is designed to provide accurate readings when properly calibrated. However, accuracy depends on:
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      A <strong>Qibla direction</strong> shown here is a calculation plus a phone sensor, not a surveyed
-      bearing. Magnetometer error of two to five degrees is normal, and it grows near speakers, magnetic
-      mounts, cars and steel structures. Treat the <strong>Qibla direction compass degrees</strong>
-      figure as a good guide and confirm with a local marker where one exists.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      A <strong>compass Qibla</strong> reading is also personal to the device. Two phones in the same room
-      can differ by a few degrees, and asking “<em>where is Qibla direction</em>” of this page is not the
-      same as commissioning a survey. Where accuracy matters, use a device with a recent calibration and
-      accept that an <strong>online Qibla direction</strong> figure is a guide rather than a ruling.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Do not rely on this <strong>online Qibla compass</strong> where a legal or structural decision
-      depends on exact orientation — for mosque construction or a permanent Qibla wall, use a qualified
-      survey. For everyday prayer in an unfamiliar room, the bearing here is intended to be enough.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      Concretely: a <strong>Qibla direction arrow</strong> drawn from a phone reading may be off by a
-      few degrees, and an <strong>online Qibla location</strong> fix indoors can be worse still. Where
-      you need certainty, <strong>find Qibla direction</strong> twice from two different spots in the
-      room, and if the
-      <strong>Qibla direction compass</strong> readings agree, the interference is probably low. If they
-      disagree, one of the spots is compromised.
-    </p>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We also do not warrant that a <strong>quick Qibla direction</strong> check will match a local
-      mosque's own marker. Where a community has surveyed a Qibla wall, that surveyed bearing takes
-      precedence over any <strong>online Qibla compass</strong> reading, including ours. The tool is
-      offered as a convenience, and a <strong>live gibla direction online</strong> result should be
-      treated as guidance rather than as a ruling.
-    </p>
-
-
-    <ul class="list-disc pl-6 space-y-2 text-body text-base leading-relaxed mb-4">
-      <li>Correct calibration by the user</li>
-      <li>The physical characteristics of your specific device</li>
-      <li>Browser zoom level (measurements assume 100% zoom)</li>
-      <li>Screen scaling settings in your operating system</li>
-    </ul>
-    <p class="text-body text-base leading-relaxed mb-4">
-      <strong>Do not rely on onlinecompass for safety-critical measurements</strong> — such as medical, engineering, or construction applications where measurement errors could cause harm. For precision work, use calibrated physical instruments.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">3. Intellectual Property</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The design, code, text, and visual assets of onlinecompass are owned by us and protected by copyright law. You may not reproduce or redistribute them without prior written permission. The measurement functionality of the Service — using a device's sensors as a qibla finder — is not claimed as proprietary; only our specific implementation is protected.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">4. Disclaimer of Warranties</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The Service is provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the Service will be uninterrupted, error-free, or completely accurate for all devices and screens.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">5. Limitation of Liability</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      To the fullest extent permitted by law, we shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising out of your use of, or inability to use, the Service — even if we have been advised of the possibility of such damages.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">6. Third-Party Links</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      The Service may contain links to third-party websites. These links are provided for convenience only. We have no control over third-party content and accept no responsibility for it.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">7. Changes to These Terms</h2>
-    <p class="text-body text-base leading-relaxed mb-4">
-      We reserve the right to modify these Terms at any time. The "Last updated" date at the top of this page will reflect the most recent revision. Your continued use of the Service after changes are posted constitutes your acceptance of the revised Terms.
-    </p>
-
-    <h2 class="font-sans text-xl sm:text-2xl font-semibold tracking-tight text-ink mt-10 mb-4">8. Contact</h2>
-    <p class="text-body text-base leading-relaxed">
-      Questions about these Terms? <a href={translatePath('/contact/')} class="text-link hover:underline">Contact us here</a>.
-    </p>
-  <QiblaFinderFaq heading="Frequently asked questions about the online Qibla" />
+    <LegalSections
+      sections={sections}
+      contactHref={translatePath('/onlineqibla/contact/')}
+      contactLabel={copy.contactLink}
+      contactCta={copy.about.contactCta}
+      toolLabel={copy.toolPhrase.qibla}
+    />
+  <QiblaFinderFaq heading={page.faqH} questions={page.faq} />
   </main>
   <Footer />
 </Layout>

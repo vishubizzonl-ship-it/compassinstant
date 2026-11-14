@@ -58,6 +58,18 @@ export const speedometerSiloPaths = [
   "/onlinespeedometer/terms/",
 ] as const;
 
+/**
+ * The Qibla silo pages are translated in every locale as well, rendered from
+ * src/i18n/qiblaSupport.ts and qiblaLegal.ts.
+ */
+export const qiblaSiloPaths = [
+  "/onlineqibla/about/",
+  "/onlineqibla/blog/",
+  "/onlineqibla/contact/",
+  "/onlineqibla/privacy/",
+  "/onlineqibla/terms/",
+] as const;
+
 /** True when `basePath` (locale-stripped) exists in every language. */
 export function hasLocaleVersion(basePath: string): boolean {
   const normalized = normalizePath(basePath);
@@ -65,7 +77,8 @@ export function hasLocaleVersion(basePath: string): boolean {
     (routePaths as readonly string[]).includes(normalized) ||
     (compassSiloPaths as readonly string[]).includes(normalized) ||
     (bubbleSiloPaths as readonly string[]).includes(normalized) ||
-    (speedometerSiloPaths as readonly string[]).includes(normalized)
+    (speedometerSiloPaths as readonly string[]).includes(normalized) ||
+    (qiblaSiloPaths as readonly string[]).includes(normalized)
   );
 }
 
