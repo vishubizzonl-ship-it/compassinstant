@@ -11,7 +11,7 @@
     "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node tests/tools-math.mjs && node tests/tools-behaviour.mjs && node tests/speedometer.mjs && node tests/speedometer-record.mjs && node tests/speedometer-centre.mjs && node tests/i18n-silo.mjs && node tests/redirects.mjs"
+    "test": "node tests/tools-math.mjs && node tests/tools-behaviour.mjs && node tests/speedometer.mjs && node tests/speedometer-record.mjs && node tests/speedometer-centre.mjs && node tests/i18n-silo.mjs && node tests/site-integrity.mjs && node tests/redirects.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
